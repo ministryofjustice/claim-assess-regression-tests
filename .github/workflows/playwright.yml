@@ -5,12 +5,18 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
+  tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    
+    env:
+      TEST_ENV: uat
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - name: Checkout repo
+      uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
       with:
         node-version: lts/*
     - name: Install dependencies
@@ -25,3 +31,31 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - name: Run ESLint
+      run: npx eslint .
+    - name: TypeScript check
+      run: npx tsc --noEmit
+
+    - name: Create env file
+      run: |
+          echo "ENV=uat" >> .env.uat
+          echo "BASE_URL=${{ secrets.UAT_BASE_URL }}" >> .env.uat
+          echo "USERNAME=${{ secrets.UAT_USERNAME }}" >> .env.uat
+          echo "PASSWORD=${{ secrets.UAT_PASSWORD }}" >> .env.uat
+          echo "ENV=dev" >> .env.dev
+          echo "BASE_URL=${{ secrets.DEV_BASE_URL }}" >> .env.dev
+          echo "USERNAME=${{ secrets.DEV_USERNAME }}" >> .env.dev
+          echo "PASSWORD=${{ secrets.DEV_PASSWORD }}" >> .env.dev
+          echo "ENV=local" >> .env.local
+          echo "BASE_URL=${{ secrets.LOCAL_BASE_URL }}" >> .env.local
+          echo "USERNAME=${{ secrets.LOCAL_USERNAME }}" >> .env.local
+          echo "PASSWORD=${{ secrets.LOCAL_PASSWORD }}" >> .env.local
+
+    - name: Run Cucumber tests
+      run: npx cucumber-js --config cucumber.json
+    - name: Upload Cucumber Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+          name: cucumber-report
+          path: reports/

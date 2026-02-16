@@ -7,9 +7,20 @@ console.log('✅ loginSteps.ts is loaded');
 
 Given('I am on the Claim for Payment home page', async function () {
 
+  
+  console.log("TEST_ENV =", process.env.TEST_ENV);
+console.log("BASE_URL =", process.env.BASE_URL);
   console.log('PAGE IS:', this.page); 
   this.homePage = new HomePage(this.page);
-  await this.homePage.goto();
+  await this.homePage.goto(this.url);
+  return Promise.resolve();
+
+});
+
+Given('I am on the Assess home page', async function () {
+
+  this.homePage = new HomePage(this.page);
+  await this.homePage.goto(this.url);
   return Promise.resolve();
 
 });
@@ -17,10 +28,10 @@ Given('I am on the Claim for Payment home page', async function () {
  Then('I should see the heading {string}', async function (headingName: string) {
 
   switch (headingName) {
-  case 'Please sign in':
-  const title = await this.page.title();
+  case 'Your service name – GOV.UK':
+  { const title = await this.page.title();
   expect(title).toBe(headingName);
-  break;
+  break; }
 
 case 'Return to claims':
       await this.page.getByRole('link', { name: 'Return to claims' }).click();
@@ -30,7 +41,7 @@ case 'Return to claims':
 
 });
 
-Then('I should see the page heading {string}', async function (expected: string) {
+Then('I should see the page heading {string}', async function () {
 
   await this.page.getByRole('heading', { name: 'Your Claims' }).waitFor({ state: 'visible' });
   
@@ -65,7 +76,8 @@ When('I enter valid credentials', async function () {
 
 
 Then('I should see the following Elements', async function (dataTable) {
-  const expectedElements: string[] = dataTable.raw().slice(1).map(row => row[0]); // Skip header row
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const expectedElements: string[] = dataTable.raw().slice(1).map((row: any[]) => row[0]); // Skip header row
 
   for (const text of expectedElements) {
     const locator = this.page.locator(`text=${text}`);
@@ -102,34 +114,6 @@ When('I click on {string} link', async function (linkName: string) {
   // Optional: Verify navigation or element after click
   await this.page.waitForLoadState('networkidle');
 });
-
-
-
-// await page.getByRole('button', { name: 'Import claim' }).click();
-//   await page.getByRole('button', { name: 'Create a new claim' }).click();
-//   await page.getByRole('link', { name: 'Submitted' }).click();
-//   await page.getByRole('link', { name: 'In progress' }).click();
-//   await page.getByRole('link', { name: 'Your submissions' }).click();
-//   await page.getByText('Your Claims Import claim').click();
-//   await page.getByRole('link', { name: 'Sign out' }).click();
-//   await page.getByRole('link', { name: 'LAA-001   – view claim' }).click();
-//   await page.getByRole('heading', { name: 'LAA-' }).click();
-//   await page.getByText('Claimed').click();
-//   await page.getByText('£').click();
-//   await page.getByText('Fee type').click();
-//   await page.getByText('Escape').click();
-//   await page.getByText('Category').click();
-//   await page.getByText('Family').click();
-//   await page.getByRole('link', { name: 'View submission   for claim LAA-' }).click();
-//   await page.goto('https://laa-claim-for-payment-frontend-uat.cloud-platform.service.justice.gov.uk/claims/1');
-//   await page.getByRole('link', { name: 'Amend claim' }).click();
-//   await page.getByRole('link', { name: 'Return to claims' }).click();
-//   await page.getByRole('link', { name: 'Sign out' }).click();     
-// await page.getByRole('link', { name: 'LAA-001   – view claim' }).click();
-//   await page.getByRole('heading', { name: 'LAA-' }).click();
-//   await page.getByRole('link', { name: 'View submission   for claim LAA-' }).click();
-//   await page.getByRole('link', { name: 'Return to claims' }).click();
-  
            
 
  

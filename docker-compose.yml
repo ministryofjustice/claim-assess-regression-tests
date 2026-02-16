@@ -1,0 +1,26 @@
+services:
+  laa-claim-for-payment:
+    build:
+      context: ../laa-claim-for-payment
+    ports:
+      - "8080:8080"
+
+  laa-claim-for-payment-frontend:
+    build:
+      context: ../laa-claim-for-payment-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    depends_on:
+      - laa-claim-for-payment
+
+  laa-assess-a-claim-frontend:
+    build:
+      context: ../laa-assess-a-claim-frontend
+    ports:
+      - "3001:3000"
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    depends_on:
+      - laa-claim-for-payment

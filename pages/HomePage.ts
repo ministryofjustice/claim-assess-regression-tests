@@ -2,15 +2,23 @@ import { Page } from 'playwright';
 
 export class HomePage {
   readonly page: Page;
-   readonly url = 'https://laa-claim-for-payment-frontend-uat.cloud-platform.service.justice.gov.uk/';
+  //  readonly url = process.env.BASE_URL!;
 
+   
   constructor(page: Page) {
     this.page = page;
   }
 
   async goto() {
-    await this.page.goto(this.url);
+  const url = process.env.BASE_URL;
+
+  if (!url) {
+    throw new Error('BASE_URL is not defined');
   }
+
+  await this.page.goto(url);
+}
+
 
   get signInButton() {
     return this.page.locator('button:has-text("Sign in")');

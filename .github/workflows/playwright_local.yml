@@ -1,0 +1,34 @@
+name: QA stack (compose up)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  up:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: latest
+      ECR_LAA_CLAIM_FOR_PAYMENT: ${{ secrets.ECR_LAA_CLAIM_FOR_PAYMENT }}
+      ECR_LAA_CLAIM_FOR_PAYMENT_FE: ${{ secrets.ECR_LAA_CLAIM_FOR_PAYMENT_FE }}
+      ECR_LAA_ASSESS_A_CLAIM_FE: ${{ secrets.ECR_LAA_ASSESS_A_CLAIM_FE }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region "$AWS_REGION" \
+            | docker login --username AWS --password-stdin "$(echo "$ECR_LAA_CLAIM_FOR_PAYMENT" | cut -d/ -f1)"
+
+      - name: Pull + start
+        run: |
+          docker compose pull
+          docker compose up -d
+
+      - name: Show containers
+        run: docker compose ps
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

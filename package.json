@@ -4,18 +4,37 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "test": "cucumber-js --require-module ts-node/register --require CLAIMS/support/World.ts --require steps/**/*.ts features/**/*.feature"
-},
+    "test": "cucumber-js --require-module ts-node/register --require CLAIMS/support/World.ts --require steps/**/*.ts features/**/*.feature",
+    "test:local": "TEST_ENV=local cucumber-js --config cucumber.json",
+    "test:dev": "TEST_ENV=dev cucumber-js --config cucumber.json",
+    "test:uat": "TEST_ENV=uat cucumber-js --config cucumber.json",
+    "test:prod": "TEST_ENV=prod cucumber-js --config cucumber.json",
+    "test:smoke": "cucumber-js --tags \"@smoke\"",
+    "test:regression": "cucumber-js --tags \"@regression\"",
+    "test:local:smoke": "TEST_ENV=local cucumber-js --tags \"@smoke\"",
+    "test:local:regression": "TEST_ENV=local cucumber-js --tags \"@regression\"",
+    "test:dev:smoke": "TEST_ENV=dev cucumber-js --tags \"@smoke\"",
+    "test:dev:regression": "TEST_ENV=dev cucumber-js --tags \"@regression\"",
+    "test:uat:smoke": "TEST_ENV=uat cucumber-js --tags \"@smoke\"",
+    "test:uat:regression": "TEST_ENV=uat cucumber-js --tags \"@regression\"",
+    "lint": "eslint ."
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",
-    "@playwright/test": "^1.56.1",
+    "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^24.10.1",
-    "playwright": "^1.56.1",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.2",
+    "playwright": "^1.58.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
   }
 }
