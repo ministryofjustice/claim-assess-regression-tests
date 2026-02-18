@@ -2,6 +2,7 @@ services:
   laa-claim-for-payment:
     build:
       context: ../laa-claim-for-payment
+      dockerfile: claim-for-payment-service/Dockerfile
     ports:
       - "8080:8080"
 
