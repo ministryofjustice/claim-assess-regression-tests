@@ -1,9 +1,17 @@
 services:
   laa-claim-for-payment:
     build:
-      context: ../laa-claim-for-payment
+      context: ../laa-claim-for-payment/claim-for-payment-service
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+      
+  mock-oidc:
+    build:
+      context: ../laa-claim-for-payment/mock-oidc
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
 
   laa-claim-for-payment-frontend:
     build:
@@ -11,7 +19,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_BASE_URL=http://localhost:8080
+      - API_URL=http://laa-claim-for-payment:8080
     depends_on:
       - laa-claim-for-payment
 
@@ -21,6 +29,6 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - API_BASE_URL=http://localhost:8080
+      - API_URL=http://laa-claim-for-payment:8080
     depends_on:
       - laa-claim-for-payment
