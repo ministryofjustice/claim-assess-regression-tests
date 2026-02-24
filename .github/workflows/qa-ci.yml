@@ -1,0 +1,71 @@
+name: QA ECR Playwright
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to test"
+        required: false
+        default: "main"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  qa:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    env:
+      ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
+      IMAGE_TAG: ${{ inputs.image_tag || 'main' }}
+
+      ECR_BACKEND_REPO: ${{ vars.ECR_BACKEND_REPO }}
+      ECR_CFP_FE_REPO: ${{ vars.ECR_CFP_FE_REPO }}
+      ECR_AAC_FE_REPO: ${{ vars.ECR_AAC_FE_REPO }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.ECR_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull + start services (CI mode)
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml pull
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+
+      - name: Load .env.ci
+        run: |
+          grep -v '^#' .env.ci >> $GITHUB_ENV
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: yarn playwright install --with-deps
+
+      - name: Run Playwright
+        run: yarn run test:local:smoke
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
