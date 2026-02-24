@@ -5,8 +5,16 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-      image_tag:
-        description: "Image tag to test"
+      backend_image_tag:
+        description: "Backend image tag"
+        required: false
+        default: "main"
+      cfp_frontend_image_tag:
+        description: "Claim-for-payment frontend image tag"
+        required: false
+        default: "main"
+      aac_frontend_image_tag:
+        description: "Assess-a-claim frontend image tag"
         required: false
         default: "main"
 
@@ -20,33 +28,88 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
-      IMAGE_TAG: ${{ inputs.image_tag || 'main' }}
+      # Backend
+      LAA_CLAIM_FOR_PAYMENT_ECR_REGION: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
+      LAA_CLAIM_FOR_PAYMENT_ECR_REPO: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REPOSITORY }}
+      LAA_CLAIM_FOR_PAYMENT_IMAGE_TAG: ${{ inputs.backend_image_tag || 'main' }}
 
-      ECR_BACKEND_REPO: ${{ vars.ECR_BACKEND_REPO }}
-      ECR_CFP_FE_REPO: ${{ vars.ECR_CFP_FE_REPO }}
-      ECR_AAC_FE_REPO: ${{ vars.ECR_AAC_FE_REPO }}
+      # CFP Frontend
+      LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
+      LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPOSITORY }}
+      LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE_TAG: ${{ inputs.cfp_frontend_image_tag || 'main' }}
+
+      # AAC Frontend
+      LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
+      LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPOSITORY }}
+      LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE_TAG: ${{ inputs.aac_frontend_image_tag || 'main' }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure AWS credentials (OIDC)
+      # -------------------------
+      # Pull backend image
+      # -------------------------
+      - name: Assume backend ECR role
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ vars.ECR_REGION }}
+          role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
 
-      - name: Login to Amazon ECR
+      - name: Login to ECR (backend)
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Pull + start services (CI mode)
+      - name: Pull backend image
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml pull
+          BACKEND_IMAGE="${ECR_REGISTRY_URL}/${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}:${LAA_CLAIM_FOR_PAYMENT_IMAGE_TAG}"
+          echo "Pulling $BACKEND_IMAGE"
+          docker pull "$BACKEND_IMAGE"
+
+      # -------------------------
+      # Pull CFP frontend image
+      # -------------------------
+      - name: Assume CFP frontend ECR role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
+
+      - name: Login to ECR (CFP frontend)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull CFP frontend image
+        run: |
+          CFP_FE_IMAGE="${ECR_REGISTRY_URL}/${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}:${LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE_TAG}"
+          echo "Pulling $CFP_FE_IMAGE"
+          docker pull "$CFP_FE_IMAGE"
+
+      # -------------------------
+      # Pull AAC frontend image
+      # -------------------------
+      - name: Assume AAC frontend ECR role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
+
+      - name: Login to ECR (AAC frontend)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull AAC frontend image
+        run: |
+          AAC_FE_IMAGE="${ECR_REGISTRY_URL}/${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}:${LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE_TAG}"
+          echo "Pulling $AAC_FE_IMAGE"
+          docker pull "$AAC_FE_IMAGE"
+
+      # -------------------------
+      # Start services + run tests
+      # -------------------------
+      - name: Start services (CI mode)
+        run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
           docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
 
       - name: Load .env.ci
-        run: |
-          grep -v '^#' .env.ci >> $GITHUB_ENV
+        run: grep -v '^#' .env.ci >> $GITHUB_ENV
 
       - name: Install deps
         run: yarn install --frozen-lockfile
