@@ -1,17 +1,17 @@
 services:
   laa-claim-for-payment:
-    image: "${ECR_REGISTRY_URL}/${ECR_BACKEND_REPO}:${IMAGE_TAG}"
+    image: "${ECR_REGISTRY_URL}/${ECR_BACKEND_REPO}:${BACKEND_IMAGE_TAG}"
     environment:
       - SECURITY_ENABLED=false
 
   laa-claim-for-payment-frontend:
-    image: "${ECR_REGISTRY_URL}/${ECR_CFP_FE_REPO}:${IMAGE_TAG}"
+    image: "${ECR_REGISTRY_URL}/${ECR_CFP_FE_REPO}:${CFP_FE_IMAGE_TAG}"
     environment:
       - API_URL=http://laa-claim-for-payment:8080
       - AUTH_ENABLED=false
 
   laa-assess-a-claim-frontend:
-    image: "${ECR_REGISTRY_URL}/${ECR_AAC_FE_REPO}:${IMAGE_TAG}"
+    image: "${ECR_REGISTRY_URL}/${ECR_AAC_FE_REPO}:${AAC_FE_IMAGE_TAG}"
     environment:
       - API_URL=http://laa-claim-for-payment:8080
       - AUTH_ENABLED=false
