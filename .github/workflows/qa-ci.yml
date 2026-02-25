@@ -129,21 +129,36 @@ jobs:
           echo "Pulling $AAC_FE_IMAGE"
           docker pull "$AAC_FE_IMAGE"
 
-      # -------------------------
-      # Start services + run tests
-      # -------------------------
+      - name: Prepare compose env vars
+        run: |
+          echo "ECR_BACKEND_REPO=${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}" >> $GITHUB_ENV
+          echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+          echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+
+          echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+          echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+          echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+
       - name: Start services (CI mode)
         run: |
-          export ECR_BACKEND_REPO="${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}"
-          export ECR_CFP_FE_REPO="${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}"
-          export ECR_AAC_FE_REPO="${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}"
-
-          export BACKEND_IMAGE_TAG="${{ steps.resolve_shas.outputs.backend_sha }}"
-          export CFP_FE_IMAGE_TAG="${{ steps.resolve_shas.outputs.cfp_frontend_sha }}"
-          export AAC_FE_IMAGE_TAG="${{ steps.resolve_shas.outputs.aac_frontend_sha }}"
-
           docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
           docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+
+      - name: Wait for backend health
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 http://localhost:8080/actuator/health >/dev/null; then
+              echo "Backend is healthy"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/60)"
+            sleep 2
+          done
+
+          echo "Backend did not become healthy in time"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 laa-claim-for-payment || true
+          exit 1
 
       - name: Load .env.ci
         run: grep -v '^#' .env.ci >> $GITHUB_ENV
@@ -161,6 +176,13 @@ jobs:
 
       - name: Run Playwright
         run: yarn run test:local:smoke
+
+      - name: List report outputs
+        if: always()
+        run: |
+          ls -la
+          echo "----"
+          find . -maxdepth 3 -type d -name "*report*" -o -name "*results*" | sort
 
       - name: Upload report
         if: always()

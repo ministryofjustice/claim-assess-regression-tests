@@ -14,18 +14,20 @@ class CustomWorld {
   homePage!: HomePage;
 
   async init() {
-    this.browser = await chromium.launch({ headless: false, slowMo: 100 });
+    const headless = process.env.CI === "true";
+    const slowMo = headless ? 0 : 100;
+
+    this.browser = await chromium.launch({ headless, slowMo });
     this.context = await this.browser.newContext();
     this.page = await this.context.newPage();
 
-    // Create only once
     this.homePage = new HomePage(this.page);
   }
 
   async teardown() {
-    await this.page.close();
-    await this.context.close();
-    await this.browser.close();
+    await this.page?.close().catch(() => {});
+    await this.context?.close().catch(() => {});
+    await this.browser?.close().catch(() => {});
   }
 }
 
