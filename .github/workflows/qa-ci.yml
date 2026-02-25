@@ -1,0 +1,189 @@
+name: QA ECR Playwright
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      backend_branch:
+        description: "Backend branch"
+        required: false
+        default: "main"
+      cfp_frontend_branch:
+        description: "Claim-for-payment frontend branch"
+        required: false
+        default: "main"
+      aac_frontend_branch:
+        description: "Assess-a-claim frontend branch"
+        required: false
+        default: "main"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  qa:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    env:
+      ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
+      LAA_CLAIM_FOR_PAYMENT_ECR_REPO: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REPOSITORY }}
+      LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPOSITORY }}
+      LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPOSITORY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # -------------------------
+      # Resolve branch -> commit SHA (full) for each service repo
+      # -------------------------
+      - name: Resolve service SHAs
+        id: resolve_shas
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+
+            function branchInput(name) {
+              return (context.payload.inputs && context.payload.inputs[name]) ? context.payload.inputs[name] : "main";
+            }
+
+            const services = {
+              backend: { repo: "laa-claim-for-payment", branch: branchInput("backend_branch") },
+              cfp:     { repo: "laa-claim-for-payment-frontend", branch: branchInput("cfp_frontend_branch") },
+              aac:     { repo: "laa-assess-a-claim-frontend", branch: branchInput("aac_frontend_branch") },
+            };
+
+            async function resolveSha({ repo, branch }) {
+              const res = await github.rest.repos.getBranch({ owner, repo, branch });
+              return res.data.commit.sha;
+            }
+
+            const backendSha = await resolveSha(services.backend);
+            const cfpSha = await resolveSha(services.cfp);
+            const aacSha = await resolveSha(services.aac);
+
+            core.info(`backend ${services.backend.repo}@${services.backend.branch} -> ${backendSha}`);
+            core.info(`cfp ${services.cfp.repo}@${services.cfp.branch} -> ${cfpSha}`);
+            core.info(`aac ${services.aac.repo}@${services.aac.branch} -> ${aacSha}`);
+
+            core.setOutput("backend_sha", backendSha);
+            core.setOutput("cfp_frontend_sha", cfpSha);
+            core.setOutput("aac_frontend_sha", aacSha);
+
+      # -------------------------
+      # Pull backend image
+      # -------------------------
+      - name: Assume backend ECR role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
+
+      - name: Login to ECR (backend)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull backend image
+        run: |
+          TAG="${{ steps.resolve_shas.outputs.backend_sha }}"
+          BACKEND_IMAGE="${ECR_REGISTRY_URL}/${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}:${TAG}"
+          echo "Pulling $BACKEND_IMAGE"
+          docker pull "$BACKEND_IMAGE"
+
+      # -------------------------
+      # Pull CFP frontend image
+      # -------------------------
+      - name: Assume CFP frontend ECR role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
+
+      - name: Login to ECR (CFP frontend)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull CFP frontend image
+        run: |
+          TAG="${{ steps.resolve_shas.outputs.cfp_frontend_sha }}"
+          CFP_FE_IMAGE="${ECR_REGISTRY_URL}/${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}:${TAG}"
+          echo "Pulling $CFP_FE_IMAGE"
+          docker pull "$CFP_FE_IMAGE"
+
+      # -------------------------
+      # Pull AAC frontend image
+      # -------------------------
+      - name: Assume AAC frontend ECR role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
+
+      - name: Login to ECR (AAC frontend)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull AAC frontend image
+        run: |
+          TAG="${{ steps.resolve_shas.outputs.aac_frontend_sha }}"
+          AAC_FE_IMAGE="${ECR_REGISTRY_URL}/${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}:${TAG}"
+          echo "Pulling $AAC_FE_IMAGE"
+          docker pull "$AAC_FE_IMAGE"
+
+      - name: Prepare compose env vars
+        run: |
+          echo "ECR_BACKEND_REPO=${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}" >> $GITHUB_ENV
+          echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+          echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+
+          echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+          echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+          echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+
+      - name: Start services (CI mode)
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+
+      - name: Wait for backend health
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 http://localhost:8080/actuator/health >/dev/null; then
+              echo "Backend is healthy"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/60)"
+            sleep 2
+          done
+
+          echo "Backend did not become healthy in time"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 laa-claim-for-payment || true
+          exit 1
+
+      - name: Load .env.ci
+        run: grep -v '^#' .env.ci >> $GITHUB_ENV
+
+      - name: Enable corepack (use repo Yarn)
+        run: |
+          corepack enable
+          yarn --version
+
+      - name: Install deps
+        run: yarn install --immutable
+
+      - name: Install Playwright browsers
+        run: yarn playwright install --with-deps
+
+      - name: Run Playwright
+        run: yarn run test:local:smoke
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: reports
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v

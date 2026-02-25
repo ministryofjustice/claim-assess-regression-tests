@@ -1,0 +1,32 @@
+services:
+  laa-claim-for-payment:
+    image: "${ECR_REGISTRY_URL}/${ECR_BACKEND_REPO}:${BACKEND_IMAGE_TAG}"
+    environment:
+      - SECURITY_ENABLED=false
+    ports:
+      - "8080:8080"
+
+  laa-claim-for-payment-frontend:
+    image: "${ECR_REGISTRY_URL}/${ECR_CFP_FE_REPO}:${CFP_FE_IMAGE_TAG}"
+    environment:
+      - API_URL=http://laa-claim-for-payment:8080
+      - AUTH_ENABLED=false
+      - REDIS_DISABLED=true
+      - REDIS_URL=redis://localhost:6379
+      - SESSION_SECRET=s3Cur3
+      - SESSION_NAME=sessionId
+    ports:
+      - "3000:3000"
+
+  laa-assess-a-claim-frontend:
+    image: "${ECR_REGISTRY_URL}/${ECR_AAC_FE_REPO}:${AAC_FE_IMAGE_TAG}"
+    environment:
+      - API_URL=http://laa-claim-for-payment:8080
+      - AUTH_ENABLED=false
+      - REDIS_DISABLED=true
+      - REDIS_URL=redis://localhost:6379
+      - SESSION_SECRET=s3Cur3
+      - SESSION_NAME=sessionId
+      - SERVICE_NAME=Assess Claim for Civil Work
+    ports:
+      - "3001:3000"
