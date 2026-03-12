@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
 
-   stub-civil-claims-api:
+  stub-civil-claims-api:
     image: "${ECR_REGISTRY_URL}/${ECR_CCS_REPO}:${CCS_IMAGE_TAG}"
     environment:
       - SECURITY_ENABLED=false
