@@ -57,7 +57,7 @@ jobs:
               backend: { repo: "laa-claim-for-payment", branch: branchInput("backend_branch") },
               cfp:     { repo: "laa-claim-for-payment-frontend", branch: branchInput("cfp_frontend_branch") },
               aac:     { repo: "laa-assess-a-claim-frontend", branch: branchInput("aac_frontend_branch") },
-              ccs:     { repo: "stub-civil-claims-api", branch: branchInput("civil_claims_api_stub_branch") },
+              ccs:     { repo: "laa-claim-for-payment-stubs", branch: branchInput("civil_claims_api_stub_branch") },
             };
 
             async function resolveSha({ repo, branch }) {
