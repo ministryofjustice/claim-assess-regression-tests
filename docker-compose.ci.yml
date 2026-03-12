@@ -6,6 +6,13 @@ services:
     ports:
       - "8080:8080"
 
+   stub-civil-claims-api:
+    image: "${ECR_REGISTRY_URL}/${ECR_CCS_REPO}:${CCS_IMAGE_TAG}"
+    environment:
+      - SECURITY_ENABLED=false
+    ports:
+      - "8090:8090"   
+
   laa-claim-for-payment-frontend:
     image: "${ECR_REGISTRY_URL}/${ECR_CFP_FE_REPO}:${CFP_FE_IMAGE_TAG}"
     environment:

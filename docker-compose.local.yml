@@ -5,6 +5,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+
+  stub-civil-claims-api:
+    build:
+      context: ../stub-civil-claims-api
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"    
       
   mock-oidc:
     build:
