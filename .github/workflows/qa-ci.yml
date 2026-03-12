@@ -24,7 +24,6 @@ permissions:
 
 jobs:
   qa:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     env:
       ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
