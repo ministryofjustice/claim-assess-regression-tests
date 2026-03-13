@@ -3,6 +3,7 @@ services:
     image: "${ECR_REGISTRY_URL}/${ECR_BACKEND_REPO}:${BACKEND_IMAGE_TAG}"
     environment:
       - SECURITY_ENABLED=false
+      - CIVILCLAIMS_API_BASE_URL=http://stub-civil-claims-api:8090
     ports:
       - "8080:8080"
 
