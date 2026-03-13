@@ -234,3 +234,54 @@ jobs:
       - name: Tear down
         if: always()
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+
+
+      - name: Analyze Run Result and Previous State
+        if: always()
+        id: analyzer
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. Get the name of the step that failed
+          if [[ "${{ job.status }}" == "failure" ]]; then
+            FAILED_STEP=$(gh run view ${{ github.run_id }} --json jobs --jq '.jobs[].steps[] | select(.conclusion=="failure") | .name' | head -n 1)
+            echo "STEP_NAME=${FAILED_STEP:-Unknown Step}" >> $GITHUB_ENV
+          fi
+
+          # 2. Get the conclusion of the previous run
+          PREV_STATE=$(gh run list --workflow "${{ github.workflow }}" --limit 2 --json conclusion --jq '.[1].conclusion')
+
+          # 3. Determine if we should notify Slack (State change only)
+          if [[ "${{ job.status }}" == "failure" && "$PREV_STATE" == "success" ]]; then
+            echo "notify=true" >> $GITHUB_OUTPUT
+            echo "summary_text=❌ *New Failure:* Build broke at step: *$FAILED_STEP*" >> $GITHUB_OUTPUT
+          elif [[ "${{ job.status }}" == "success" && "$PREV_STATE" == "failure" ]]; then
+            echo "notify=true" >> $GITHUB_OUTPUT
+            echo "summary_text=✅ *Fixed:* Tests are back to normal" >> $GITHUB_OUTPUT
+          else
+            echo "notify=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack Notification
+        if: steps.analyzer.outputs.notify == 'true'
+        uses: slackapi/slack-github-action@v3.0.0
+        with:
+          # Using the v3 specific requirements
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload-templated: true
+          # Providing the payload in YAML format
+          payload: |
+            attachments:
+              - color: "${{ job.status == 'success' && 'good' || 'danger' }}"
+                text: "${{ steps.analyzer.outputs.summary_text }}"
+                fields:
+                  - title: "Status"
+                    value: "${{ job.status }}"
+                    short: true
+                  - title: "Triggered By"
+                    value: "${{ github.actor }}"
+                    short: true
+                  - title: "Links"
+                    value: "🔍 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>"
+                    short: false
