@@ -236,27 +236,41 @@ jobs:
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
 
 
+      - name: Get failed step name
+        if: failure() # Only run this if something actually failed
+        id: failed_step
+        run: |
+          # Query the GitHub API for the current run's jobs and find the first failed step
+          FAILED_STEP=$(gh run view ${{ github.run_id }} --json jobs --jq '.jobs[].steps[] | select(.conclusion=="failure") | .name' | head -n 1)
+          echo "STEP_NAME=$FAILED_STEP" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Send Slack Notification
         if: always()
         uses: slackapi/slack-github-action@v3.0.0
         with:
-          # NEW: No more 'env' block needed for the URL
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
           payload-templated: true
-          # NEW: You can write the payload in clean YAML instead of a JSON string
           payload: |
             attachments:
               - color: "${{ job.status == 'success' && 'good' || 'danger' }}"
+                text: "*Workflow Summary: ${{ github.repository }}*"
                 fields:
                   - title: "Status"
-                    value: "${{ job.status == 'success' && '✅ Success' || '❌ Failure' }}"
+                    # If failed, show the step name from our ENV variable
+                    value: "${{ job.status == 'success' && '✅ Success' || format('❌ Failed at step: *{0}*', env.STEP_NAME || 'Unknown') }}"
+                    short: false
+                  - title: "Triggered By"
+                    value: "${{ github.actor }}"
                     short: true
-                  - title: "Repo"
-                    value: "${{ github.repository }}"
-                    short: true
-                  - title: "Artifacts"
-                    value: "📦 [Download Reports](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)"
-                    short: true
-                  - title: "Workflow Link"
-                    value: "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>"
+                  - title: "Input Branches"
+                    value: |
+                      • *API Stub:* `${{ inputs.civil_claims_api_stub_branch }}`
+                      • *Backend:* `${{ inputs.backend_branch }}`
+                      • *CFP:* `${{ inputs.cfp_frontend_branch }}`
+                      • *AAC:* `${{ inputs.aac_frontend_branch }}`
+                    short: false
+                  - title: "Links"
+                    value: "📦 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts|Download Reports>  |  🔍 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>"
+                    short: false
