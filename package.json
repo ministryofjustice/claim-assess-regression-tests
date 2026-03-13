@@ -12,6 +12,8 @@
     "test:smoke": "cucumber-js --tags \"@smoke\"",
     "test:regression": "cucumber-js --tags \"@regression\"",
     "test:local:smoke": "TEST_ENV=local cucumber-js --tags \"@smoke\"",
+    "test:local:assess": "TEST_ENV=local cucumber-js --tags \"@assess\"",
+    "test:local:claim": "TEST_ENV=local cucumber-js --tags \"@claim\"",
     "test:local:regression": "TEST_ENV=local cucumber-js --tags \"@regression\"",
     "test:dev:smoke": "TEST_ENV=dev cucumber-js --tags \"@smoke\"",
     "test:dev:regression": "TEST_ENV=dev cucumber-js --tags \"@regression\"",

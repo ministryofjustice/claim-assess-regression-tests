@@ -3,21 +3,33 @@ import { defineConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-
 const env = process.env.TEST_ENV || 'local';
-
 
 dotenv.config({
   path: path.resolve(process.cwd(), `.env.${env}`)
 });
 
-// verifying that the correct environment variables are loaded
+const CLAIM_BASE_URL = process.env.CLAIM_BASE_URL || 'http://localhost:3000';
+const ASSESS_BASE_URL = process.env.ASSESS_BASE_URL || 'http://localhost:3001';
+
+/*
+Determine which application tests are running
+Default = claim
+*/
+const APP = process.env.APP || 'claim';
+
+const BASE_URL =
+  APP === 'assess'
+    ? ASSESS_BASE_URL
+    : CLAIM_BASE_URL;
+
 console.log(`Running tests in ${env} environment`);
-console.log('BASE_URL:', process.env.BASE_URL);
+console.log(`Application: ${APP}`);
+console.log(`BASE_URL: ${BASE_URL}`);
 
 export default defineConfig({
   use: {
-    baseURL: process.env.BASE_URL,
-    headless: true  
+    baseURL: BASE_URL,
+    headless: true
   }
 });
