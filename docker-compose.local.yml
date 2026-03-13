@@ -3,8 +3,17 @@ services:
     build:
       context: ../laa-claim-for-payment/claim-for-payment-service
       dockerfile: Dockerfile
+    environment:
+      - CIVILCLAIMS_API_BASE_URL=http://stub-civil-claims-api:8090
     ports:
       - "8080:8080"
+
+  stub-civil-claims-api:
+    build:
+      context: ../laa-claim-for-payment-stubs/stub-civil-claims-api
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"    
       
   mock-oidc:
     build:

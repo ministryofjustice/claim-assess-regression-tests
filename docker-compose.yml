@@ -2,6 +2,9 @@ services:
   laa-claim-for-payment:
     ports:
       - "8080:8080"
+  stub-civil-claims-api:
+    ports:
+      - "8090:8090"    
 
   laa-claim-for-payment-frontend:
     ports:
