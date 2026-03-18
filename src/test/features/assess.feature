@@ -1,6 +1,6 @@
 Feature: Assess - Login and Claims Home Page
 
-  @smoke @assess 
+  @smoke @assess
   Scenario: The caseworker logs in and land on their home page
     # Given I am on the Claim for Payment home page
     Given I am on the Assess home page
@@ -14,9 +14,9 @@ Feature: Assess - Login and Claims Home Page
 #       | Your submissions      |
 #       | Import claim          |
 #       | Sign out              |
-When I click on "LAA-001" link
-Then I should see the heading "LAA-" 
-And I should see the heading "Assess a claim" 
-When I click on "Return to claims" link
-When I click sign out button
-Given I am on the Assess home page
+    When I click on "LAA-001" link
+    Then I should see the heading "LAA-"
+    And I should see the heading "Assess a claim"
+    When I click on "Return to claims" link
+    When I click sign out button
+    Given I am on the Assess home page
