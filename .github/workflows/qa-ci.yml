@@ -37,14 +37,14 @@ jobs:
       STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # -------------------------
       # Resolve branch -> commit SHA (full) for each service repo
       # -------------------------
       - name: Resolve service SHAs
         id: resolve_shas
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const owner = context.repo.owner;
@@ -83,7 +83,7 @@ jobs:
       # Pull backend image
       # -------------------------
       - name: Assume backend ECR role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
@@ -102,7 +102,7 @@ jobs:
       # Pull CFP frontend image
       # -------------------------
       - name: Assume CFP frontend ECR role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
@@ -121,7 +121,7 @@ jobs:
       # Pull AAC frontend image
       # -------------------------
       - name: Assume AAC frontend ECR role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
@@ -140,7 +140,7 @@ jobs:
       # Pull CCS image
       # -------------------------
       - name: Assume CCS ECR role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.STUB_CIVIL_CLAIMS_API_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REGION }}
@@ -226,7 +226,7 @@ jobs:
 
       - name: Upload report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: reports
           path: reports
