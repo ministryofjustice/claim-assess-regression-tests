@@ -222,7 +222,7 @@ jobs:
         run: yarn playwright install --with-deps
 
       - name: Run Playwright
-        run: yarn run test:local:smoke
+        run: yarn run test:local
 
       - name: Upload report
         if: always()
