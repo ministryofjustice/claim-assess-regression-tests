@@ -1,6 +1,6 @@
 Feature: Claim for Payment - Login and happy path journey
 
-  @claim
+  @smoke @claim
   Scenario: The User logs in and land on claims home page
     Given I am on the Claim for Payment home page
     Then I should see the heading "Assess Claim for Civil Work – GOV.UK"
