@@ -4,7 +4,8 @@ services:
       context: ../laa-claim-for-payment/claim-for-payment-service
       dockerfile: Dockerfile
     environment:
-      - CIVILCLAIMS_API_BASE_URL=http://stub-civil-claims-api:8090
+      CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
     ports:
       - "8080:8080"
 
@@ -15,12 +16,16 @@ services:
     ports:
       - "8090:8090"    
       
-  mock-oidc:
+  stub-oidc-server:
     build:
-      context: ../laa-claim-for-payment/mock-oidc
+      context: ../laa-claim-for-payment-stubs/stub-oidc-server
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8091:8091"
+    volumes:
+      - ./stub.yml:/opt/stub-oidc-server/config/external.yml:ro
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
 
   laa-claim-for-payment-frontend:
     build:
@@ -28,7 +33,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=http://laa-claim-for-payment:8080
+      API_URL: http://laa-claim-for-payment:8080
+      AUTH_ENABLED: true
+      ISSUER_BASE_URL: http://stub-oidc-server:8091
+      REDIS_DISABLED: true
+      REDIS_URL: redis://localhost:6379
+      SESSION_SECRET: s3Cur3
+      SESSION_NAME: sessionId
     depends_on:
       - laa-claim-for-payment
 
@@ -38,6 +49,12 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - API_URL=http://laa-claim-for-payment:8080
+      API_URL: http://laa-claim-for-payment:8080
+      AUTH_ENABLED: true
+      ISSUER_BASE_URL: http://stub-oidc-server:8091
+      REDIS_DISABLED: true
+      REDIS_URL: redis://localhost:6379
+      SESSION_SECRET: s3Cur3
+      SESSION_NAME: sessionId
     depends_on:
       - laa-claim-for-payment
