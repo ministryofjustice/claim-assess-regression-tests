@@ -7,11 +7,21 @@ export class LoginPage {
     this.page = page;
   }
 
-  get someElement() {
-    return this.page.locator('selector-for-next-page-element');
+  get usernameInput() {
+    return this.page.locator('#username');
   }
 
-  async assertSomeElementVisible() {
-    await this.someElement.waitFor({ state: 'visible' });
+  get passwordInput() {
+    return this.page.locator('#password');
+  }
+
+  get signInButton() {
+    return this.page.getByRole('button', { name: 'Sign in' });
+  }
+
+  async login(username: string, password: string) {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.signInButton.click();
   }
 }

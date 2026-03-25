@@ -1,23 +1,25 @@
 import { Given, Then, When } from '@cucumber/cucumber';
 import { HomePage } from '../pages/HomePage';
 import { expect } from '@playwright/test';
+import {LoginPage} from "../pages/LoginPage";
 
 console.log('✅ loginSteps.ts is loaded');
 
-Given('I am on the Claim for Payment home page', async function () {
+Given('I log in to Claim as user {string} with password {string}', async function (username: string, password: string) {
 
   const claimUrl = process.env.CLAIM_BASE_URL || 'http://localhost:3000';
 
   console.log("TEST_ENV =", process.env.TEST_ENV);
   console.log("CLAIM_BASE_URL =", claimUrl);
-  console.log('PAGE IS:', this.page);
 
   this.homePage = new HomePage(this.page);
   await this.homePage.goto(claimUrl);
 
+  const loginPage = new LoginPage(this.page);
+  await loginPage.login(username, password);
 });
 
-Given('I am on the Assess home page', async function () {
+Given('I log in to Assess as user {string} with password {string}', async function (username: string, password: string) {
 
   const assessUrl = process.env.ASSESS_BASE_URL || 'http://localhost:3001';
 
@@ -26,31 +28,14 @@ Given('I am on the Assess home page', async function () {
   this.homePage = new HomePage(this.page);
   await this.homePage.goto(assessUrl);
 
+  const loginPage = new LoginPage(this.page);
+  await loginPage.login(username, password);
 });
 
-Then('I should see the heading {string}', async function (headingName: string) {
-
-  switch (headingName) {
-
-    case 'Your service name – GOV.UK': {
-      const title = await this.page.title();
-      expect(title).toBe(headingName);
-      break;
-    }
-
-    case 'Return to claims':
-      await this.page.getByRole('link', { name: 'Return to claims' }).click();
-      break;
-  }
-
-});
-
-Then('I should see the page heading {string}', async function () {
-
-  await this.page
-    .getByRole('heading', { name: 'Your Claims' })
-    .waitFor({ state: 'visible' });
-
+Then('I should see the heading {string}', async function (expected: string) {
+  const heading = await this.page.locator('h1').textContent();
+  console.log('Page heading is:', heading);
+  expect(heading).toBe(expected);
 });
 
 Then('I should see the page title {string}', async function (expected: string) {
@@ -58,10 +43,9 @@ Then('I should see the page title {string}', async function (expected: string) {
   await this.page.waitForLoadState('domcontentloaded');
   const title = await this.page.title();
 
-  expect(title).toBe(expected);
-
   console.log('Page title is:', title);
 
+  expect(title).toBe(expected);
 });
 
 When('I enter valid credentials', async function () {

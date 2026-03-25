@@ -15,7 +15,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=http://laa-claim-for-payment:8080
+      API_URL: http://laa-claim-for-payment:8080
     depends_on:
       - laa-claim-for-payment
 
@@ -23,6 +23,6 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - API_URL=http://laa-claim-for-payment:8080
+      API_URL: http://laa-claim-for-payment:8080
     depends_on:
       - laa-claim-for-payment

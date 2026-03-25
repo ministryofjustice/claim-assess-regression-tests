@@ -54,7 +54,7 @@ services:
       OIDC_CLIENT_SECRET: mock-secret
       OIDC_CALLBACK_PATH: /callback
       OIDC_LOGOUT_PATH: /logout
-      CLIENT_ID: caa-client
+      CLIENT_ID: afe-client
       SERVICE_NAME: Assess Claim for Civil Work
     ports:
       - "3001:3000"
