@@ -31,6 +31,7 @@ services:
   laa-claim-for-payment-frontend:
     build:
       context: ../laa-claim-for-payment-frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -56,6 +57,7 @@ services:
   laa-assess-a-claim-frontend:
     build:
       context: ../laa-assess-a-claim-frontend
+      dockerfile: Dockerfile
     ports:
       - "3001:3000"
     environment:
