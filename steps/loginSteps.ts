@@ -2,15 +2,10 @@ import { Given, Then, When } from '@cucumber/cucumber';
 import { HomePage } from '../pages/HomePage';
 import { expect } from '@playwright/test';
 
-console.log('✅ loginSteps.ts is loaded');
 
 Given('I am on the Claim for Payment home page', async function () {
 
   const claimUrl = process.env.CLAIM_BASE_URL || 'http://localhost:3000';
-
-  console.log("TEST_ENV =", process.env.TEST_ENV);
-  console.log("CLAIM_BASE_URL =", claimUrl);
-  console.log('PAGE IS:', this.page);
 
   this.homePage = new HomePage(this.page);
   await this.homePage.goto(claimUrl);
@@ -20,8 +15,6 @@ Given('I am on the Claim for Payment home page', async function () {
 Given('I am on the Assess home page', async function () {
 
   const assessUrl = process.env.ASSESS_BASE_URL || 'http://localhost:3001';
-
-  console.log("ASSESS_BASE_URL =", assessUrl);
 
   this.homePage = new HomePage(this.page);
   await this.homePage.goto(assessUrl);
