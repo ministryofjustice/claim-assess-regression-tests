@@ -16,10 +16,6 @@ export class HomePage {
     await this.page.goto(url);
   }
 
-  get signInButton() {
-    return this.page.locator('button:has-text("Sign in")');
-  }
-
   get heading() {
     return this.page.locator('h1');
   }
@@ -31,18 +27,5 @@ export class HomePage {
     if (text?.trim() !== expected) {
       throw new Error(`Heading text was "${text}", but expected "${expected}"`);
     }
-  }
-
-  get usernameInput() {
-    return this.page.getByRole('textbox', { name: 'Username' });
-  }
-
-  get passwordInput() {
-    return this.page.getByRole('textbox', { name: 'Password' });
-  }
-
-  async login(username: string, password: string) {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
   }
 }

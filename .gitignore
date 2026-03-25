@@ -8,3 +8,6 @@ reports/
 /playwright/.cache/
 /playwright/.auth/
 .yarn/install-state.gz
+
+# IDEA
+.idea/

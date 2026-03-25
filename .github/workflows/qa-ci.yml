@@ -5,8 +5,8 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-      civil_claims_api_stub_branch:
-        description: "Civil Claims API Stub branch"
+      stubs_branch:
+        description: "Stubs branch"
         required: false
         default: "main"
       backend_branch:
@@ -35,6 +35,7 @@ jobs:
       LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPOSITORY }}
       LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPOSITORY }}
       STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY }}
+      STUB_OIDC_SERVER_ECR_REPOSITORY: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
     steps:
       - uses: actions/checkout@v6
@@ -57,7 +58,7 @@ jobs:
               backend: { repo: "laa-claim-for-payment", branch: branchInput("backend_branch") },
               cfp:     { repo: "laa-claim-for-payment-frontend", branch: branchInput("cfp_frontend_branch") },
               aac:     { repo: "laa-assess-a-claim-frontend", branch: branchInput("aac_frontend_branch") },
-              ccs:     { repo: "laa-claim-for-payment-stubs", branch: branchInput("civil_claims_api_stub_branch") },
+              stubs:     { repo: "laa-claim-for-payment-stubs", branch: branchInput("stubs_branch") }
             };
 
             async function resolveSha({ repo, branch }) {
@@ -68,16 +69,16 @@ jobs:
             const backendSha = await resolveSha(services.backend);
             const cfpSha = await resolveSha(services.cfp);
             const aacSha = await resolveSha(services.aac);
-            const ccsSha = await resolveSha(services.ccs);
+            const stubsSha = await resolveSha(services.stubs);
             core.info(`backend ${services.backend.repo}@${services.backend.branch} -> ${backendSha}`);
             core.info(`cfp ${services.cfp.repo}@${services.cfp.branch} -> ${cfpSha}`);
             core.info(`aac ${services.aac.repo}@${services.aac.branch} -> ${aacSha}`);
-            core.info(`ccs ${services.ccs.repo}@${services.ccs.branch} -> ${ccsSha}`);
+            core.info(`stubs ${services.stubs.repo}@${services.stubs.branch} -> ${stubsSha}`);
 
             core.setOutput("backend_sha", backendSha);
             core.setOutput("cfp_frontend_sha", cfpSha);
             core.setOutput("aac_frontend_sha", aacSha);
-            core.setOutput("ccs_sha", ccsSha);
+            core.setOutput("stubs_sha", stubsSha);
 
       # -------------------------
       # Pull backend image
@@ -137,7 +138,7 @@ jobs:
           docker pull "$AAC_FE_IMAGE"
 
       # -------------------------
-      # Pull CCS image
+      # Pull CCS (Civil claims stub) image
       # -------------------------
       - name: Assume CCS ECR role
         uses: aws-actions/configure-aws-credentials@v6
@@ -150,10 +151,29 @@ jobs:
 
       - name: Pull CCS image
         run: |
-          TAG="${{ steps.resolve_shas.outputs.ccs_sha }}"
+          TAG="${{ steps.resolve_shas.outputs.stubs_sha }}"
           CCS_IMAGE="${ECR_REGISTRY_URL}/${STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY}:${TAG}"
           echo "Pulling $CCS_IMAGE"
           docker pull "$CCS_IMAGE"
+
+      # -------------------------
+      # Pull OSS (OIDC server stub) image
+      # -------------------------
+      - name: Assume OSS ECR role
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.STUB_OIDC_SERVER_ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
+
+      - name: Login to ECR (CCS)
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull OSS image
+        run: |
+          TAG="${{ steps.resolve_shas.outputs.stubs_sha }}"
+          OSS_IMAGE="${ECR_REGISTRY_URL}/${STUB_OIDC_SERVER_ECR_REPOSITORY}:${TAG}"
+          echo "Pulling $OSS_IMAGE"
+          docker pull "$OSS_IMAGE"
 
       # -------------------------
       # Prepare compose env vars
@@ -164,48 +184,42 @@ jobs:
           echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
           echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
           echo "ECR_CCS_REPO=${STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY}" >> $GITHUB_ENV
+          echo "ECR_OSS_REPO=${STUB_OIDC_SERVER_ECR_REPOSITORY}" >> $GITHUB_ENV
 
           echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
           echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
           echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
-          echo "CCS_IMAGE_TAG=${{ steps.resolve_shas.outputs.ccs_sha }}" >> $GITHUB_ENV
+          echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
       - name: Start services (CI mode)
         run: |
           docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
           docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
 
-      - name: Wait for backend health
+      - name: Wait for app health
         run: |
-          for i in $(seq 1 60); do
-            if curl -fsS --max-time 2 http://localhost:8080/actuator/health >/dev/null; then
-              echo "Backend is healthy"
-              exit 0
-            fi
-            echo "Waiting for backend... ($i/60)"
-            sleep 2
-          done
-
-          echo "Backend did not become healthy in time"
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 laa-claim-for-payment || true
-          exit 1
-
-      - name: Wait for Civil CLaims Stub health
-        run: |
-          for i in $(seq 1 60); do
-            if curl -fsS --max-time 2 http://localhost:8090/actuator/health >/dev/null; then
-              echo "CCS is healthy"
-              exit 0
-            fi
-            echo "Waiting for CCS... ($i/60)"
-            sleep 2
-          done
-
-          echo "Civil Claims Stub did not become healthy in time"
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 stub-civil-claims-api || true
-          exit 1    
+          set -euo pipefail
+          MAX_RETRIES=60
+          function waitFor() {
+            local name="$1"
+            local port="$2"
+            for i in $(seq 1 "$MAX_RETRIES"); do
+              if ! curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
+                echo "Waiting for $name... ($i/$MAX_RETRIES)"
+                sleep 2
+                continue
+              fi
+              echo "$name is healthy"
+              return 0
+            done
+            echo "$name did not become healthy in time"
+            docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+            docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
+            exit 1
+          }
+          waitFor "laa-claim-for-payment" 8080
+          waitFor "stub-civil-claims-api" 8090
+          waitFor "stub-oidc-server" 8091
 
       - name: Load .env.ci
         run: grep -v '^#' .env.ci >> $GITHUB_ENV
@@ -214,6 +228,10 @@ jobs:
         run: |
           corepack enable
           yarn --version
+
+      - name: Add hosts to /etc/hosts
+        run: |
+          sudo echo "127.0.0.1 stub-oidc-server" | sudo tee -a /etc/hosts
 
       - name: Install deps
         run: yarn install --immutable
@@ -263,7 +281,7 @@ jobs:
           fi
 
       - name: Send Slack Notification
-        if: steps.analyzer.outputs.notify == 'true'
+        if: failure() || steps.analyzer.outputs.notify == 'true'
         uses: slackapi/slack-github-action@v3.0.0
         with:
           # Using the v3 specific requirements
