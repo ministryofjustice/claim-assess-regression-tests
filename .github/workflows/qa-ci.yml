@@ -198,20 +198,21 @@ jobs:
 
       - name: Wait for app health
         run: |
+          set -euo pipefail
           MAX_RETRIES=60
           function waitFor() {
             local name="$1"
             local port="$2"
             for i in $(seq 1 "$MAX_RETRIES"); do
-              if curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
-                echo "$name is healthy"
-                exit 0
+              if ! curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
+                echo "Waiting for $name... ($i/$MAX_RETRIES)"
+                sleep 2
+                continue
               fi
-              echo "Waiting for $name... ($i/$MAX_RETRIES)"
-              sleep 2
+              echo "$name is healthy"
+              return 0
             done
-  
-            echo "$name did not become healthy in time"
+
             docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
             docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
             exit 1
