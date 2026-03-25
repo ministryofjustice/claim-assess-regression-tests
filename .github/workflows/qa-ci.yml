@@ -196,53 +196,30 @@ jobs:
           docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
           docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
 
-      - name: Wait for backend health
+      - name: Wait for app health
         run: |
-          for i in $(seq 1 60); do
-            if curl -fsS --max-time 2 http://localhost:8080/actuator/health >/dev/null; then
-              echo "Backend is healthy"
-              exit 0
-            fi
-            echo "Waiting for backend... ($i/60)"
-            sleep 2
-          done
-
-          echo "Backend did not become healthy in time"
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 laa-claim-for-payment || true
-          exit 1
-
-      - name: Wait for Civil Claims Stub health
-        run: |
-          for i in $(seq 1 60); do
-            if curl -fsS --max-time 2 http://localhost:8090/actuator/health >/dev/null; then
-              echo "CCS is healthy"
-              exit 0
-            fi
-            echo "Waiting for CCS... ($i/60)"
-            sleep 2
-          done
-
-          echo "Civil Claims Stub did not become healthy in time"
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 stub-civil-claims-api || true
-          exit 1
-
-      - name: Wait for OIDC Server Stub health
-        run: |
-          for i in $(seq 1 60); do
-            if curl -fsS --max-time 2 http://localhost:8091/actuator/health >/dev/null; then
-              echo "OSS is healthy"
-              exit 0
-            fi
-            echo "Waiting for OSS... ($i/60)"
-            sleep 2
-          done
-
-          echo "OIDC Server Stub did not become healthy in time"
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
-          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 stub-oidc-server || true
-          exit 1
+          MAX_RETRIES=60
+          function waitFor() {
+            local name="$1"
+            local port="$2"
+            for i in $(seq 1 "$MAX_RETRIES"); do
+              if curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
+                echo "$name is healthy"
+                exit 0
+              fi
+              echo "Waiting for $name... ($i/$MAX_RETRIES)"
+              sleep 2
+            done
+  
+            echo "$name did not become healthy in time"
+            docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+            docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
+            exit 1
+          }
+          
+          waitFor "laa-claim-for-payment" 8080
+          waitFor "stub-civil-claims-api" 8090
+          waitFor "stub-oidc-server" 8091
 
       - name: Load .env.ci
         run: grep -v '^#' .env.ci >> $GITHUB_ENV
