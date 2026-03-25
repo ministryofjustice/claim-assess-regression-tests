@@ -6,6 +6,7 @@ services:
     environment:
       CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
+      SECURITY_ENABLED: true
     ports:
       - "8080:8080"
 
@@ -40,6 +41,13 @@ services:
       REDIS_URL: redis://localhost:6379
       SESSION_SECRET: s3Cur3
       SESSION_NAME: sessionId
+      OIDC_SCOPE: openid profile email
+      CLAIMS_API_SCOPE: Claims.Write
+      OIDC_LOGIN_PATH: /login
+      OIDC_CLIENT_SECRET: mock-secret
+      OIDC_CALLBACK_PATH: /callback
+      OIDC_LOGOUT_PATH: /logout
+      CLIENT_ID: caa-client
     depends_on:
       - laa-claim-for-payment
 
@@ -56,5 +64,12 @@ services:
       REDIS_URL: redis://localhost:6379
       SESSION_SECRET: s3Cur3
       SESSION_NAME: sessionId
+      OIDC_SCOPE: openid profile email
+      CLAIMS_API_SCOPE: Claims.Write
+      OIDC_LOGIN_PATH: /login
+      OIDC_CLIENT_SECRET: mock-secret
+      OIDC_CALLBACK_PATH: /callback
+      OIDC_LOGOUT_PATH: /logout
+      CLIENT_ID: caa-client
     depends_on:
       - laa-claim-for-payment
