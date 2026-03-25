@@ -4,6 +4,7 @@ services:
     environment:
       SECURITY_ENABLED: true
       CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
     ports:
       - "8080:8080"
 

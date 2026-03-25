@@ -212,12 +212,11 @@ jobs:
               echo "$name is healthy"
               return 0
             done
-
+            echo "$name did not become healthy in time"
             docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
             docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
             exit 1
           }
-          
           waitFor "laa-claim-for-payment" 8080
           waitFor "stub-civil-claims-api" 8090
           waitFor "stub-oidc-server" 8091
