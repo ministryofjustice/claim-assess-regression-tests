@@ -1,7 +1,6 @@
 # claim-assess-regression-tests
+
 Automated tests for claim and assess applications.
-Cucumber and playwright tests for UI testing.
-E2E tests
 
 ## Pre-requisites
 * Docker
@@ -12,7 +11,10 @@ E2E tests
 * Playwright
   * `yarn playwright install`
 
-## E2E tests
+## Tests
+
+### Overview
+We use Cucumber and Playwright tests for UI testing.
 
 ### Run tests
 1. `docker compose -f docker-compose.local.yml up -d` (additionally you can pass in `--build --force-recreate` to restart the containers with fresh images)
