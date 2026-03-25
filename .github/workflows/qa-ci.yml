@@ -189,8 +189,7 @@ jobs:
           echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
           echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
           echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
-          echo "CCS_IMAGE_TAG=${{ steps.resolve_shas.outputs.ccs_sha }}" >> $GITHUB_ENV
-          echo "OSS_IMAGE_TAG=${{ steps.resolve_shas.outputs.oss_sha }}" >> $GITHUB_ENV
+          echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
       - name: Start services (CI mode)
         run: |

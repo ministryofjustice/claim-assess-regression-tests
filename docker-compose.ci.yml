@@ -8,12 +8,12 @@ services:
       - "8080:8080"
 
   stub-civil-claims-api:
-    image: "${ECR_REGISTRY_URL}/${ECR_CCS_REPO}:${CCS_IMAGE_TAG}"
+    image: "${ECR_REGISTRY_URL}/${ECR_CCS_REPO}:${STUBS_IMAGE_TAG}"
     ports:
       - "8090:8090"
 
   stub-oidc-server:
-    image: "${ECR_REGISTRY_URL}/${ECR_OSS_REPO}:${OSS_IMAGE_TAG}"
+    image: "${ECR_REGISTRY_URL}/${ECR_OSS_REPO}:${STUBS_IMAGE_TAG}"
     ports:
       - "8091:8091"
 
