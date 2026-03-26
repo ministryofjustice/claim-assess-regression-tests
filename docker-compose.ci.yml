@@ -1,71 +1,15 @@
 services:
   laa-claim-for-payment:
     image: "${ECR_REGISTRY_URL}/${ECR_BACKEND_REPO}:${BACKEND_IMAGE_TAG}"
-    ports:
-      - "8080:8080"
-    environment:
-      SECURITY_ENABLED: true
-      CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
 
   stub-civil-claims-api:
     image: "${ECR_REGISTRY_URL}/${ECR_CCS_REPO}:${STUBS_IMAGE_TAG}"
-    ports:
-      - "8090:8090"
 
   stub-oidc-server:
     image: "${ECR_REGISTRY_URL}/${ECR_OSS_REPO}:${STUBS_IMAGE_TAG}"
-    ports:
-      - "8091:8091"
-    volumes:
-      - ./stub.yml:/opt/stub-oidc-server/config/external.yml:ro
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
 
   laa-claim-for-payment-frontend:
     image: "${ECR_REGISTRY_URL}/${ECR_CFP_FE_REPO}:${CFP_FE_IMAGE_TAG}"
-    ports:
-      - "3000:3000"
-    environment:
-      BASE_URL: http://localhost:3000
-      API_URL: http://laa-claim-for-payment:8080
-      AUTH_ENABLED: true
-      ISSUER_BASE_URL: http://stub-oidc-server:8091
-      REDIS_DISABLED: true
-      REDIS_URL: redis://localhost:6379
-      SESSION_SECRET: s3Cur3
-      SESSION_NAME: sessionId
-      OIDC_SCOPE: openid profile email
-      CLAIMS_API_SCOPE: Claims.Write
-      OIDC_LOGIN_PATH: /login
-      OIDC_CLIENT_SECRET: mock-secret
-      OIDC_CALLBACK_PATH: /callback
-      OIDC_LOGOUT_PATH: /logout
-      CLIENT_ID: caa-client
-      SERVICE_NAME: Claim for Controlled Work
-    depends_on:
-      - laa-claim-for-payment
 
   laa-assess-a-claim-frontend:
     image: "${ECR_REGISTRY_URL}/${ECR_AAC_FE_REPO}:${AAC_FE_IMAGE_TAG}"
-    ports:
-      - "3001:3000"
-    environment:
-      BASE_URL: http://localhost:3001
-      API_URL: http://laa-claim-for-payment:8080
-      AUTH_ENABLED: true
-      ISSUER_BASE_URL: http://stub-oidc-server:8091
-      REDIS_DISABLED: true
-      REDIS_URL: redis://localhost:6379
-      SESSION_SECRET: s3Cur3
-      SESSION_NAME: sessionId
-      OIDC_SCOPE: openid profile email
-      CLAIMS_API_SCOPE: Claims.Write
-      OIDC_LOGIN_PATH: /login
-      OIDC_CLIENT_SECRET: mock-secret
-      OIDC_CALLBACK_PATH: /callback
-      OIDC_LOGOUT_PATH: /logout
-      CLIENT_ID: afe-client
-      SERVICE_NAME: Assess Claim for Civil Work
-    depends_on:
-      - laa-claim-for-payment
