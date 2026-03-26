@@ -13,10 +13,6 @@ services:
     build:
       context: ../laa-claim-for-payment-stubs/stub-oidc-server
       dockerfile: Dockerfile
-    volumes:
-      - ./stub.yml:/opt/stub-oidc-server/config/external.yml:ro
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
 
   laa-claim-for-payment-frontend:
     build:
