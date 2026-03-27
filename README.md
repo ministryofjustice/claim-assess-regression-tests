@@ -3,13 +3,16 @@
 Automated tests for claim and assess applications.
 
 ## Pre-requisites
-* Docker
-* Node
+* [Docker](https://www.docker.com/products/docker-desktop/)
+* [Node](https://github.com/nvm-sh/nvm)
 * Yarn
   * `corepack enable`
   * `yarn install`
 * Playwright
   * `yarn playwright install`
+* [pre-commit](https://formulae.brew.sh/formula/pre-commit)
+  * `brew install pre-commit`
+  * `pre-commit install`
 
 ## Tests
 
