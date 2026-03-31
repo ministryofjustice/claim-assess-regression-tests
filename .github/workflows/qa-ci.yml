@@ -38,14 +38,14 @@ jobs:
       STUB_OIDC_SERVER_ECR_REPOSITORY: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
 
       # -------------------------
       # Resolve branch -> commit SHA (full) for each service repo
       # -------------------------
       - name: Resolve service SHAs
         id: resolve_shas
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
         with:
           script: |
             const owner = context.repo.owner;
@@ -84,13 +84,13 @@ jobs:
       # Pull backend image
       # -------------------------
       - name: Assume backend ECR role
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 #v6.0.0
         with:
           role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
 
       - name: Login to ECR (backend)
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2.1.1
 
       - name: Pull backend image
         run: |
@@ -103,13 +103,13 @@ jobs:
       # Pull CFP frontend image
       # -------------------------
       - name: Assume CFP frontend ECR role
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 #v6.0.0
         with:
           role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
 
       - name: Login to ECR (CFP frontend)
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2.1.1
 
       - name: Pull CFP frontend image
         run: |
@@ -122,13 +122,13 @@ jobs:
       # Pull AAC frontend image
       # -------------------------
       - name: Assume AAC frontend ECR role
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 #v6.0.0
         with:
           role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
 
       - name: Login to ECR (AAC frontend)
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2.1.1
 
       - name: Pull AAC frontend image
         run: |
@@ -141,13 +141,13 @@ jobs:
       # Pull CCS (Civil claims stub) image
       # -------------------------
       - name: Assume CCS ECR role
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 #v6.0.0
         with:
           role-to-assume: ${{ secrets.STUB_CIVIL_CLAIMS_API_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REGION }}
 
       - name: Login to ECR (CCS)
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2.1.1
 
       - name: Pull CCS image
         run: |
@@ -160,13 +160,13 @@ jobs:
       # Pull OSS (OIDC server stub) image
       # -------------------------
       - name: Assume OSS ECR role
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 #v6.0.0
         with:
           role-to-assume: ${{ secrets.STUB_OIDC_SERVER_ECR_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
 
       - name: Login to ECR (CCS)
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 #v2.1.1
 
       - name: Pull OSS image
         run: |
@@ -244,7 +244,7 @@ jobs:
 
       - name: Upload report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: reports
           path: reports
@@ -282,7 +282,7 @@ jobs:
 
       - name: Send Slack Notification
         if: failure() || steps.analyzer.outputs.notify == 'true'
-        uses: slackapi/slack-github-action@v3.0.0
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
         with:
           # Using the v3 specific requirements
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
