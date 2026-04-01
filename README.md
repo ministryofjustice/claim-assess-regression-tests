@@ -22,6 +22,8 @@ We use Cucumber and Playwright tests for UI testing.
 ### Run tests
 To run all tests, run `./e2e.sh`.
 
+On the first time running the E2E tests you might be prompted for a password. Enter your machine password, this is required to run a sudo command to update hostname mappings in etc/hosts.
+
 Alternatively, to run a subset of tests:
 * with a specific tag, e.g. @smoke, run `./e2e.sh @smoke`
 * with multiple specific tags, e.g. @smoke and @assess, run `./e2e.sh @smoke and @assess`
