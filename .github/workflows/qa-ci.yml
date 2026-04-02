@@ -233,6 +233,9 @@ jobs:
         run: |
           sudo echo "127.0.0.1 stub-oidc-server" | sudo tee -a /etc/hosts
 
+      - name: SLSA
+        uses: ministryofjustice/devsecops-actions/sca/slsa@4cd163be7859cd130800d6719d925318826038ea
+        
       - name: Install deps
         run: yarn install --immutable
 
