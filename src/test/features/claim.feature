@@ -1,7 +1,7 @@
 Feature: Claim for Payment - Login and happy path journey
 
   @smoke @claim
-  Scenario: The User logs in and land on claims home page
+  Scenario: The provider/User logs in and land on Claims home page
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Claim for Controlled Work – GOV.UK"
     Then I should see the heading "Your Claims"
