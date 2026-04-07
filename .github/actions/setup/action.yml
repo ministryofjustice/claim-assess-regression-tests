@@ -121,18 +121,12 @@ runs:
     - name: Prepare compose env vars
       shell: bash
       run: |
-        echo "ECR_REGISTRY_URL=${{ inputs.ecr-registry-url }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-ecr-repository }}:${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}:${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+        echo "LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}:${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_STUBS_CIVIL_CLAIMS_API_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_STUBS_OIDC_SERVER_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
-        echo "ECR_BACKEND_REPO=${{ inputs.laa-claim-for-payment-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_CFP_FE_REPO=${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_AAC_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_CCS_REPO=${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_OSS_REPO=${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}" >> $GITHUB_ENV
-
-        echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
-        echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
-        echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
-        echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
     # -------------------------
     # Pull backend image
@@ -142,9 +136,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.laa-claim-for-payment-ecr-role-to-assume }}
         aws-region: ${{ inputs.laa-claim-for-payment-ecr-region }}
-        ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.laa-claim-for-payment-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.backend_sha }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_IMAGE }}
 
     # -------------------------
     # Pull CFP frontend image
@@ -154,9 +146,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.laa-claim-for-payment-frontend-ecr-role-to-assume }}
         aws-region: ${{ inputs.laa-claim-for-payment-frontend-ecr-region }}
-        ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.cfp_frontend_sha }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE }}
 
     # -------------------------
     # Pull AAC frontend image
@@ -166,9 +156,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.laa-assess-a-claim-frontend-ecr-role-to-assume }}
         aws-region: ${{ inputs.laa-assess-a-claim-frontend-ecr-region }}
-        ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.aac_frontend_sha }}
+        image: ${{ env.LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE }}
 
     # -------------------------
     # Pull CCS (Civil claims stub) image
@@ -178,9 +166,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume }}
         aws-region: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-region }}
-        ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_STUBS_CIVIL_CLAIMS_API_IMAGE }}
 
     # -------------------------
     # Pull OSS (OIDC server stub) image
@@ -190,9 +176,7 @@ runs:
       with:
         role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-role-to-assume }}
         aws-region: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-region }}
-        ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_STUBS_OIDC_SERVER_IMAGE }}
 
     - name: Start services (CI mode)
       shell: bash

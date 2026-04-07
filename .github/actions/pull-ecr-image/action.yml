@@ -7,14 +7,8 @@ inputs:
   aws-region:
     description: 'AWS region'
     required: true
-  ecr-registry:
-    description: 'ECR registry'
-    required: true
-  ecr-repository:
-    description: 'ECR repository'
-    required: true
-  image-tag:
-    description: 'Image tag'
+  image:
+    description: 'Image'
     required: true
 runs:
   using: composite
@@ -31,6 +25,6 @@ runs:
     - name: Pull image
       shell: bash
       run: |
-        IMAGE="${{ inputs.ecr-registry }}/${{ inputs.ecr-repository }}:${{ inputs.image-tag }}"
+        IMAGE="${{ inputs.image }}"
         echo "Pulling $IMAGE"
         docker pull "$IMAGE"
