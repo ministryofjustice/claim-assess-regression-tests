@@ -29,7 +29,7 @@
             <pollunits>REQUESTS</pollunits>
             <form>
                 <loginurl>http://stub-oidc-server:8091/login</loginurl>
-                <loginbody/>
+                <loginbody>username={%username%}&password={%password%}</loginbody>
                 <loginpageurl>http://stub-oidc-server:8091/login</loginpageurl>
             </form>
         </authentication>
