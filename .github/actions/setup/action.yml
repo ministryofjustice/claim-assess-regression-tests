@@ -1,0 +1,225 @@
+name: setup
+
+description: 'Pull latest images and spin everything up in Docker'
+
+inputs:
+  ecr-registry-url:
+    description: "ECR registry URL"
+    required: true
+  laa-claim-for-payment-branch:
+    description: "laa-claim-for-payment branch"
+    required: true
+  laa-claim-for-payment-ecr-role-to-assume:
+    description: "laa-claim-for-payment ECR role to assume"
+    required: true
+  laa-claim-for-payment-ecr-region:
+    description: "laa-claim-for-payment ECR region"
+    required: true
+  laa-claim-for-payment-ecr-repository:
+    description: "laa-claim-for-payment ECR repository"
+    required: true
+  laa-claim-for-payment-frontend-branch:
+    description: "laa-claim-for-payment-frontend branch"
+    required: true
+  laa-claim-for-payment-frontend-ecr-role-to-assume:
+    description: "laa-claim-for-payment-frontend ECR role to assume"
+    required: true
+  laa-claim-for-payment-frontend-ecr-region:
+    description: "laa-claim-for-payment-frontend ECR region"
+    required: true
+  laa-claim-for-payment-frontend-ecr-repository:
+    description: "laa-claim-for-payment-frontend ECR repository"
+    required: true
+  laa-assess-a-claim-frontend-branch:
+    description: "laa-assess-a-claim-frontend branch"
+    required: true
+  laa-assess-a-claim-frontend-ecr-role-to-assume:
+    description: "laa-assess-a-claim-frontend ECR role to assume"
+    required: true
+  laa-assess-a-claim-frontend-ecr-region:
+    description: "laa-assess-a-claim-frontend ECR region"
+    required: true
+  laa-assess-a-claim-frontend-ecr-repository:
+    description: "laa-assess-a-claim-frontend ECR repository"
+    required: true
+  laa-claim-for-payment-stubs-branch:
+    description: "laa-claim-for-payment-stubs branch"
+    required: true
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume:
+    description: "laa-claim-for-payment-stubs civil claims API ECR role to assume"
+    required: true
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-region:
+    description: "laa-claim-for-payment-stubs civil claims API ECR region"
+    required: true
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-repository:
+    description: "laa-claim-for-payment-stubs civil claims API ECR repository"
+    required: true
+  laa-claim-for-payment-stubs-oidc-server-ecr-role-to-assume:
+    description: "laa-claim-for-payment-stubs OIDC server ECR role to assume"
+    required: true
+  laa-claim-for-payment-stubs-oidc-server-ecr-region:
+    description: "laa-claim-for-payment-stubs OIDC server ECR region"
+    required: true
+  laa-claim-for-payment-stubs-oidc-server-ecr-repository:
+    description: "laa-claim-for-payment-stubs OIDC server ECR repository"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    # -------------------------
+    # Resolve branch -> commit SHA (full) for each service repo
+    # -------------------------
+    - name: Resolve service SHAs
+      id: resolve_shas
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+      with:
+        script: |
+          const owner = context.repo.owner;
+
+          const services = {
+            backend: {
+              repo: "laa-claim-for-payment",
+              branch: "${{ inputs.laa-claim-for-payment-branch || 'main' }}"
+            },
+            cfp: {
+              repo: "laa-claim-for-payment-frontend",
+              branch: "${{ inputs.laa-claim-for-payment-frontend-branch || 'main' }}"
+            },
+            aac: {
+              repo: "laa-assess-a-claim-frontend",
+              branch: "${{ inputs.laa-assess-a-claim-frontend-branch || 'main' }}"
+            },
+            stubs: {
+              repo: "laa-claim-for-payment-stubs",
+              branch: "${{ inputs.laa-claim-for-payment-stubs-branch || 'main' }}"
+            }
+          };
+
+          async function resolveSha({ repo, branch }) {
+            const res = await github.rest.repos.getBranch({ owner, repo, branch });
+            return res.data.commit.sha;
+          }
+
+          const backendSha = await resolveSha(services.backend);
+          const cfpSha = await resolveSha(services.cfp);
+          const aacSha = await resolveSha(services.aac);
+          const stubsSha = await resolveSha(services.stubs);
+          core.info(`backend ${services.backend.repo}@${services.backend.branch} -> ${backendSha}`);
+          core.info(`cfp ${services.cfp.repo}@${services.cfp.branch} -> ${cfpSha}`);
+          core.info(`aac ${services.aac.repo}@${services.aac.branch} -> ${aacSha}`);
+          core.info(`stubs ${services.stubs.repo}@${services.stubs.branch} -> ${stubsSha}`);
+
+          core.setOutput("backend_sha", backendSha);
+          core.setOutput("cfp_frontend_sha", cfpSha);
+          core.setOutput("aac_frontend_sha", aacSha);
+          core.setOutput("stubs_sha", stubsSha);
+
+    # -------------------------
+    # Prepare compose env vars
+    # -------------------------
+    - name: Prepare compose env vars
+      shell: bash
+      run: |
+        echo "LAA_CLAIM_FOR_PAYMENT_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-ecr-repository }}:${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}:${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+        echo "LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}:${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_STUBS_CIVIL_CLAIMS_API_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
+        echo "LAA_CLAIM_FOR_PAYMENT_STUBS_OIDC_SERVER_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
+
+    # -------------------------
+    # Pull backend image
+    # -------------------------
+    - name: Pull backend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ inputs.laa-claim-for-payment-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-ecr-region }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_IMAGE }}
+
+    # -------------------------
+    # Pull CFP frontend image
+    # -------------------------
+    - name: Pull CFP frontend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ inputs.laa-claim-for-payment-frontend-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-frontend-ecr-region }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_FRONTEND_IMAGE }}
+
+    # -------------------------
+    # Pull AAC frontend image
+    # -------------------------
+    - name: Pull AAC frontend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ inputs.laa-assess-a-claim-frontend-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-assess-a-claim-frontend-ecr-region }}
+        image: ${{ env.LAA_ASSESS_A_CLAIM_FRONTEND_IMAGE }}
+
+    # -------------------------
+    # Pull CCS (Civil claims stub) image
+    # -------------------------
+    - name: Pull CCS image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-region }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_STUBS_CIVIL_CLAIMS_API_IMAGE }}
+
+    # -------------------------
+    # Pull OSS (OIDC server stub) image
+    # -------------------------
+    - name: Pull OSS image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-region }}
+        image: ${{ env.LAA_CLAIM_FOR_PAYMENT_STUBS_OIDC_SERVER_IMAGE }}
+
+    - name: Start services (CI mode)
+      shell: bash
+      run: |
+        docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
+        docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+
+    - name: Wait for app health
+      shell: bash
+      run: |
+        set -euo pipefail
+        MAX_RETRIES=60
+        function waitFor() {
+          local name="$1"
+          local port="$2"
+          for i in $(seq 1 "$MAX_RETRIES"); do
+            if ! curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
+              echo "Waiting for $name... ($i/$MAX_RETRIES)"
+              sleep 2
+              continue
+            fi
+            echo "$name is healthy"
+            return 0
+          done
+          echo "$name did not become healthy in time"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
+          exit 1
+        }
+        waitFor "laa-claim-for-payment" 8080
+        waitFor "stub-civil-claims-api" 8090
+        waitFor "stub-oidc-server" 8091
+
+    - name: Load .env.ci
+      shell: bash
+      run: grep -v '^#' .env.ci >> $GITHUB_ENV
+
+    - name: Enable corepack (use repo Yarn)
+      shell: bash
+      run: |
+        corepack enable
+        yarn --version
+
+    - name: Add hosts to /etc/hosts
+      shell: bash
+      run: |
+        echo "127.0.0.1 stub-oidc-server" | sudo tee -a /etc/hosts
