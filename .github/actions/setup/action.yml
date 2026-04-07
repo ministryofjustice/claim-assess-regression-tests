@@ -125,7 +125,7 @@ runs:
         aws-region: ${{ inputs.laa-claim-for-payment-ecr-region }}
         ecr-registry: ${{ inputs.ecr-registry-url }}
         ecr-repository: ${{ inputs.laa-claim-for-payment-ecr-repository }}
-        image-tag: ${{ steps.resolve_shas.outputs.aac_frontend_sha }}
+        image-tag: ${{ steps.resolve_shas.outputs.backend_sha }}
 
     # -------------------------
     # Pull CFP frontend image
