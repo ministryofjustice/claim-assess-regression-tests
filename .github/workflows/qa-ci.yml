@@ -38,6 +38,8 @@ jobs:
       STUB_OIDC_SERVER_ECR_REPOSITORY: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
     steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+
       - name: Setup
         uses: ./.github/actions/setup
 
