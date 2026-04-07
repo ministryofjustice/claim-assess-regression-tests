@@ -15,6 +15,54 @@ inputs:
   stubs_branch:
     description: "Stubs branch"
     default: main
+  ecr-registry-url:
+    description: "ECR registry URL"
+    required: true
+  laa-claim-for-payment-ecr-role-to-assume:
+    description: "laa-claim-for-payment ECR role to assume"
+    required: true
+  laa-claim-for-payment-ecr-region:
+    description: "laa-claim-for-payment ECR region"
+    required: true
+  laa-claim-for-payment-ecr-repository:
+    description: "laa-claim-for-payment ECR repository"
+    required: true
+  laa-claim-for-payment-frontend-ecr-role-to-assume:
+    description: "laa-claim-for-payment-frontend ECR role to assume"
+    required: true
+  laa-claim-for-payment-frontend-ecr-region:
+    description: "laa-claim-for-payment-frontend ECR region"
+    required: true
+  laa-claim-for-payment-frontend-ecr-repository:
+    description: "laa-claim-for-payment-frontend ECR repository"
+    required: true
+  laa-assess-a-claim-frontend-ecr-role-to-assume:
+    description: "laa-assess-a-claim-frontend ECR role to assume"
+    required: true
+  laa-assess-a-claim-frontend-ecr-region:
+    description: "laa-assess-a-claim-frontend ECR region"
+    required: true
+  laa-assess-a-claim-frontend-ecr-repository:
+    description: "laa-assess-a-claim-frontend ECR repository"
+    required: true
+  stub-civil-claims-api-ecr-role-to-assume:
+    description: "laa-claim-for-payment-stubs civil claims API ECR role to assume"
+    required: true
+  stub-civil-claims-api-ecr-region:
+    description: "laa-claim-for-payment-stubs civil claims API ECR region"
+    required: true
+  stub-civil-claims-api-ecr-repository:
+    description: "laa-claim-for-payment-stubs civil claims API ECR repository"
+    required: true
+  stub-oidc-server-ecr-role-to-assume:
+    description: "laa-claim-for-payment-stubs OIDC server ECR role to assume"
+    required: true
+  stub-oidc-server-ecr-region:
+    description: "laa-claim-for-payment-stubs OIDC server ECR region"
+    required: true
+  stub-oidc-server-ecr-repository:
+    description: "laa-claim-for-payment-stubs OIDC server ECR repository"
+    required: true
 
 runs:
   using: 'composite'
@@ -73,11 +121,11 @@ runs:
     - name: Pull backend image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
-        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
-        ecr-repository: ${{ env.LAA_CLAIM_FOR_PAYMENT_ECR_REPO }}
-        image-tag: ${{ steps.resolve_shas.outputs.backend_sha }}
+        role-to-assume: ${{ inputs.laa-claim-for-payment-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-ecr-region }}
+        ecr-registry: ${{ inputs.ecr-registry-url }}
+        ecr-repository: ${{ inputs.laa-claim-for-payment-ecr-repository }}
+        image-tag: ${{ steps.resolve_shas.outputs.aac_frontend_sha }}
 
     # -------------------------
     # Pull CFP frontend image
@@ -85,10 +133,10 @@ runs:
     - name: Pull CFP frontend image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
-        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
-        ecr-repository: ${{ env.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO }}
+        role-to-assume: ${{ inputs.laa-claim-for-payment-frontend-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-frontend-ecr-region }}
+        ecr-registry: ${{ inputs.ecr-registry-url }}
+        ecr-repository: ${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.cfp_frontend_sha }}
 
     # -------------------------
@@ -97,10 +145,10 @@ runs:
     - name: Pull AAC frontend image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
-        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
-        ecr-repository: ${{ env.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO }}
+        role-to-assume: ${{ inputs.laa-assess-a-claim-frontend-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-assess-a-claim-frontend-ecr-region }}
+        ecr-registry: ${{ inputs.ecr-registry-url }}
+        ecr-repository: ${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.aac_frontend_sha }}
 
     # -------------------------
@@ -109,10 +157,10 @@ runs:
     - name: Pull CCS image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ secrets.STUB_CIVIL_CLAIMS_API_ECR_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REGION }}
-        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
-        ecr-repository: ${{ env.STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY }}
+        role-to-assume: ${{ inputs.stub-civil-claims-api-ecr-role-to-assume }}
+        aws-region: ${{ inputs.stub-civil-claims-api-ecr-region }}
+        ecr-registry: ${{ inputs.ecr-registry-url }}
+        ecr-repository: ${{ inputs.stub-civil-claims-api-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
 
     # -------------------------
@@ -121,10 +169,10 @@ runs:
     - name: Pull OSS image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ secrets.STUB_OIDC_SERVER_ECR_ROLE_TO_ASSUME }}
-        aws-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
-        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
-        ecr-repository: ${{ env.STUB_OIDC_SERVER_ECR_REPOSITORY }}
+        role-to-assume: ${{ inputs.stub-oidc-server-ecr-role-to-assume }}
+        aws-region: ${{ inputs.stub-oidc-server-ecr-region }}
+        ecr-registry: ${{ inputs.ecr-registry-url }}
+        ecr-repository: ${{ inputs.stub-oidc-server-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
 
     # -------------------------
