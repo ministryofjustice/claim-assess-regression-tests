@@ -3,21 +3,12 @@ name: setup
 description: 'Pull latest images and spin everything up in Docker'
 
 inputs:
-  aac_frontend_branch:
-    description: "Assess-a-claim frontend branch"
-    default: main
-  backend_branch:
-    description: "Backend branch"
-    default: main
-  cfp_frontend_branch:
-    description: "Claim-for-payment frontend branch"
-    default: main
-  stubs_branch:
-    description: "Stubs branch"
-    default: main
   ecr-registry-url:
     description: "ECR registry URL"
     required: true
+  laa-claim-for-payment-branch:
+    description: "laa-claim-for-payment branch"
+    default: main
   laa-claim-for-payment-ecr-role-to-assume:
     description: "laa-claim-for-payment ECR role to assume"
     required: true
@@ -27,6 +18,9 @@ inputs:
   laa-claim-for-payment-ecr-repository:
     description: "laa-claim-for-payment ECR repository"
     required: true
+  laa-claim-for-payment-frontend-branch:
+    description: "laa-claim-for-payment-frontend branch"
+    default: main
   laa-claim-for-payment-frontend-ecr-role-to-assume:
     description: "laa-claim-for-payment-frontend ECR role to assume"
     required: true
@@ -36,6 +30,9 @@ inputs:
   laa-claim-for-payment-frontend-ecr-repository:
     description: "laa-claim-for-payment-frontend ECR repository"
     required: true
+  laa-assess-a-claim-frontend-branch:
+    description: "laa-assess-a-claim-frontend branch"
+    default: main
   laa-assess-a-claim-frontend-ecr-role-to-assume:
     description: "laa-assess-a-claim-frontend ECR role to assume"
     required: true
@@ -45,22 +42,25 @@ inputs:
   laa-assess-a-claim-frontend-ecr-repository:
     description: "laa-assess-a-claim-frontend ECR repository"
     required: true
-  stub-civil-claims-api-ecr-role-to-assume:
+  laa-claim-for-payment-stubs-branch:
+    description: "laa-claim-for-payment-stubs branch"
+    default: main
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume:
     description: "laa-claim-for-payment-stubs civil claims API ECR role to assume"
     required: true
-  stub-civil-claims-api-ecr-region:
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-region:
     description: "laa-claim-for-payment-stubs civil claims API ECR region"
     required: true
-  stub-civil-claims-api-ecr-repository:
+  laa-claim-for-payment-stubs-civil-claims-api-ecr-repository:
     description: "laa-claim-for-payment-stubs civil claims API ECR repository"
     required: true
-  stub-oidc-server-ecr-role-to-assume:
+  laa-claim-for-payment-stubs-oidc-server-ecr-role-to-assume:
     description: "laa-claim-for-payment-stubs OIDC server ECR role to assume"
     required: true
-  stub-oidc-server-ecr-region:
+  laa-claim-for-payment-stubs-oidc-server-ecr-region:
     description: "laa-claim-for-payment-stubs OIDC server ECR region"
     required: true
-  stub-oidc-server-ecr-repository:
+  laa-claim-for-payment-stubs-oidc-server-ecr-repository:
     description: "laa-claim-for-payment-stubs OIDC server ECR repository"
     required: true
 
@@ -80,19 +80,19 @@ runs:
           const services = {
             backend: {
               repo: "laa-claim-for-payment",
-              branch: "${{ inputs.backend_branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-branch }}"
             },
             cfp: {
               repo: "laa-claim-for-payment-frontend",
-              branch: "${{ inputs.cfp_frontend_branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-frontend-branch }}"
             },
             aac: {
               repo: "laa-assess-a-claim-frontend",
-              branch: "${{ inputs.aac_frontend_branch }}"
+              branch: "${{ inputs.laa-assess-a-claim-frontend-branch }}"
             },
             stubs: {
               repo: "laa-claim-for-payment-stubs",
-              branch: "${{ inputs.stubs_branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-stubs-branch }}"
             }
           };
 
@@ -157,10 +157,10 @@ runs:
     - name: Pull CCS image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ inputs.stub-civil-claims-api-ecr-role-to-assume }}
-        aws-region: ${{ inputs.stub-civil-claims-api-ecr-region }}
+        role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-region }}
         ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.stub-civil-claims-api-ecr-repository }}
+        ecr-repository: ${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
 
     # -------------------------
@@ -169,10 +169,10 @@ runs:
     - name: Pull OSS image
       uses: ./.github/actions/pull-ecr-image
       with:
-        role-to-assume: ${{ inputs.stub-oidc-server-ecr-role-to-assume }}
-        aws-region: ${{ inputs.stub-oidc-server-ecr-region }}
+        role-to-assume: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-role-to-assume }}
+        aws-region: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-region }}
         ecr-registry: ${{ inputs.ecr-registry-url }}
-        ecr-repository: ${{ inputs.stub-oidc-server-ecr-repository }}
+        ecr-repository: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
 
     # -------------------------
