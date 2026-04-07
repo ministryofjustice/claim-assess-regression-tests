@@ -8,7 +8,7 @@ inputs:
     required: true
   laa-claim-for-payment-branch:
     description: "laa-claim-for-payment branch"
-    default: main
+    required: true
   laa-claim-for-payment-ecr-role-to-assume:
     description: "laa-claim-for-payment ECR role to assume"
     required: true
@@ -20,7 +20,7 @@ inputs:
     required: true
   laa-claim-for-payment-frontend-branch:
     description: "laa-claim-for-payment-frontend branch"
-    default: main
+    required: true
   laa-claim-for-payment-frontend-ecr-role-to-assume:
     description: "laa-claim-for-payment-frontend ECR role to assume"
     required: true
@@ -32,7 +32,7 @@ inputs:
     required: true
   laa-assess-a-claim-frontend-branch:
     description: "laa-assess-a-claim-frontend branch"
-    default: main
+    required: true
   laa-assess-a-claim-frontend-ecr-role-to-assume:
     description: "laa-assess-a-claim-frontend ECR role to assume"
     required: true
@@ -44,7 +44,7 @@ inputs:
     required: true
   laa-claim-for-payment-stubs-branch:
     description: "laa-claim-for-payment-stubs branch"
-    default: main
+    required: true
   laa-claim-for-payment-stubs-civil-claims-api-ecr-role-to-assume:
     description: "laa-claim-for-payment-stubs civil claims API ECR role to assume"
     required: true
