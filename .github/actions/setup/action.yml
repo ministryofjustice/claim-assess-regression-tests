@@ -1,0 +1,198 @@
+name: setup
+
+description: 'Pull latest images and spin everything up in Docker'
+
+inputs:
+  aac_frontend_branch:
+    description: "Assess-a-claim frontend branch"
+    default: main
+  backend_branch:
+    description: "Backend branch"
+    default: main
+  cfp_frontend_branch:
+    description: "Claim-for-payment frontend branch"
+    default: main
+  stubs_branch:
+    description: "Stubs branch"
+    default: main
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
+
+    # -------------------------
+    # Resolve branch -> commit SHA (full) for each service repo
+    # -------------------------
+    - name: Resolve service SHAs
+      id: resolve_shas
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8.0.0
+      with:
+        script: |
+          const owner = context.repo.owner;
+
+          function branchInput(name) {
+            return "${{ inputs[name] }}";
+          }
+
+          const services = {
+            backend: {
+              repo: "laa-claim-for-payment",
+              branch: "${{ inputs.backend_branch }}"
+            },
+            cfp: {
+              repo: "laa-claim-for-payment-frontend",
+              branch: "${{ inputs.cfp_frontend_branch }}"
+            },
+            aac: {
+              repo: "laa-assess-a-claim-frontend",
+              branch: "${{ inputs.aac_frontend_branch }}"
+            },
+            stubs: {
+              repo: "laa-claim-for-payment-stubs",
+              branch: "${{ inputs.stubs_branch }}"
+            }
+          };
+
+          async function resolveSha({ repo, branch }) {
+            const res = await github.rest.repos.getBranch({ owner, repo, branch });
+            return res.data.commit.sha;
+          }
+
+          const backendSha = await resolveSha(services.backend);
+          const cfpSha = await resolveSha(services.cfp);
+          const aacSha = await resolveSha(services.aac);
+          const stubsSha = await resolveSha(services.stubs);
+          core.info(`backend ${services.backend.repo}@${services.backend.branch} -> ${backendSha}`);
+          core.info(`cfp ${services.cfp.repo}@${services.cfp.branch} -> ${cfpSha}`);
+          core.info(`aac ${services.aac.repo}@${services.aac.branch} -> ${aacSha}`);
+          core.info(`stubs ${services.stubs.repo}@${services.stubs.branch} -> ${stubsSha}`);
+
+          core.setOutput("backend_sha", backendSha);
+          core.setOutput("cfp_frontend_sha", cfpSha);
+          core.setOutput("aac_frontend_sha", aacSha);
+          core.setOutput("stubs_sha", stubsSha);
+
+    # -------------------------
+    # Pull backend image
+    # -------------------------
+    - name: Pull backend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_ECR_REGION }}
+        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
+        ecr-repository: ${{ env.LAA_CLAIM_FOR_PAYMENT_ECR_REPO }}
+        image-tag: ${{ steps.resolve_shas.outputs.backend_sha }}
+
+    # -------------------------
+    # Pull CFP frontend image
+    # -------------------------
+    - name: Pull CFP frontend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ secrets.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REGION }}
+        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
+        ecr-repository: ${{ env.LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO }}
+        image-tag: ${{ steps.resolve_shas.outputs.cfp_frontend_sha }}
+
+    # -------------------------
+    # Pull AAC frontend image
+    # -------------------------
+    - name: Pull AAC frontend image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ secrets.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REGION }}
+        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
+        ecr-repository: ${{ env.LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO }}
+        image-tag: ${{ steps.resolve_shas.outputs.aac_frontend_sha }}
+
+    # -------------------------
+    # Pull CCS (Civil claims stub) image
+    # -------------------------
+    - name: Pull CCS image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ secrets.STUB_CIVIL_CLAIMS_API_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.STUB_CIVIL_CLAIMS_API_ECR_REGION }}
+        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
+        ecr-repository: ${{ env.STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY }}
+        image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
+
+    # -------------------------
+    # Pull OSS (OIDC server stub) image
+    # -------------------------
+    - name: Pull OSS image
+      uses: ./.github/actions/pull-ecr-image
+      with:
+        role-to-assume: ${{ secrets.STUB_OIDC_SERVER_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
+        ecr-registry: ${{ env.ECR_REGISTRY_URL }}
+        ecr-repository: ${{ env.STUB_OIDC_SERVER_ECR_REPOSITORY }}
+        image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
+
+    # -------------------------
+    # Prepare compose env vars
+    # -------------------------
+    - name: Prepare compose env vars
+      shell: bash
+      run: |
+        echo "ECR_BACKEND_REPO=${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}" >> $GITHUB_ENV
+        echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+        echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
+        echo "ECR_CCS_REPO=${STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY}" >> $GITHUB_ENV
+        echo "ECR_OSS_REPO=${STUB_OIDC_SERVER_ECR_REPOSITORY}" >> $GITHUB_ENV
+
+        echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+        echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+        echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+        echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
+
+    - name: Start services (CI mode)
+      shell: bash
+      run: |
+        docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --remove-orphans
+        docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+
+    - name: Wait for app health
+      shell: bash
+      run: |
+        set -euo pipefail
+        MAX_RETRIES=60
+        function waitFor() {
+          local name="$1"
+          local port="$2"
+          for i in $(seq 1 "$MAX_RETRIES"); do
+            if ! curl -fsS --max-time 2 http://localhost:${port}/actuator/health >/dev/null; then
+              echo "Waiting for $name... ($i/$MAX_RETRIES)"
+              sleep 2
+              continue
+            fi
+            echo "$name is healthy"
+            return 0
+          done
+          echo "$name did not become healthy in time"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
+          exit 1
+        }
+        waitFor "laa-claim-for-payment" 8080
+        waitFor "stub-civil-claims-api" 8090
+        waitFor "stub-oidc-server" 8091
+
+    - name: Load .env.ci
+      shell: bash
+      run: grep -v '^#' .env.ci >> $GITHUB_ENV
+
+    - name: Enable corepack (use repo Yarn)
+      shell: bash
+      run: |
+        corepack enable
+        yarn --version
+
+    - name: Add hosts to /etc/hosts
+      shell: bash
+      run: |
+        echo "127.0.0.1 stub-oidc-server" | sudo tee -a /etc/hosts

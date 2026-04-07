@@ -1,0 +1,61 @@
+name: ZAP
+
+on:
+  workflow_dispatch:
+    inputs:
+      stubs_branch:
+        description: "Stubs branch"
+        required: false
+        default: main
+      backend_branch:
+        description: "Backend branch"
+        required: false
+        default: main
+      cfp_frontend_branch:
+        description: "Claim-for-payment frontend branch"
+        required: false
+        default: main
+      aac_frontend_branch:
+        description: "Assess-a-claim frontend branch"
+        required: false
+        default: main
+      target:
+        description: "Target URL"
+        required: true
+
+jobs:
+  zap_scan:
+    name: Scan the web application
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          aac_frontend_branch: ${{ inputs.aac_frontend_branch }}
+          backend_branch: ${{ inputs.backend_branch }}
+          cfp_frontend_branch: ${{ inputs.cfp_frontend_branch }}
+          stubs_branch: ${{ inputs.stubs_branch }}
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: ${{ inputs.target }}
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-z "-config spider.maxDepth=10" -n zap.context' # https://www.zaproxy.org/docs/docker/full-scan/#usage
+          allow_issue_writing: false
+          fail_action: true
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: >
+              :x: ZAP job failed!
+              Download the zap_scan report. The artifacts are available here:
+              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
