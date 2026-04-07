@@ -116,6 +116,25 @@ runs:
           core.setOutput("stubs_sha", stubsSha);
 
     # -------------------------
+    # Prepare compose env vars
+    # -------------------------
+    - name: Prepare compose env vars
+      shell: bash
+      run: |
+        echo "ECR_REGISTRY_URL=${{ inputs.ecr-registry-url }}" >> $GITHUB_ENV
+
+        echo "ECR_BACKEND_REPO=${{ inputs.laa-claim-for-payment-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_CFP_FE_REPO=${{ inputs.laa-claim-for-payment-frontend-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_AAC_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_CCS_REPO=${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_OSS_REPO=${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}" >> $GITHUB_ENV
+
+        echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
+        echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
+        echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
+        echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
+
+    # -------------------------
     # Pull backend image
     # -------------------------
     - name: Pull backend image
@@ -174,25 +193,6 @@ runs:
         ecr-registry: ${{ inputs.ecr-registry-url }}
         ecr-repository: ${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}
         image-tag: ${{ steps.resolve_shas.outputs.stubs_sha }}
-
-    # -------------------------
-    # Prepare compose env vars
-    # -------------------------
-    - name: Prepare compose env vars
-      shell: bash
-      run: |
-        echo "ECR_REGISTRY_URL=${{ inputs.ecr-registry-url }}" >> $GITHUB_ENV
-
-        echo "ECR_BACKEND_REPO=${{ inputs.laa-claim-for-payment-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_CFP_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_AAC_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_CCS_REPO=${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}" >> $GITHUB_ENV
-        echo "ECR_OSS_REPO=${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}" >> $GITHUB_ENV
-
-        echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
-        echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
-        echo "AAC_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.aac_frontend_sha }}" >> $GITHUB_ENV
-        echo "STUBS_IMAGE_TAG=${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
     - name: Start services (CI mode)
       shell: bash
