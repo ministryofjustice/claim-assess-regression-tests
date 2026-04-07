@@ -181,6 +181,8 @@ runs:
     - name: Prepare compose env vars
       shell: bash
       run: |
+        echo "ECR_REGISTRY_URL=${{ inputs.ecr-registry-url }}" >> $GITHUB_ENV
+
         echo "ECR_BACKEND_REPO=${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}" >> $GITHUB_ENV
         echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
         echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
