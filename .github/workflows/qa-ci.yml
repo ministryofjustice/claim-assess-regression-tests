@@ -8,19 +8,19 @@ on:
       laa-assess-a-claim-frontend-branch:
         description: "laa-assess-a-claim-frontend branch"
         required: false
-        default: main
+        default: "main"
       laa-claim-for-payment-branch:
         description: "laa-claim-for-payment branch"
         required: false
-        default: main
+        default: "main"
       laa-claim-for-payment-frontend-branch:
         description: "laa-claim-for-payment-frontend branch"
         required: false
-        default: main
+        default: "main"
       laa-claim-for-payment-stubs-branch:
         description: "laa-claim-for-payment-stubs branch"
         required: false
-        default: main
+        default: "main"
 
 permissions:
   id-token: write
