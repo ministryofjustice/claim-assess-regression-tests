@@ -183,11 +183,11 @@ runs:
       run: |
         echo "ECR_REGISTRY_URL=${{ inputs.ecr-registry-url }}" >> $GITHUB_ENV
 
-        echo "ECR_BACKEND_REPO=${LAA_CLAIM_FOR_PAYMENT_ECR_REPO}" >> $GITHUB_ENV
-        echo "ECR_CFP_FE_REPO=${LAA_CLAIM_FOR_PAYMENT_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
-        echo "ECR_AAC_FE_REPO=${LAA_ASSESS_A_CLAIM_FRONTEND_ECR_REPO}" >> $GITHUB_ENV
-        echo "ECR_CCS_REPO=${STUB_CIVIL_CLAIMS_API_ECR_REPOSITORY}" >> $GITHUB_ENV
-        echo "ECR_OSS_REPO=${STUB_OIDC_SERVER_ECR_REPOSITORY}" >> $GITHUB_ENV
+        echo "ECR_BACKEND_REPO=${{ inputs.laa-claim-for-payment-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_CFP_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_AAC_FE_REPO=${{ inputs.laa-assess-a-claim-frontend-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_CCS_REPO=${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}" >> $GITHUB_ENV
+        echo "ECR_OSS_REPO=${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}" >> $GITHUB_ENV
 
         echo "BACKEND_IMAGE_TAG=${{ steps.resolve_shas.outputs.backend_sha }}" >> $GITHUB_ENV
         echo "CFP_FE_IMAGE_TAG=${{ steps.resolve_shas.outputs.cfp_frontend_sha }}" >> $GITHUB_ENV
