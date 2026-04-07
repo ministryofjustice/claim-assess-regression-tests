@@ -61,7 +61,7 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
+        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c #v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ inputs.target }}
@@ -70,9 +70,21 @@ jobs:
           allow_issue_writing: false
           fail_action: true
 
+      - name: Capture frontend logs
+        run: |
+          docker logs laa-claim-for-payment-frontend > ${{ github.workspace }}/zap_output.log 2>&1
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
+        with:
+          name: zap_output.log
+          path: zap_output.log
+          retention-days: 1
+
       - name: Notify Slack on failure
         if: failure()
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
