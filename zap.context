@@ -4,9 +4,8 @@
         <name>ZAP context</name>
         <desc/>
         <inscope>true</inscope>
-        <incregexes>http://localhost:3000/.*</incregexes>
-        <incregexes>http://localhost:3001/.*</incregexes>
-        <tech>
+        <incregexes>http://localhost:3000(/.*)?</incregexes>
+        <incregexes>http://localhost:3001(/.*)?</incregexes>
             <include>Language.JavaScript</include>
             <include>Db.PostgreSQL</include>
             <include>SCM.Git</include>
