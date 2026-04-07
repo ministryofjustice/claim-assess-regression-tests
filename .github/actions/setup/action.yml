@@ -127,7 +127,6 @@ runs:
         echo "LAA_CLAIM_FOR_PAYMENT_STUBS_CIVIL_CLAIMS_API_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-civil-claims-api-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
         echo "LAA_CLAIM_FOR_PAYMENT_STUBS_OIDC_SERVER_IMAGE=${{ inputs.ecr-registry-url }}/${{ inputs.laa-claim-for-payment-stubs-oidc-server-ecr-repository }}:${{ steps.resolve_shas.outputs.stubs_sha }}" >> $GITHUB_ENV
 
-
     # -------------------------
     # Pull backend image
     # -------------------------

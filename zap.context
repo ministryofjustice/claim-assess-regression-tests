@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <context>
+        <name>ZAP context</name>
+        <desc/>
+        <inscope>true</inscope>
+        <incregexes>http://localhost:3000/.*</incregexes>
+        <incregexes>http://localhost:3001/.*</incregexes>
+        <tech>
+            <include>Language.JavaScript</include>
+            <include>Db.PostgreSQL</include>
+            <include>SCM.Git</include>
+        </tech>
+        <urlparser>
+            <class>org.zaproxy.zap.model.StandardParameterParser</class>
+            <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
+        </urlparser>
+        <postparser>
+            <class>org.zaproxy.zap.model.StandardParameterParser</class>
+            <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
+        </postparser>
+        <authentication>
+            <type>2</type>
+            <strategy>EACH_RESP</strategy>
+            <pollurl/>
+            <polldata/>
+            <pollheaders/>
+            <pollfreq>60</pollfreq>
+            <pollunits>REQUESTS</pollunits>
+            <form>
+                <loginurl>http://stub-oidc-server:8091/login</loginurl>
+                <loginbody/>
+                <loginpageurl>http://stub-oidc-server:8091/login</loginpageurl>
+            </form>
+        </authentication>
+        <users>
+            <user>0;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
+            <user>1;true;Ym9i;2;Ym9i~cGFzc3dvcmQ=~</user>
+        </users>
+        <forceduser>-1</forceduser>
+        <session>
+            <type>0</type>
+        </session>
+        <authorization>
+            <type>0</type>
+            <basic>
+                <header/>
+                <body/>
+                <logic>AND</logic>
+                <code>-1</code>
+            </basic>
+        </authorization>
+    </context>
+</configuration>
