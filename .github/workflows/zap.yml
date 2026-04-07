@@ -23,6 +23,10 @@ on:
         description: "Target URL"
         required: true
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   zap_scan:
     name: Scan the web application
