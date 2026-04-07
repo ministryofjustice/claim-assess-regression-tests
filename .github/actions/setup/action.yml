@@ -80,19 +80,19 @@ runs:
           const services = {
             backend: {
               repo: "laa-claim-for-payment",
-              branch: "${{ inputs.laa-claim-for-payment-branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-branch || 'main' }}"
             },
             cfp: {
               repo: "laa-claim-for-payment-frontend",
-              branch: "${{ inputs.laa-claim-for-payment-frontend-branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-frontend-branch || 'main' }}"
             },
             aac: {
               repo: "laa-assess-a-claim-frontend",
-              branch: "${{ inputs.laa-assess-a-claim-frontend-branch }}"
+              branch: "${{ inputs.laa-assess-a-claim-frontend-branch || 'main' }}"
             },
             stubs: {
               repo: "laa-claim-for-payment-stubs",
-              branch: "${{ inputs.laa-claim-for-payment-stubs-branch }}"
+              branch: "${{ inputs.laa-claim-for-payment-stubs-branch || 'main' }}"
             }
           };
 
