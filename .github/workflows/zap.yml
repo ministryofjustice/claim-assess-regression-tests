@@ -74,8 +74,14 @@ jobs:
         if: always()
         run: |
           docker container ls
+          echo "***FRONTEND LOGS***"
           docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
+          echo "***OIDC LOGS***"
           docker logs claim-assess-regression-tests-stub-oidc-server-1
+          echo "***CLAIMS API LOGS***"
+          docker logs claim-assess-regression-tests-stub-civil-claims-api-1
+          echo "***BACKEND LOGS***"
+          docker logs claim-assess-regression-tests-laa-claim-for-payment-1
 
 #      - name: Notify Slack on failure
 #        if: failure()
