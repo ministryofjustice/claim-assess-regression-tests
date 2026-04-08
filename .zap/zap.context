@@ -1,15 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
     <context>
-        <name>ZAP context</name>
+        <name>Claim and Assess</name>
         <desc/>
         <inscope>true</inscope>
-        <incregexes>http://localhost:3000(/.*)?</incregexes>
-        <incregexes>http://localhost:3001(/.*)?</incregexes>
+        <incregexes>http://stub-oidc-server:8091.*</incregexes>
+        <incregexes>http://localhost:3000.*</incregexes>
+        <incregexes>http://localhost:3001.*</incregexes>
         <tech>
-            <include>Language.JavaScript</include>
             <include>Db.PostgreSQL</include>
+            <include>Language.JavaScript</include>
             <include>SCM.Git</include>
+            <exclude>Db</exclude>
+            <exclude>Db.CouchDB</exclude>
+            <exclude>Db.Firebird</exclude>
+            <exclude>Db.HypersonicSQL</exclude>
+            <exclude>Db.IBM DB2</exclude>
+            <exclude>Db.MariaDB</exclude>
+            <exclude>Db.Microsoft Access</exclude>
+            <exclude>Db.Microsoft SQL Server</exclude>
+            <exclude>Db.MongoDB</exclude>
+            <exclude>Db.MySQL</exclude>
+            <exclude>Db.Oracle</exclude>
+            <exclude>Db.SAP MaxDB</exclude>
+            <exclude>Db.SQLite</exclude>
+            <exclude>Db.Sybase</exclude>
+            <exclude>Framework</exclude>
+            <exclude>Framework.Next.js</exclude>
+            <exclude>Framework.React</exclude>
+            <exclude>Language</exclude>
+            <exclude>Language.ASP</exclude>
+            <exclude>Language.C</exclude>
+            <exclude>Language.JSP/Servlet</exclude>
+            <exclude>Language.Java</exclude>
+            <exclude>Language.Java.Spring</exclude>
+            <exclude>Language.PHP</exclude>
+            <exclude>Language.Python</exclude>
+            <exclude>Language.Ruby</exclude>
+            <exclude>Language.XML</exclude>
+            <exclude>OS</exclude>
+            <exclude>OS.Linux</exclude>
+            <exclude>OS.MacOS</exclude>
+            <exclude>OS.Windows</exclude>
+            <exclude>SCM</exclude>
+            <exclude>SCM.SVN</exclude>
+            <exclude>WS</exclude>
+            <exclude>WS.Apache</exclude>
+            <exclude>WS.IIS</exclude>
+            <exclude>WS.Tomcat</exclude>
         </tech>
         <urlparser>
             <class>org.zaproxy.zap.model.StandardParameterParser</class>
@@ -27,19 +65,18 @@
             <pollheaders/>
             <pollfreq>60</pollfreq>
             <pollunits>REQUESTS</pollunits>
-            <loggedinindicator>Sign out</loggedinindicator>
-            <loggedoutindicator>Please sign in</loggedoutindicator>
+            <loggedout>Please sign in</loggedout>
             <form>
                 <loginurl>http://stub-oidc-server:8091/login</loginurl>
-                <loginbody>username={%username%}&amp;password={%password%}&amp;_csrf={%_csrf%}</loginbody>
-                <loginpageurl>http://stub-oidc-server:8091/login</loginpageurl>
+                <loginbody>username={%username%}&amp;password={%password%}</loginbody>
+                <loginpageurl/>
             </form>
         </authentication>
         <users>
-            <user>0;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
-            <user>1;true;Ym9i;2;Ym9i~cGFzc3dvcmQ=~</user>
+            <user>1;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
+            <user>2;true;Ym9i;2;Ym9i~cGFzc3dvcmQ=~</user>
         </users>
-        <forceduser>-1</forceduser>
+        <forceduser>1</forceduser>
         <session>
             <type>0</type>
         </session>
@@ -49,8 +86,9 @@
                 <header/>
                 <body/>
                 <logic>AND</logic>
-                <code>-1</code>
+                <code>-1
             </basic>
         </authorization>
     </context>
 </configuration>
+ </code>
