@@ -1,7 +1,7 @@
 Feature: Assess - Login and Claims Home Page
 
   @smoke @assess
-  Scenario: The caseworker logs in and land on their home page
+  Scenario: The caseworker logs in and land on Assess home page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
     Then I should see the heading "Your Assessments"
