@@ -60,13 +60,13 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
-      - name: ZAP Scan
+      - name: ZAP scan
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c #v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ inputs.target }}
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-d -z "-config spider.maxDepth=10 -n "zap.context" -U "ZAP"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
+          cmd_options: '-d -z "-config spider.maxDepth=10 -config antiCsrfTokens.token.enabled=true -config antiCsrfTokens.token.name=_csrf -n "zap.context" -U "ZAP"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
           allow_issue_writing: false
           fail_action: true
 
