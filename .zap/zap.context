@@ -73,8 +73,7 @@
             </form>
         </authentication>
         <users>
-            <user>1;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
-            <user>2;true;Ym9i;2;Ym9i~cGFzc3dvcmQ=~</user>
+            <user>1;true;WkFQ;2;WkFQ~WkFQ~</user>
         </users>
         <forceduser>1</forceduser>
         <session>
