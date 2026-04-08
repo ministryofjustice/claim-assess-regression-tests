@@ -78,16 +78,5 @@ function getOptionalParamsNames() {
 // Credentials required per user
 // --------------------------------------------------
 function getCredentialsParamsNames() {
-    return ["username"];
-}
-
-// --------------------------------------------------
-// Logged-in / Logged-out indicators
-// --------------------------------------------------
-function getLoggedInIndicator() {
-    return "Sign out";
-}
-
-function getLoggedOutIndicator() {
-    return "Please sign in";
+    return ["username", "password"];
 }
