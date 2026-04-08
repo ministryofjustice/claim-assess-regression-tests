@@ -74,7 +74,7 @@ jobs:
         if: always()
         run: |
           docker container ls
-          docker logs $(docker ps --filter "name=claim-for-payment-stubs-oidc-server" --format "{{.ID}}") > ${{ github.workspace }}/zap_output.log 2>&1
+          docker logs claim-assess-regression-tests-stub-oidc-server-1
 
       - name: Upload logs
         if: always()
