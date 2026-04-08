@@ -71,6 +71,7 @@ jobs:
           fail_action: true
 
       - name: Capture frontend logs
+        if: always()
         run: |
           docker logs laa-claim-for-payment-frontend > ${{ github.workspace }}/zap_output.log 2>&1
 
