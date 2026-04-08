@@ -70,18 +70,25 @@ jobs:
           allow_issue_writing: false
           fail_action: true
 
-      - name: Capture logs
+      - name: Capture frontend logs
         if: always()
         run: |
-          docker container ls
-          echo "***FRONTEND LOGS***"
           docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
-          echo "***OIDC LOGS***"
-          docker logs claim-assess-regression-tests-stub-oidc-server-1
-          echo "***CLAIMS API LOGS***"
-          docker logs claim-assess-regression-tests-stub-civil-claims-api-1
-          echo "***BACKEND LOGS***"
+
+      - name: Capture backend logs
+        if: always()
+        run: |
           docker logs claim-assess-regression-tests-laa-claim-for-payment-1
+
+      - name: Capture civil claims API logs
+        if: always()
+        run: |
+          docker logs claim-assess-regression-tests-stub-civil-claims-api-1
+
+      - name: Capture OIDC logs
+        if: always()
+        run: |
+          docker logs claim-assess-regression-tests-stub-oidc-server-1
 
 #      - name: Notify Slack on failure
 #        if: failure()
