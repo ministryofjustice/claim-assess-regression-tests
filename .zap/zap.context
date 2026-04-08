@@ -20,7 +20,7 @@
             <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
         </postparser>
         <authentication>
-            <type>4</type>
+            <type>2</type>
             <strategy>EACH_REQ</strategy>
             <pollurl/>
             <polldata/>
@@ -29,10 +29,11 @@
             <pollunits>REQUESTS</pollunits>
             <loggedinindicator>Sign out</loggedinindicator>
             <loggedoutindicator>Please sign in</loggedoutindicator>
-            <script>
-                <name>auth</name>
-                <params>bG9naW5Vcmw=:aHR0cDovL3N0dWItb2lkYy1zZXJ2ZXI6ODA5MS9sb2dpbg==</params>
-            </script>
+            <form>
+                <loginurl>http://stub-oidc-server:8091/login</loginurl>
+                <loginbody>username={%username%}&amp;password={%password%}&amp;_csrf={%_csrf%}</loginbody>
+                <loginpageurl>http://stub-oidc-server:8091/login</loginpageurl>
+            </form>
         </authentication>
         <users>
             <user>0;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
@@ -51,5 +52,11 @@
                 <code>-1</code>
             </basic>
         </authorization>
+        <antiCsrfTokens>
+            <token>
+                <name>_csrf</name>
+                <enabled>true</enabled>
+            </token>
+        </antiCsrfTokens>
     </context>
 </configuration>
