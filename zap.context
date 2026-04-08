@@ -21,15 +21,17 @@
         </postparser>
         <authentication>
             <type>2</type>
-            <strategy>EACH_RESP</strategy>
+            <strategy>EACH_REQ</strategy>
             <pollurl/>
             <polldata/>
             <pollheaders/>
             <pollfreq>60</pollfreq>
             <pollunits>REQUESTS</pollunits>
+            <loggedinindicator>Sign out</loggedinindicator>
+            <loggedoutindicator>Please sign in</loggedoutindicator>
             <form>
                 <loginurl>http://stub-oidc-server:8091/login</loginurl>
-                <loginbody>username={%username%}&amp;password={%password%}</loginbody>
+                <loginbody>username={%username%}&amp;password={%password%}&amp;_csrf={%_csrf%}</loginbody>
                 <loginpageurl>http://stub-oidc-server:8091/login</loginpageurl>
             </form>
         </authentication>
@@ -37,7 +39,7 @@
             <user>0;true;YWxpY2U=;2;YWxpY2U=~cGFzc3dvcmQ=~</user>
             <user>1;true;Ym9i;2;Ym9i~cGFzc3dvcmQ=~</user>
         </users>
-        <forceduser>-1</forceduser>
+        <forceduser>0</forceduser>
         <session>
             <type>0</type>
         </session>
