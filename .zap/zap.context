@@ -52,11 +52,5 @@
                 <code>-1</code>
             </basic>
         </authorization>
-        <antiCsrfTokens>
-            <token>
-                <name>_csrf</name>
-                <enabled>true</enabled>
-            </token>
-        </antiCsrfTokens>
     </context>
 </configuration>

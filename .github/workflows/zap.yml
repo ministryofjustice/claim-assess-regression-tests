@@ -75,15 +75,15 @@ jobs:
         run: |
           docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
 
-      - name: Capture backend logs
-        if: always()
-        run: |
-          docker logs claim-assess-regression-tests-laa-claim-for-payment-1
-
-      - name: Capture civil claims API logs
-        if: always()
-        run: |
-          docker logs claim-assess-regression-tests-stub-civil-claims-api-1
+#      - name: Capture backend logs
+#        if: always()
+#        run: |
+#          docker logs claim-assess-regression-tests-laa-claim-for-payment-1
+#
+#      - name: Capture civil claims API logs
+#        if: always()
+#        run: |
+#          docker logs claim-assess-regression-tests-stub-civil-claims-api-1
 
       - name: Capture OIDC logs
         if: always()
