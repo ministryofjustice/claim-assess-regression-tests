@@ -5,7 +5,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Location: http://localhost:3000/callback?code=SWBiFJg9BkqKjfTH33NxcmpjDFjthJ9Zw_tzIddHcBlJG66c7Mq1dX737vBRItM_6gX22LS224mK2d3B8K2TFri5magqPPaPkS3RymKcsYXqSoeb_cpaQl91bZGDlU5G&state=da3882319cf02baba0944166
+Location: http://localhost:3000/callback?code=djGzG_IzRvq_5cYUqGfoS9ZcQXQ-9qGUqbeMKs-QS5lp8xRJ4kDlVGc6rxbgJKq-kYFu5SjcFE5FcHh39OaxAeDW0NvyTHHCegjOY9FiGu8k5kluKlBmxyt_vdVIqOBV&state=6d9ccb63ad5256ca265da815
 Content-Length: 0
-Date: Thu, 09 Apr 2026 09:51:52 GMT
+Date: Thu, 09 Apr 2026 10:21:13 GMT
 

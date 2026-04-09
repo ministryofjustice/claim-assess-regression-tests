@@ -65,9 +65,7 @@ jobs:
         run: |
           set -euo pipefail
           
-          # -----------------------------
           # Configuration
-          # -----------------------------
           TARGET="${{ inputs.target }}"
           OIDC_SERVER="http://stub-oidc-server:8091"
           CLIENT_ID="caa-client"
@@ -80,43 +78,30 @@ jobs:
           ENC_SCOPE=$(printf %s "$SCOPE" | jq -sRr @uri)
           COOKIE_JAR="cookies.txt"
           
-          # -----------------------------
-          # 1️⃣ Generate PKCE
-          # -----------------------------
+          # Generate PKCE
           CODE_VERIFIER=$(openssl rand -base64 32 | tr -d '=+/')
-          CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
-          
           echo "CODE_VERIFIER=$CODE_VERIFIER"
+          CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
           echo "CODE_CHALLENGE=$CODE_CHALLENGE"
           
-          # -----------------------------
-          # 2️⃣ Get login page to fetch CSRF
-          # -----------------------------
+          # Get login page to fetch CSRF
           curl -s -c "$COOKIE_JAR" "$OIDC_SERVER/login" -o login.html
           CSRF_TOKEN=$(grep 'name="_csrf"' login.html | sed 's/.*value="\([^"]*\)".*/\1/')
+          echo "CSRF_TOKEN: $CSRF_TOKEN"
           
-          # -----------------------------
-          # 3️⃣ Login
-          # -----------------------------
+          # Login
           curl -s -b "$COOKIE_JAR" -c "$COOKIE_JAR" -X POST \
             -d "username=$USERNAME&password=$PASSWORD&_csrf=$CSRF_TOKEN" \
             "$OIDC_SERVER/login" -o /dev/null
           
-          echo "✅ Logged in as $USERNAME"
-          
-          # -----------------------------
-          # 4️⃣ Request authorization code
-          # -----------------------------
+          # Request authorization code
           AUTHORIZE=$(curl -s -i -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
-            "$OIDC_SERVER/oauth2/authorize?response_type=code&client_id=$CLIENT_ID&redirect_uri=$ENC_REDIRECT_URI&scope=$ENC_SCOPE&code_challenge=$CODE_CHALLENGE&code_challenge_method=S256")
+            "$OIDC_SERVER/oauth2/authorize?response_type=code&client_id=$CLIENT_ID&redirect_uri=$ENC_REDIRECT_URI&scope=$ENC_SCOPE&code_challenge=$CODE_CHALLENGE&code_challenge_method=S256&state=$STATE")
           
           AUTH_CODE=$(echo "$AUTHORIZE" | grep -i Location | sed 's/.*code=\([^&]*\).*/\1/')
-          
           echo "AUTH_CODE=$AUTH_CODE"
           
-          # -----------------------------
-          # 5️⃣ Exchange authorization code for tokens
-          # -----------------------------
+          # Exchange authorization code for tokens
           TOKEN_RESPONSE=$(curl -s -X POST "$OIDC_SERVER/oauth2/token" \
             -d "grant_type=authorization_code" \
             -d "code=$AUTH_CODE" \
@@ -125,15 +110,10 @@ jobs:
             -d "client_secret=$CLIENT_SECRET" \
             -d "code_verifier=$CODE_VERIFIER")
           
-          echo "✅ Token response received"
-          
-          # -----------------------------
-          # 6️⃣ Export for GitHub Actions
-          # -----------------------------
+          # Export for GitHub Actions
           ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
+          echo "ACCESS_TOKEN: $ACCESS_TOKEN"
           echo "ZAP_AUTH_HEADER_VALUE=Bearer $ACCESS_TOKEN" >> $GITHUB_ENV
-          
-          echo "✅ ZAP environment variables set"
 
       - name: ZAP scan
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c #v0.13.0
