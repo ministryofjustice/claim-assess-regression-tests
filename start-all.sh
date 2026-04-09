@@ -9,4 +9,4 @@ if ! grep -qxF "$ENTRY" "$HOSTS_FILE"; then
 fi
 
 # Additionally add --build --force-recreate to restart the containers with fresh images
-docker compose -f docker-compose.yml -f docker-compose.local.yml up --build --force-recreate -d
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build --force-recreate -d 

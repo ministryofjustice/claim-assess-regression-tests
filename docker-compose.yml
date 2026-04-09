@@ -6,6 +6,8 @@ services:
       SECURITY_ENABLED: true
       CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
+      AUTH_SCOPES_CLAIMS_WRITE: SCOPE_https://claims-api/claims_write
+
 
   stub-civil-claims-api:
     ports:
@@ -32,7 +34,7 @@ services:
       SESSION_SECRET: s3Cur3
       SESSION_NAME: sessionId
       OIDC_SCOPE: openid profile email
-      CLAIMS_API_SCOPE: Claims.Write
+      CLAIMS_API_SCOPE: https://claims-api/claims_write
       OIDC_LOGIN_PATH: /login
       OIDC_CLIENT_SECRET: mock-secret
       OIDC_CALLBACK_PATH: /callback
@@ -55,7 +57,7 @@ services:
       SESSION_SECRET: s3Cur3
       SESSION_NAME: sessionId
       OIDC_SCOPE: openid profile email
-      CLAIMS_API_SCOPE: Claims.Write
+      CLAIMS_API_SCOPE: https://claims-api/claims_write
       OIDC_LOGIN_PATH: /login
       OIDC_CLIENT_SECRET: mock-secret
       OIDC_CALLBACK_PATH: /callback
