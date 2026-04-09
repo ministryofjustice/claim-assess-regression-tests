@@ -60,13 +60,92 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
+      - name: Token Exchange
+        id: zap_token
+        run: |
+          set -euo pipefail
+          
+          # -----------------------------
+          # Configuration
+          # -----------------------------
+          TARGET="${{ inputs.target }}"
+          OIDC_SERVER="http://stub-oidc-server:8091"
+          CLIENT_ID="caa-client"
+          CLIENT_SECRET="mock-secret"
+          REDIRECT_URI="$TARGET/callback"
+          ENC_REDIRECT_URI=$(printf %s "$REDIRECT_URI" | jq -sRr @uri)
+          USERNAME="alice"
+          PASSWORD="password"
+          SCOPE="openid profile email Claims.Write"
+          ENC_SCOPE=$(printf %s "$SCOPE" | jq -sRr @uri)
+          COOKIE_JAR="cookies.txt"
+          
+          # -----------------------------
+          # 1️⃣ Generate PKCE
+          # -----------------------------
+          CODE_VERIFIER=$(openssl rand -base64 32 | tr -d '=+/')
+          CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
+          
+          echo "CODE_VERIFIER=$CODE_VERIFIER"
+          echo "CODE_CHALLENGE=$CODE_CHALLENGE"
+          
+          # -----------------------------
+          # 2️⃣ Get login page to fetch CSRF
+          # -----------------------------
+          curl -s -c "$COOKIE_JAR" "$OIDC_SERVER/login" -o login.html
+          CSRF_TOKEN=$(grep 'name="_csrf"' login.html | sed 's/.*value="\([^"]*\)".*/\1/')
+          
+          # -----------------------------
+          # 3️⃣ Login
+          # -----------------------------
+          curl -s -b "$COOKIE_JAR" -c "$COOKIE_JAR" -X POST \
+            -d "username=$USERNAME&password=$PASSWORD&_csrf=$CSRF_TOKEN" \
+            "$OIDC_SERVER/login" -o /dev/null
+          
+          echo "✅ Logged in as $USERNAME"
+          
+          # -----------------------------
+          # 4️⃣ Request authorization code
+          # -----------------------------
+          AUTHORIZE=$(curl -s -i -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
+            "$OIDC_SERVER/oauth2/authorize?response_type=code&client_id=$CLIENT_ID&redirect_uri=$ENC_REDIRECT_URI&scope=$ENC_SCOPE&code_challenge=$CODE_CHALLENGE&code_challenge_method=S256")
+          
+          AUTH_CODE=$(echo "$AUTHORIZE" | grep -i Location | sed 's/.*code=\([^&]*\).*/\1/')
+          
+          echo "AUTH_CODE=$AUTH_CODE"
+          
+          # -----------------------------
+          # 5️⃣ Exchange authorization code for tokens
+          # -----------------------------
+          TOKEN_RESPONSE=$(curl -s -X POST "$OIDC_SERVER/oauth2/token" \
+            -d "grant_type=authorization_code" \
+            -d "code=$AUTH_CODE" \
+            -d "redirect_uri=$REDIRECT_URI" \
+            -d "client_id=$CLIENT_ID" \
+            -d "client_secret=$CLIENT_SECRET" \
+            -d "code_verifier=$CODE_VERIFIER")
+          
+          echo "✅ Token response received"
+          
+          # -----------------------------
+          # 6️⃣ Export for GitHub Actions
+          # -----------------------------
+          ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.access_token')
+          echo "ZAP_AUTH_HEADER_VALUE=Bearer $ACCESS_TOKEN" >> $GITHUB_ENV
+          
+          echo "✅ ZAP environment variables set"
+
       - name: ZAP scan
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c #v0.13.0
+        env:
+          ZAP_AUTH_HEADER: Authorization
+          ZAP_AUTH_HEADER_VALUE: Bearer ${{ env.ZAP_AUTH_HEADER_VALUE }}
+          ZAP_AUTH_HEADER_SITE: ${{ inputs.target }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ inputs.target }}
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-d -z "-config spider.maxDepth=10 -n "zap.context" -U "ZAP"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
+          cmd_options: '-d' # https://www.zaproxy.org/docs/docker/full-scan/#usage
           allow_issue_writing: false
           fail_action: true
 

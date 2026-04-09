@@ -16,11 +16,3 @@ external:
       password: password
       roles:
         - admin
-    - username: ZAP
-      displayName: ZAP
-      email: zapexample.test
-      firmId: prov-zap
-      providerUserId: 2b7f39f7-2942-4867-81fd-2a7f8516d5b0
-      password: ZAP
-      roles:
-        - admin
