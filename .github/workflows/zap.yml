@@ -61,10 +61,12 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
       - name: Token exchange
-        id: zap_token
+        env:
+          TARGET: ${{ inputs.target }}
         run: |
           set -euo pipefail
 
+          RESPONSE_HTML=response.html
           COOKIE_JAR=cookies.txt
 
           # Ping the target page
@@ -75,14 +77,10 @@ jobs:
           curl -s -L \
             -b $COOKIE_JAR \
             -c $COOKIE_JAR \
-            ${{ inputs.target }} > response.html
-
-          # Extract session ID from the cookie jar
-          SESSION_ID=$(grep sessionId $COOKIE_JAR | awk '{print $7}' | tail -n1)
-          echo "Session ID: $SESSION_ID"
+            $TARGET > $RESPONSE_HTML
 
           # Extract CSRF token from the response HTML
-          CSRF_TOKEN=$(grep -o 'name="_csrf"[^>]*value="[^"]*"' response.html | sed 's/.*value="\([^"]*\)"/\1/')
+          CSRF_TOKEN=$(grep -o 'name="_csrf"[^>]*value="[^"]*"' $RESPONSE_HTML | sed 's/.*value="\([^"]*\)"/\1/')
           echo "CSRF token: $CSRF_TOKEN"
 
           # POST credentials and CSRF token
@@ -96,17 +94,17 @@ jobs:
             -d "username=alice&password=password&_csrf=$CSRF_TOKEN" \
             "http://stub-oidc-server:8091/login"
           
+          # Extract session ID from the cookie jar
+          SESSION_ID=$(grep sessionId $COOKIE_JAR | awk '{print $7}' | tail -n1)
+          echo "Session ID: $SESSION_ID"
+          
           # Store the session ID in GITHUB_ENV
-          ZAP_AUTH_HEADER_VALUE="sessionId=$SESSION_ID"
-          echo "$ZAP_AUTH_HEADER_VALUE" >> $GITHUB_ENV
-          echo "ZAP auth header value: $ZAP_AUTH_HEADER_VALUE"
+          echo "ZAP_AUTH_HEADER=Cookie" >> "$GITHUB_ENV"
+          echo "ZAP_AUTH_HEADER_VALUE=sessionId=$SESSION_ID" >> "$GITHUB_ENV"
+          echo "ZAP_AUTH_HEADER_SITE=$TARGET" >> "$GITHUB_ENV"
 
       - name: ZAP scan
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c #v0.13.0
-        env:
-          ZAP_AUTH_HEADER: Cookie
-          ZAP_AUTH_HEADER_VALUE: ${{ env.ZAP_AUTH_HEADER_VALUE }}
-          ZAP_AUTH_HEADER_SITE: ${{ inputs.target }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ inputs.target }}
