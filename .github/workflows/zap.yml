@@ -60,7 +60,7 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
-      - name: Token Exchange
+      - name: Token exchange
         id: zap_token
         run: |
           set -euo pipefail
@@ -83,6 +83,10 @@ jobs:
           echo "CODE_VERIFIER=$CODE_VERIFIER"
           CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
           echo "CODE_CHALLENGE=$CODE_CHALLENGE"
+          
+          # Generate state
+          STATE=$(openssl rand -hex 12)
+          echo "STATE: $STATE"
           
           # Get login page to fetch CSRF
           curl -s -c "$COOKIE_JAR" "$OIDC_SERVER/login" -o login.html
