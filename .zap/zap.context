@@ -1,53 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
     <context>
-        <name>Claim and Assess</name>
+        <name>Authentication Test</name>
         <desc/>
         <inscope>true</inscope>
-        <incregexes>http://stub-oidc-server:8091.*</incregexes>
         <incregexes>http://localhost:3000.*</incregexes>
-        <incregexes>http://localhost:3001.*</incregexes>
+        <incregexes>http://localhost:3000/.*</incregexes>
+        <incregexes>http://stub-oidc-server:8091/.*</incregexes>
+        <excregexes>http://localhost:3000/callback.*</excregexes>
+        <excregexes>http://stub-oidc-server:8091/oauth2/authorize.*</excregexes>
         <tech>
             <include>Db.PostgreSQL</include>
             <include>Language.JavaScript</include>
             <include>SCM.Git</include>
-            <exclude>Db</exclude>
-            <exclude>Db.CouchDB</exclude>
-            <exclude>Db.Firebird</exclude>
-            <exclude>Db.HypersonicSQL</exclude>
-            <exclude>Db.IBM DB2</exclude>
-            <exclude>Db.MariaDB</exclude>
-            <exclude>Db.Microsoft Access</exclude>
-            <exclude>Db.Microsoft SQL Server</exclude>
-            <exclude>Db.MongoDB</exclude>
-            <exclude>Db.MySQL</exclude>
-            <exclude>Db.Oracle</exclude>
-            <exclude>Db.SAP MaxDB</exclude>
-            <exclude>Db.SQLite</exclude>
-            <exclude>Db.Sybase</exclude>
-            <exclude>Framework</exclude>
-            <exclude>Framework.Next.js</exclude>
-            <exclude>Framework.React</exclude>
-            <exclude>Language</exclude>
-            <exclude>Language.ASP</exclude>
-            <exclude>Language.C</exclude>
-            <exclude>Language.JSP/Servlet</exclude>
-            <exclude>Language.Java</exclude>
-            <exclude>Language.Java.Spring</exclude>
-            <exclude>Language.PHP</exclude>
-            <exclude>Language.Python</exclude>
-            <exclude>Language.Ruby</exclude>
-            <exclude>Language.XML</exclude>
-            <exclude>OS</exclude>
-            <exclude>OS.Linux</exclude>
-            <exclude>OS.MacOS</exclude>
-            <exclude>OS.Windows</exclude>
-            <exclude>SCM</exclude>
-            <exclude>SCM.SVN</exclude>
-            <exclude>WS</exclude>
-            <exclude>WS.Apache</exclude>
-            <exclude>WS.IIS</exclude>
-            <exclude>WS.Tomcat</exclude>
         </tech>
         <urlparser>
             <class>org.zaproxy.zap.model.StandardParameterParser</class>
@@ -58,22 +23,24 @@
             <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
         </postparser>
         <authentication>
-            <type>2</type>
-            <strategy>EACH_REQ</strategy>
-            <pollurl/>
+            <type>6</type>
+            <strategy>POLL_URL</strategy>
+            <pollurl>http://localhost:3000/</pollurl>
             <polldata/>
             <pollheaders/>
             <pollfreq>60</pollfreq>
             <pollunits>REQUESTS</pollunits>
-            <loggedout>Please sign in</loggedout>
-            <form>
-                <loginurl>http://stub-oidc-server:8091/login</loginurl>
-                <loginbody>username={%username%}&amp;password={%password%}</loginbody>
-                <loginpageurl/>
-            </form>
+            <loggedin>\QSign out\E</loggedin>
+            <loggedout>\QPlease sign in\E</loggedout>
+            <browser>
+                <loginpageurl>http://localhost:3000/</loginpageurl>
+                <browserid>firefox</browserid>
+                <loginpagewait>5</loginpagewait>
+                <stepdelay>0</stepdelay>
+            </browser>
         </authentication>
         <users>
-            <user>1;true;WkFQ;2;WkFQ~WkFQ~</user>
+            <user>1;true;WkFQ;6;WkFQ~WkFQ~~30~6~U0hBMQ==~</user>
         </users>
         <forceduser>1</forceduser>
         <session>
@@ -85,9 +52,8 @@
                 <header/>
                 <body/>
                 <logic>AND</logic>
-                <code>-1
+                <code>-1</code>
             </basic>
         </authorization>
     </context>
 </configuration>
- </code>

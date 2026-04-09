@@ -66,7 +66,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ inputs.target }}
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-d -z "-config spider.maxDepth=10 -config antiCsrfTokens.token.enabled=true -config antiCsrfTokens.token.name=_csrf -n "zap.context" -U "ZAP"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
+          cmd_options: '-d -z "-config spider.maxDepth=10 -n "zap.context" -U "ZAP"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
           allow_issue_writing: false
           fail_action: true
 
