@@ -66,6 +66,7 @@ jobs:
           set -euo pipefail
 
           COOKIE_JAR=cookies.txt
+          rm -f $COOKIE_JAR
 
           # Ping the target page
           # Follow redirects to the login page (-L)
@@ -87,6 +88,8 @@ jobs:
 
           # POST credentials and CSRF token
           # Follow redirects to the callback URL (-L)
+          # Send existing cookies in the cookie jar (-b)
+          # Save new cookies to the cookie jar (-c)
           curl -s -L \
             -b $COOKIE_JAR \
             -c $COOKIE_JAR \
