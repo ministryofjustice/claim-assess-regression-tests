@@ -64,22 +64,37 @@ jobs:
         id: zap_token
         run: |
           set -euo pipefail
-          
-          curl -s -L -D headers.txt \
-            -c cookies.txt \
-            -b cookies.txt \
-            http://localhost:3000 > response.html
-            
-          SESSION_ID=$(awk '$6 == "sessionId" {print $7}' cookies.txt)
+
+          COOKIE_JAR=cookies.txt
+
+          # Ping the target page
+          # Follow redirects to the login page (-L)
+          # Send existing cookies in the cookie jar (-b)
+          # Save new cookies to the cookie jar (-c)
+          # Save HTML response of the login page to response.html
+          curl -s -L \
+            -b $COOKIE_JAR \
+            -c $COOKIE_JAR \
+            ${{ inputs.target }} > response.html
+
+          # Extract session ID from the cookie jar
+          SESSION_ID=$(grep sessionId $COOKIE_JAR | awk '{print $7}' | tail -n1)
           echo "Session ID: $SESSION_ID"
-          CSRF_TOKEN=$(sed -n 's/.*name="_csrf".*value="\([^"]*\)".*/\1/p' response.html)
+
+          # Extract CSRF token from the response HTML
+          CSRF_TOKEN=$(grep -o 'name="_csrf"[^>]*value="[^"]*"' response.html | sed 's/.*value="\([^"]*\)"/\1/')
           echo "CSRF token: $CSRF_TOKEN"
-            
-          curl -s -L -b cookies.txt -c cookies.txt \
+
+          # POST credentials and CSRF token
+          # Follow redirects to the callback URL (-L)
+          curl -s -L \
+            -b $COOKIE_JAR \
+            -c $COOKIE_JAR \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "username=alice&password=password&_csrf=$CSRF_TOKEN" \
             "http://stub-oidc-server:8091/login"
           
+          # Store the session ID in GITHUB_ENV
           ZAP_AUTH_HEADER_VALUE="sessionId=$SESSION_ID"
           echo "$ZAP_AUTH_HEADER_VALUE" >> $GITHUB_ENV
           echo "ZAP auth header value: $ZAP_AUTH_HEADER_VALUE"
