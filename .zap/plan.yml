@@ -6,7 +6,6 @@ env:
       includePaths:
         - ${TARGET}.*
       excludePaths:
-        - http://stub-oidc-server:8091.*
         - https://archive.mozilla.org.*
         - https://api.dashlane.com.*
         - https://www.icann.org.*
@@ -16,39 +15,10 @@ env:
         parameters:
           loginPageUrl: ${TARGET}
           loginPageWait: 10
-          browserId: firefox
+          browserId: firefox-headless
           stepDelay: 0
           diagnostics: false
-          steps:
-            - description: Enter username
-              type: AUTO_STEPS
-              cssSelector: "input[name='username']"
-              value: "{%username%}"
-              timeout: 1000
-              totp:
-                secret: UserCredentials
-                period: 30
-                digits: 6
-                algorithm: SHA1
-            - description: Enter password
-              type: AUTO_STEPS
-              cssSelector: "input[name='password']"
-              value: "{%password%}"
-              timeout: 1000
-              totp:
-                secret: UserCredentials
-                period: 30
-                digits: 6
-                algorithm: SHA1
-            - description: Sign in
-              type: CLICK
-              cssSelector: "button[type='submit']"
-              timeout: 1000
-              totp:
-                secret: UserCredentials
-                period: 30
-                digits: 6
-                algorithm: SHA1
+          steps: []
         verification:
           method: poll
           loggedInRegex: \QSign out\E
@@ -65,6 +35,10 @@ env:
           credentials:
             password: password
             username: alice
+        - name: bob
+          credentials:
+            password: password
+            username: bob
   parameters: {}
 jobs:
   - type: passiveScan-config
@@ -75,6 +49,7 @@ jobs:
       user: alice
       url: ${TARGET}
       parseDsStore: null
+      logoutAvoidance: true
     tests:
       - name: At least 20 URLs found
         type: stats
