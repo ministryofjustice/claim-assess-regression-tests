@@ -10,7 +10,7 @@ env:
         parameters:
           loginPageUrl: ${TARGET}
           loginPageWait: 10
-          browserId: firefox-headless
+          browserId: firefox
           stepDelay: 0
           diagnostics: false
           steps: []
@@ -37,7 +37,7 @@ jobs:
       user: alice
     requests:
       - url: ${TARGET}
-        method: ""
+        method: GET
     alwaysRun: true
   - type: spider
     parameters:
@@ -58,33 +58,17 @@ jobs:
 #      defaultThreshold: medium
   - type: report
     parameters:
-      theme: original
+      template: traditional-html
+      theme: null
       reportTitle: ZAP by Checkmarx Scanning Report
     risks:
-      - info
       - low
       - medium
       - high
     confidences:
-      - falsepositive
       - low
       - medium
       - high
       - confirmed
     sections:
-      - siteRiskCounts
-      - responseBody
-      - appendix
       - insights
-      - alertTypes
-      - responseHeader
-      - alertTypeCounts
-      - riskConfidenceCounts
-      - alerts
-      - aboutThisReport
-      - contents
-      - requestBody
-      - reportDescription
-      - reportParameters
-      - requestHeader
-      - summaries
