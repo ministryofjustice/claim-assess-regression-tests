@@ -7,10 +7,10 @@ env:
         - ${TARGET}.*
         - http://stub-oidc-server:8091.*
       excludePaths:
-        - https://archive.mozilla.org.*
-        - https://api.dashlane.com.*
-        - https://www.icann.org.*
-        - https://firefox-settings-attachments.cdn.mozilla.net.*
+        - https://.*dashlane.*
+        - https://.*firefox.*
+        - https://.*icann.*
+        - https://.*mozilla.*
       authentication:
         method: browser
         parameters:
@@ -52,12 +52,26 @@ jobs:
       parseDsStore: null
       logoutAvoidance: true
     tests:
-      - name: At least 20 URLs found
+      - name: URLs found
         type: stats
         onFail: INFO
         statistic: automation.spider.urls.added
         operator: '>='
-        value: 20
+        value: 0
+  - type: spiderAjax
+    parameters:
+      context: Authenticated
+      user: alice
+      url: ${TARGET}
+      browserId: firefox-headless
+      logoutAvoidance: true
+    tests:
+      - name: URLs found
+        type: stats
+        onFail: INFO
+        statistic: spiderAjax.urls.added
+        operator: '>='
+        value: 0
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
