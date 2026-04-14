@@ -10,7 +10,7 @@ env:
         parameters:
           loginPageUrl: http://localhost:3000
           loginPageWait: 10
-          browserId: firefox
+          browserId: firefox-headless
           stepDelay: 0
           diagnostics: false
           steps: []

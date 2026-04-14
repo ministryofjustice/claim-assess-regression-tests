@@ -64,6 +64,7 @@ jobs:
         uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 # v0.2.0
         with:
           plan: '.zap/claim_plan.yml'
+          cmd_options: '-port 2999'
 
       - name: Capture frontend logs
         if: always()
