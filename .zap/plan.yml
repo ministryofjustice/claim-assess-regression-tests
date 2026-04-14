@@ -51,13 +51,16 @@ jobs:
       url: ${TARGET}
       parseDsStore: null
       logoutAvoidance: true
+      maxDuration: 5
   - type: spiderAjax
     parameters:
       context: Authenticated
       user: alice
       url: ${TARGET}
-      browserId: firefox-headless
       logoutAvoidance: true
+      maxDuration: 5
+      eventWait: 5000
+      reloadWait: 5000
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
