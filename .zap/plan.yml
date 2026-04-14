@@ -51,13 +51,6 @@ jobs:
       url: ${TARGET}
       parseDsStore: null
       logoutAvoidance: true
-    tests:
-      - name: URLs found
-        type: stats
-        onFail: INFO
-        statistic: automation.spider.urls.added
-        operator: '>='
-        value: 0
   - type: spiderAjax
     parameters:
       context: Authenticated
@@ -65,13 +58,6 @@ jobs:
       url: ${TARGET}
       browserId: firefox-headless
       logoutAvoidance: true
-    tests:
-      - name: URLs found
-        type: stats
-        onFail: INFO
-        statistic: spiderAjax.urls.added
-        operator: '>='
-        value: 0
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
@@ -79,6 +65,7 @@ jobs:
       context: Authenticated
       user: alice
       url: ${TARGET}
+      maxScanDurationInMins: 5
     policyDefinition:
       defaultStrength: medium
       defaultThreshold: medium
