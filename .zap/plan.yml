@@ -2,13 +2,13 @@ env:
   contexts:
     - name: Authenticated
       urls:
-        - ${TARGET}
+        - http://localhost:3000
       includePaths:
-        - ${TARGET}.*
+        - http://localhost:3000.*
       authentication:
         method: browser
         parameters:
-          loginPageUrl: ${TARGET}
+          loginPageUrl: http://localhost:3000
           loginPageWait: 10
           browserId: firefox
           stepDelay: 0
@@ -19,7 +19,7 @@ env:
           loggedInRegex: \QSign out\E
           pollFrequency: 60
           pollUnits: requests
-          pollUrl: ${TARGET}
+          pollUrl: http://localhost:3000
           pollPostData: ""
       sessionManagement:
         method: cookie
@@ -36,14 +36,14 @@ jobs:
     parameters:
       user: alice
     requests:
-      - url: ${TARGET}
-        method: GET
+      - url: http://localhost:3000
+        method: ""
     alwaysRun: true
   - type: spider
     parameters:
       context: Authenticated
       user: alice
-      url: ${TARGET}
+      url: http://localhost:3000
       parseDsStore: null
     alwaysRun: true
   - type: passiveScan-wait
@@ -52,7 +52,7 @@ jobs:
 #    parameters:
 #      context: Authenticated
 #      user: alice
-#      url: ${TARGET}
+#      url: http://localhost:3000
 #    policyDefinition:
 #      defaultStrength: medium
 #      defaultThreshold: medium
