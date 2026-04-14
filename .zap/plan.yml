@@ -51,14 +51,13 @@ jobs:
       url: ${TARGET}
       parseDsStore: null
       logoutAvoidance: true
-      maxDuration: 5
+      maxDepth: 10
   - type: spiderAjax
     parameters:
       context: Authenticated
       user: alice
       url: ${TARGET}
       logoutAvoidance: true
-      maxDuration: 5
       eventWait: 5000
       reloadWait: 5000
   - type: passiveScan-wait
