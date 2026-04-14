@@ -75,6 +75,14 @@ jobs:
           docker_env_vars: |
             TARGET
 
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: zap_report
+          path: .zap/**/*.html
+          retention-days: 7
+
       - name: Capture frontend logs
         if: always()
         run: |
