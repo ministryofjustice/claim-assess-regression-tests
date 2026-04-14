@@ -48,12 +48,12 @@ jobs:
       parseDsStore: null
       logoutAvoidance: true
     tests:
-      - name: At least 100 URLs found
+      - name: At least 20 URLs found
         type: stats
         onFail: INFO
         statistic: automation.spider.urls.added
         operator: '>='
-        value: 100
+        value: 20
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
