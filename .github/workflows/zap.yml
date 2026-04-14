@@ -60,6 +60,11 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
+      - name: Prepare ZAP workspace
+        run: |
+          mkdir -p .zap
+          chmod -R 777 .zap
+
       - name: ZAP scan
         uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 # v0.2.0
         env:
