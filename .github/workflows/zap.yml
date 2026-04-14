@@ -75,18 +75,12 @@ jobs:
           docker_env_vars: |
             TARGET
 
-      - name: Debug workspace
-        if: always()
-        run: |
-          echo "PWD: $(pwd)"
-          ls -R .zap || true
-
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: zap_report
-          path: /zap/wrk/.zap/*.html
+          path: .zap/*.html
           retention-days: 7
 
       - name: Capture frontend logs
