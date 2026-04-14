@@ -1,0 +1,90 @@
+env:
+  contexts:
+    - name: Authenticated
+      urls:
+        - ${TARGET}
+      includePaths:
+        - ${TARGET}.*
+      authentication:
+        method: browser
+        parameters:
+          loginPageUrl: ${TARGET}
+          loginPageWait: 10
+          browserId: firefox-headless
+          stepDelay: 0
+          diagnostics: false
+          steps: []
+        verification:
+          method: poll
+          loggedInRegex: \QSign out\E
+          pollFrequency: 60
+          pollUnits: requests
+          pollUrl: ${TARGET}
+          pollPostData: ""
+      sessionManagement:
+        method: cookie
+      technology: {}
+      structure: {}
+      users:
+        - name: alice
+          credentials:
+            password: password
+            username: alice
+  parameters: {}
+jobs:
+  - type: requestor
+    parameters:
+      user: alice
+    requests:
+      - url: ${TARGET}
+        method: ""
+    alwaysRun: true
+  - type: spider
+    parameters:
+      context: Authenticated
+      user: alice
+      url: ${TARGET}
+      parseDsStore: null
+    alwaysRun: true
+  - type: passiveScan-wait
+    parameters: {}
+#  - type: activeScan
+#    parameters:
+#      context: Authenticated
+#      user: alice
+#      url: ${TARGET}
+#    policyDefinition:
+#      defaultStrength: medium
+#      defaultThreshold: medium
+  - type: report
+    parameters:
+      theme: original
+      reportTitle: ZAP by Checkmarx Scanning Report
+    risks:
+      - info
+      - low
+      - medium
+      - high
+    confidences:
+      - falsepositive
+      - low
+      - medium
+      - high
+      - confirmed
+    sections:
+      - siteRiskCounts
+      - responseBody
+      - appendix
+      - insights
+      - alertTypes
+      - responseHeader
+      - alertTypeCounts
+      - riskConfidenceCounts
+      - alerts
+      - aboutThisReport
+      - contents
+      - requestBody
+      - reportDescription
+      - reportParameters
+      - requestHeader
+      - summaries
