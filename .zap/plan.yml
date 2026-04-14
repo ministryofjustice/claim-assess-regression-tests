@@ -2,13 +2,19 @@ env:
   contexts:
     - name: Authenticated
       urls:
-        - http://localhost:3000
+        - ${TARGET}
       includePaths:
-        - http://localhost:3000.*
+        - ${TARGET}.*
+      excludePaths:
+        - http://stub-oidc-server:8091.*
+        - https://archive.mozilla.org.*
+        - https://api.dashlane.com.*
+        - https://www.icann.org.*
+        - https://firefox-settings-attachments.cdn.mozilla.net.*
       authentication:
         method: browser
         parameters:
-          loginPageUrl: http://localhost:3000
+          loginPageUrl: ${TARGET}
           loginPageWait: 10
           browserId: firefox
           stepDelay: 0
@@ -19,7 +25,7 @@ env:
           loggedInRegex: \QSign out\E
           pollFrequency: 60
           pollUnits: requests
-          pollUrl: http://localhost:3000
+          pollUrl: ${TARGET}
           pollPostData: ""
       sessionManagement:
         method: cookie
@@ -32,30 +38,32 @@ env:
             username: alice
   parameters: {}
 jobs:
-  - type: requestor
-    parameters:
-      user: alice
-    requests:
-      - url: http://localhost:3000
-        method: ""
-    alwaysRun: true
+  - type: passiveScan-config
+    parameters: {}
   - type: spider
     parameters:
       context: Authenticated
       user: alice
-      url: http://localhost:3000
+      url: ${TARGET}
       parseDsStore: null
-    alwaysRun: true
+      logoutAvoidance: true
+    tests:
+      - name: At least 100 URLs found
+        type: stats
+        onFail: INFO
+        statistic: automation.spider.urls.added
+        operator: '>='
+        value: 100
   - type: passiveScan-wait
     parameters: {}
-#  - type: activeScan
-#    parameters:
-#      context: Authenticated
-#      user: alice
-#      url: http://localhost:3000
-#    policyDefinition:
-#      defaultStrength: medium
-#      defaultThreshold: medium
+  - type: activeScan
+    parameters:
+      context: Authenticated
+      user: alice
+      url: ${TARGET}
+    policyDefinition:
+      defaultStrength: medium
+      defaultThreshold: medium
   - type: report
     parameters:
       template: traditional-html
@@ -72,3 +80,11 @@ jobs:
       - confirmed
     sections:
       - insights
+      - instancecount
+      - sequencedetails
+      - alertdetails
+      - alertcount
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium
+      warnLevel: Low
