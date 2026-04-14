@@ -19,7 +19,36 @@ env:
           browserId: firefox
           stepDelay: 0
           diagnostics: false
-          steps: []
+          steps:
+            - description: Enter username
+              type: AUTO_STEPS
+              cssSelector: "input[name='username']"
+              value: "{%username%}"
+              timeout: 1000
+              totp:
+                secret: UserCredentials
+                period: 30
+                digits: 6
+                algorithm: SHA1
+            - description: Enter password
+              type: AUTO_STEPS
+              cssSelector: "input[name='password']"
+              value: "{%password%}"
+              timeout: 1000
+              totp:
+                secret: UserCredentials
+                period: 30
+                digits: 6
+                algorithm: SHA1
+            - description: Sign in
+              type: CLICK
+              cssSelector: "button[type='submit']"
+              timeout: 1000
+              totp:
+                secret: UserCredentials
+                period: 30
+                digits: 6
+                algorithm: SHA1
         verification:
           method: poll
           loggedInRegex: \QSign out\E
@@ -46,7 +75,6 @@ jobs:
       user: alice
       url: ${TARGET}
       parseDsStore: null
-      logoutAvoidance: true
     tests:
       - name: At least 20 URLs found
         type: stats
