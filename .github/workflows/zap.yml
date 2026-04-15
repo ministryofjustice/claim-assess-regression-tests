@@ -22,6 +22,9 @@ on:
       target:
         description: "Target URL"
         required: true
+      application:
+        description: "Target application"
+        required: true
 
 permissions:
   id-token: write
@@ -29,7 +32,7 @@ permissions:
 
 jobs:
   zap_scan:
-    name: Scan the web application
+    name: Scan ${{ inputs.application }}
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -91,8 +94,10 @@ jobs:
 
       - name: Capture frontend logs
         if: always()
+        env:
+          APPLICATION: ${{ inputs.application }}
         run: |
-          docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
+          docker logs claim-assess-regression-tests-${APPLICATION}-1
 
       - name: Notify Slack on failure
         if: failure()
