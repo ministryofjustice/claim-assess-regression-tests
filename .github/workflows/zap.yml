@@ -66,7 +66,7 @@ jobs:
           chmod -R 777 .zap
 
       - name: ZAP scan
-        uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 # v0.2.0
+        uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
         env:
           TARGET: ${{ inputs.target }}
         with:
@@ -75,7 +75,7 @@ jobs:
           docker_env_vars: |
             TARGET
 
-      - name: Copy report out
+      - name: Copy report
         if: always()
         run: |
           mkdir -p zap-report
@@ -94,14 +94,14 @@ jobs:
         run: |
           docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
 
-#      - name: Notify Slack on failure
-#        if: failure()
-#        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
-#        with:
-#          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-#          webhook-type: incoming-webhook
-#          payload: |
-#            text: >
-#              :x: ZAP job failed!
-#              Download the zap_scan report. The artifacts are available here:
-#              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: >
+              :x: ZAP job failed!
+              Download the report:
+              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
