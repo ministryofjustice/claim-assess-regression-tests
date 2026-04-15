@@ -23,6 +23,10 @@ on:
         description: "Target URL"
         required: true
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   zap_scan:
     name: Scan the web application
@@ -56,24 +60,48 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
-      - name: ZAP Scan
-        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
+      - name: Prepare ZAP workspace
+        run: |
+          mkdir -p .zap
+          chmod -R 777 .zap
+
+      - name: ZAP scan
+        uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
+        env:
+          TARGET: ${{ inputs.target }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: ${{ inputs.target }}
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-z "-config spider.maxDepth=10" -n zap.context' # https://www.zaproxy.org/docs/docker/full-scan/#usage
-          allow_issue_writing: false
-          fail_action: true
+          plan: '.zap/plan.yml'
+          cmd_options: '-port 2999'
+          docker_env_vars: |
+            TARGET
+
+      - name: Copy report
+        if: always()
+        run: |
+          mkdir -p zap-report
+          cp .zap/*.html zap-report/
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
+        with:
+          name: zap_report
+          path: zap-report/*.html
+          retention-days: 7
+
+      - name: Capture frontend logs
+        if: always()
+        run: |
+          docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
 
       - name: Notify Slack on failure
         if: failure()
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             text: >
               :x: ZAP job failed!
-              Download the zap_scan report. The artifacts are available here:
+              Download the report:
               https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}

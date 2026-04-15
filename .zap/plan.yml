@@ -1,0 +1,112 @@
+env:
+  contexts:
+    - name: Authenticated
+      urls:
+        - ${TARGET}
+      includePaths:
+        - ${TARGET}.*
+      excludePaths:
+        - ${TARGET}/logout
+      authentication:
+        method: browser
+        parameters:
+          loginPageUrl: ${TARGET}
+          loginPageWait: 10
+          browserId: firefox-headless
+          stepDelay: 0
+          diagnostics: false
+          steps: []
+        verification:
+          method: poll
+          loggedInRegex: \QSign out\E
+          pollFrequency: 60
+          pollUnits: requests
+          pollUrl: ${TARGET}
+          pollPostData: ""
+      sessionManagement:
+        method: cookie
+      technology:
+        exclude:
+          - C
+          - SQLite
+          - CouchDB
+          - XML
+          - Microsoft SQL Server
+          - MongoDB
+          - SAP MaxDB
+          - SVN
+          - WS
+          - Framework
+          - Sybase
+          - Python
+          - ASP
+          - OS
+          - IBM DB2
+          - PHP
+          - MariaDB
+          - Oracle
+          - JSP/Servlet
+          - Firebird
+          - HypersonicSQL
+          - MySQL
+          - Ruby
+          - Microsoft Access
+          - Java
+      structure: {}
+      users:
+        - name: alice
+          credentials:
+            password: password
+            username: alice
+        - name: bob
+          credentials:
+            password: password
+            username: bob
+  parameters: {}
+jobs:
+  - type: passiveScan-config
+    parameters: {}
+  - type: spiderClient
+    parameters:
+      context: Authenticated
+      user: alice
+      url: ${TARGET}
+      maxDuration: 0
+      maxChildren: 0
+      initialLoadTime: 10
+      pageLoadTime: 2
+  - type: passiveScan-wait
+    parameters: {}
+  - type: activeScan
+    parameters:
+      context: Authenticated
+      user: alice
+      url: ${TARGET}
+      maxScanDurationInMins: 20
+    policyDefinition:
+      defaultStrength: medium
+      defaultThreshold: medium
+  - type: report
+    parameters:
+      template: traditional-html
+      theme: null
+      reportTitle: ZAP by Checkmarx Scanning Report
+    risks:
+      - low
+      - medium
+      - high
+    confidences:
+      - low
+      - medium
+      - high
+      - confirmed
+    sections:
+      - insights
+      - instancecount
+      - sequencedetails
+      - alertdetails
+      - alertcount
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium
+      warnLevel: Low

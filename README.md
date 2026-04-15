@@ -20,9 +20,11 @@ Automated tests for claim and assess applications.
 We use Cucumber and Playwright tests for UI testing.
 
 ### Run tests
+First, consider running `./restart-all.sh` to do a full rebuild of the different services.
+
 To run all tests, run `./e2e.sh`.
 
-On the first time running the E2E tests you might be prompted for a password. Enter your machine password, this is required to run a sudo command to update hostname mappings in etc/hosts.
+On the first time running the E2E tests you might be prompted for a password. Enter your machine password, this is required to run a sudo command to update hostname mappings in `etc/hosts`.
 
 Alternatively, to run a subset of tests:
 * with a specific tag, e.g. @smoke, run `./e2e.sh @smoke`
