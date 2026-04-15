@@ -22,6 +22,9 @@ on:
       target:
         description: "Target URL"
         required: true
+      application:
+        description: "Target application"
+        required: true
 
 permissions:
   id-token: write
@@ -29,10 +32,11 @@ permissions:
 
 jobs:
   zap_scan:
-    name: Scan the web application
+    name: Scan ${{ inputs.application }}
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      APPLICATION: ${{ inputs.application }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
 
@@ -85,14 +89,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
-          name: zap_report
+          name: zap_report_${{ env.APPLICATION }}
           path: zap-report/*.html
           retention-days: 7
 
-      - name: Capture frontend logs
-        if: always()
+      - name: Capture ${{ env.APPLICATION }} logs
         run: |
-          docker logs claim-assess-regression-tests-laa-claim-for-payment-frontend-1
+          docker logs claim-assess-regression-tests-${APPLICATION}-1
 
       - name: Notify Slack on failure
         if: failure()
@@ -102,6 +105,6 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             text: >
-              :x: ZAP job failed!
+              :x: ZAP job failed for ${{ env.APPLICATION }}!
               Download the report:
               https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
