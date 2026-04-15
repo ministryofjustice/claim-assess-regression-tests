@@ -29,7 +29,33 @@ env:
           pollPostData: ""
       sessionManagement:
         method: cookie
-      technology: {}
+      technology:
+        exclude:
+          - C
+          - SQLite
+          - CouchDB
+          - XML
+          - Microsoft SQL Server
+          - MongoDB
+          - SAP MaxDB
+          - SVN
+          - WS
+          - Framework
+          - Sybase
+          - Python
+          - ASP
+          - OS
+          - IBM DB2
+          - PHP
+          - MariaDB
+          - Oracle
+          - JSP/Servlet
+          - Firebird
+          - HypersonicSQL
+          - MySQL
+          - Ruby
+          - Microsoft Access
+          - Java
       structure: {}
       users:
         - name: alice
@@ -44,22 +70,14 @@ env:
 jobs:
   - type: passiveScan-config
     parameters: {}
-  - type: spider
+  - type: spiderClient
     parameters:
       context: Authenticated
       user: alice
       url: ${TARGET}
-      parseDsStore: null
-      logoutAvoidance: true
-      maxDepth: 10
-  - type: spiderAjax
-    parameters:
-      context: Authenticated
-      user: alice
-      url: ${TARGET}
-      logoutAvoidance: true
-      eventWait: 5000
-      reloadWait: 5000
+      maxDuration: 5
+      maxChildren: 0
+      initialLoadTime: 15
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
