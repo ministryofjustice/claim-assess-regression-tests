@@ -4,7 +4,7 @@ env:
       urls:
         - ${TARGET}
       includePaths:
-        - ${TARGET}.*
+        - ${TARGET}/.*
       excludePaths:
         - ${TARGET}/logout
       authentication:
@@ -71,9 +71,10 @@ jobs:
       context: Authenticated
       user: alice
       url: ${TARGET}
-      maxDuration: 5
+      maxDuration: 0
       maxChildren: 0
-      initialLoadTime: 15
+      initialLoadTime: 10
+      pageLoadTime: 2
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
@@ -81,7 +82,7 @@ jobs:
       context: Authenticated
       user: alice
       url: ${TARGET}
-      maxScanDurationInMins: 5
+      maxScanDurationInMins: 20
     policyDefinition:
       defaultStrength: medium
       defaultThreshold: medium
