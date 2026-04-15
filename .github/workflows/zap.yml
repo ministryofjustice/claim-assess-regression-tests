@@ -94,6 +94,7 @@ jobs:
           retention-days: 7
 
       - name: Capture ${{ env.APPLICATION }} logs
+        if: always()
         run: |
           docker logs claim-assess-regression-tests-${APPLICATION}-1
 
