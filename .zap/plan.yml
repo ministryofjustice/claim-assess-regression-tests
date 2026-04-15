@@ -5,12 +5,8 @@ env:
         - ${TARGET}
       includePaths:
         - ${TARGET}.*
-        - http://stub-oidc-server:8091.*
       excludePaths:
-        - https://.*dashlane.*
-        - https://.*firefox.*
-        - https://.*icann.*
-        - https://.*mozilla.*
+        - ${TARGET}/logout
       authentication:
         method: browser
         parameters:
