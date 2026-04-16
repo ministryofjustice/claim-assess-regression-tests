@@ -115,11 +115,16 @@ jobs:
           echo "ZAP_AUTH_HEADER=Authorization" >> $GITHUB_ENV
           echo "ZAP_AUTH_HEADER_VALUE=Bearer $TOKEN" >> $GITHUB_ENV
 
+      - name: Fetch OpenAPI spec
+        run: |
+          curl -v http://localhost:8080/v3/api-docs -o openapi.json
+
       - name: ZAP Scan
-        uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0        
+        uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
-          target: ${{ inputs.target }}/v3/api-docs
+          format: openapi
+          target: openapi.json
           allow_issue_writing: false
           fail_action: true
 
