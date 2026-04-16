@@ -38,6 +38,14 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       APPLICATION: ${{ inputs.application }}
+      OIDC_SERVER: "http://stub-oidc-server:8091"
+      CLIENT_ID: "caa-client"
+      CLIENT_SECRET: "mock-secret"
+      REDIRECT_URI: "http://localhost:3000/callback"
+      SCOPE: "openid profile email https://claims-api/claims_write"
+      USERNAME: "alice"
+      PASSWORD: "password"
+      
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
 
@@ -65,10 +73,47 @@ jobs:
           laa-claim-for-payment-stubs-oidc-server-ecr-region: ${{ vars.STUB_OIDC_SERVER_ECR_REGION }}
           laa-claim-for-payment-stubs-oidc-server-ecr-repository: ${{ vars.STUB_OIDC_SERVER_ECR_REPOSITORY }}
 
-      - name: Prepare ZAP workspace
+      - name: Generate PKCE
         run: |
-          mkdir -p .zap
-          chmod -R 777 .zap
+          CODE_VERIFIER=$(openssl rand -base64 32 | tr -d '=+/')
+          CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
+          echo "CODE_VERIFIER=$CODE_VERIFIER" >> $GITHUB_ENV
+          echo "CODE_CHALLENGE=$CODE_CHALLENGE" >> $GITHUB_ENV
+          echo "STATE=$(openssl rand -hex 12)" >> $GITHUB_ENV
+
+      - name: Get CSRF token
+        run: |
+          curl -s -c /tmp/cookies.txt "${{ env.OIDC_SERVER }}/login" -o /tmp/login.html
+          CSRF=$(grep 'name="_csrf"' /tmp/login.html | sed 's/.*value="\([^"]*\)".*/\1/')
+          echo "CSRF_TOKEN=$CSRF" >> $GITHUB_ENV
+
+      - name: Login
+        run: |
+          curl -s -b /tmp/cookies.txt -c /tmp/cookies.txt -X POST \
+            -d "username=${{ env.USERNAME }}&password=${{ env.PASSWORD }}&_csrf=${{ env.CSRF_TOKEN }}" \
+            "${{ env.OIDC_SERVER }}/login" -o /dev/null
+
+      - name: Get authorization code
+        run: |
+          ENC_REDIRECT=$(jq -nr --arg v "${{ env.REDIRECT_URI }}" '$v|@uri')
+          ENC_SCOPE=$(jq -nr --arg v "${{ env.SCOPE }}" '$v|@uri')
+          curl -s -b /tmp/cookies.txt -c /tmp/cookies.txt \
+            "${{ env.OIDC_SERVER }}/oauth2/authorize?response_type=code&client_id=${{ env.CLIENT_ID }}&redirect_uri=$ENC_REDIRECT&scope=$ENC_SCOPE&code_challenge=${{ env.CODE_CHALLENGE }}&code_challenge_method=S256&state=${{ env.STATE }}" \
+            -i -o /tmp/auth.txt
+          AUTH_CODE=$(grep -i '^Location:' /tmp/auth.txt | sed -E 's/.*code=([^&]+).*/\1/')
+          echo "AUTH_CODE=$AUTH_CODE" >> $GITHUB_ENV
+
+      - name: Exchange code for token
+        run: |
+          TOKEN=$(curl -s -X POST "${{ env.OIDC_SERVER }}/oauth2/token" \
+            -d "grant_type=authorization_code" \
+            -d "code=${{ env.AUTH_CODE }}" \
+            -d "redirect_uri=${{ env.REDIRECT_URI }}" \
+            -d "client_id=${{ env.CLIENT_ID }}" \
+            -d "client_secret=${{ env.CLIENT_SECRET }}" \
+            -d "code_verifier=${{ env.CODE_VERIFIER }}" | jq -r '.access_token')
+          echo "ZAP_AUTH_HEADER=Authorization" >> $GITHUB_ENV
+          echo "ZAP_AUTH_HEADER_VALUE=Bearer $TOKEN" >> $GITHUB_ENV
 
       - name: ZAP Scan
         uses: zaproxy/action-api-scan@v0.10.0 # https://github.com/zaproxy/action-api-scan
@@ -76,12 +121,6 @@ jobs:
           token: ${{ env.GITHUB_TOKEN }}
           target: ${{ inputs.target }}/v3/api-docs
           allow_issue_writing: false
-
-      - name: Copy report
-        if: always()
-        run: |
-          mkdir -p zap-report
-          cp .zap/*.html zap-report/
 
       - name: Upload report
         if: always()
