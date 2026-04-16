@@ -117,7 +117,7 @@ jobs:
 
       - name: Fetch OpenAPI spec
         run: |
-          curl -v http://localhost:8080/v3/api-docs -o openapi.json
+          curl -v ${{ inputs.TARGET }}/v3/api-docs -o openapi.json
 
       - name: ZAP Scan
         uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0
