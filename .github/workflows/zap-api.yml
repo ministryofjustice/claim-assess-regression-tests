@@ -116,21 +116,15 @@ jobs:
           echo "ZAP_AUTH_HEADER_VALUE=Bearer $TOKEN" >> $GITHUB_ENV
 
       - name: ZAP Scan
-        uses: zaproxy/action-api-scan@v0.10.0 # https://github.com/zaproxy/action-api-scan
+        uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0        
         with:
           token: ${{ env.GITHUB_TOKEN }}
           target: ${{ inputs.target }}/v3/api-docs
           allow_issue_writing: false
-
-      - name: Upload report
-        if: always()
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
-        with:
-          name: zap_report_${{ env.APPLICATION }}
-          path: zap-report/*.html
-          retention-days: 7
+          fail_action: true
 
       - name: Capture ${{ env.APPLICATION }} logs
+        if: always()
         run: |
           docker logs claim-assess-regression-tests-${APPLICATION}-1
 
