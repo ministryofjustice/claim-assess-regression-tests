@@ -15,4 +15,5 @@ echo "Building laa-claim-for-payment-frontend"
 echo "Building laa-assess-a-claim-frontend"
 (cd ../laa-assess-a-claim-frontend && yarn install && yarn build)
 
-docker compose -f docker-compose.yml -f docker-compose.local.yml up --build --force-recreate -d
+docker compose -f docker-compose.yml -f docker-compose.local.yml build --no-cache
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --force-recreate -d
