@@ -40,7 +40,7 @@ jobs:
       APPLICATION: ${{ inputs.application }}
       OIDC_SERVER: "http://stub-oidc-server:8091"
       CLIENT_ID: "caa-client"
-      CLIENT_SECRET: "mock-secret"
+      CLIENT_SECRET: "caa-mock-secret"
       REDIRECT_URI: "http://localhost:3000/callback"
       SCOPE: "openid profile email https://claims-api/claims_write"
       USERNAME: "alice"
