@@ -7,11 +7,17 @@ services:
       CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
       AUTH_SCOPES_CLAIMS_WRITE: SCOPE_https://claims-api/claims_write
+    depends_on:
+      stub-oidc-server:
+        condition: service_healthy
 
 
   stub-civil-claims-api:
     ports:
       - "8090:8090"
+    environment:
+      SECURITY_ENABLED: true  
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
 
   stub-oidc-server:
     ports:
@@ -20,6 +26,13 @@ services:
       - ./stub.yml:/opt/stub-oidc-server/config/external.yml:ro
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8091/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s  
+          
 
   laa-claim-for-payment-frontend:
     ports:
@@ -36,7 +49,7 @@ services:
       OIDC_SCOPE: openid profile email
       CLAIMS_API_SCOPE: https://claims-api/claims_write
       OIDC_LOGIN_PATH: /login
-      OIDC_CLIENT_SECRET: mock-secret
+      OIDC_CLIENT_SECRET: caa-mock-secret
       OIDC_CALLBACK_PATH: /callback
       OIDC_LOGOUT_PATH: /logout
       CLIENT_ID: caa-client
@@ -59,7 +72,7 @@ services:
       OIDC_SCOPE: openid profile email
       CLAIMS_API_SCOPE: https://claims-api/claims_write
       OIDC_LOGIN_PATH: /login
-      OIDC_CLIENT_SECRET: mock-secret
+      OIDC_CLIENT_SECRET: afe-mock-secret
       OIDC_CALLBACK_PATH: /callback
       OIDC_LOGOUT_PATH: /logout
       CLIENT_ID: afe-client
