@@ -100,25 +100,7 @@ When('I click sign out button', async function () {
 });
 
 When('I click on {string} link', async function (linkName: string) {
-
-  switch (linkName) {
-
-    case 'LAA-001':
-      await this.page
-        .getByRole('link', { name: 'LAA-001   – view claim' })
-        .click();
-      break;
-
-    case 'Return to claims':
-      await this.page
-        .getByRole('link', { name: 'Return to claims' })
-        .click();
-      break;
-
-    default:
-      throw new Error(`No element found for: ${linkName}`);
-  }
-
-  await this.page.waitForLoadState('networkidle');
-
+  await this.page
+    .getByRole('link', { name: new RegExp(`^${linkName}`) })
+    .click();
 });
