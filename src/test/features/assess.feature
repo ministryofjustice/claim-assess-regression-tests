@@ -13,8 +13,8 @@ Feature: Assess - Login and Claims Home Page
 #       | Your submissions      |
 #       | Import claim          |
 #       | Sign out              |
-    When I click on "LAA-001" link
-    Then I should see the heading "LAA-001"
+    When I click on "LAA-012" link
+    Then I should see the heading "LAA-012"
     When I click on "Return to claims" link
     Then I should see the heading "Your Assessments"
     When I click sign out button

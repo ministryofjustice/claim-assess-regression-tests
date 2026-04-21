@@ -8,6 +8,7 @@ reports/
 /playwright/.cache/
 /playwright/.auth/
 .yarn/install-state.gz
+docker-compose.entra.yml
 
 # IDEA
 .idea/
