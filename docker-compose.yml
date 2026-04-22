@@ -20,7 +20,7 @@ services:
     environment:
       SECURITY_ENABLED: true  
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
-      SPRING_FLYWAY_LOCATIONS: filesystem:/opt/stub-civil-claims-api/config/db/migration
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration,filesystem:/opt/stub-civil-claims-api/config/db/migration
 
   stub-oidc-server:
     ports:

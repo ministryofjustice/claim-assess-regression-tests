@@ -4,7 +4,7 @@ external:
       displayName: Alice Smith
       email: alice.smith@example.test
       firmId: prov-123
-      providerUserId: d9c4b277-941c-451c-81c4-6b46b7f7ab59
+      providerUserId: 68fb8dc1-2c2e-4113-8c37-242d476edf11
       password: password
       roles:
         - caseworker
@@ -12,7 +12,7 @@ external:
       displayName: Bob Jones
       email: bob.jones@example.test
       firmId: prov-456
-      providerUserId: 123e4567-e89b-12d3-a456-426614174000
+      providerUserId: c2379c93-2697-405f-b7d8-b8977c80d0c8
       password: password
       roles:
         - admin
