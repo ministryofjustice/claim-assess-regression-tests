@@ -32,5 +32,5 @@ Alternatively, to run a subset of tests:
 * with one of several tags, e.g. @assess or @claim, run `./e2e.sh @assess or @claim`
 
 ### Add role-based users
-Users are mounted to the docker `stub-oidc-server` container at runtime via the [stub.yml](/stub.yml) file.
+Users are mounted to the docker `stub-oidc-server` container at runtime via the [stub.yml](/config/stub.yml) file.
 Additional users can be added here for use in the tests.
