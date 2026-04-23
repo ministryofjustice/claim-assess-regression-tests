@@ -123,6 +123,7 @@ jobs:
         uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
+          rules_file_name: '.zap/rules-api.tsv'
           format: openapi
           target: openapi.json
           allow_issue_writing: false
