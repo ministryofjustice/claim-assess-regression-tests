@@ -1,2 +1,2 @@
 90004	IGNORE	(CORS Header : False positive. We do not need to add CORS headers to responses from the API.)
-10001	IGNORE	(Unexpected content type : False positives. Unable to reproduce issue locally.)
+100001	IGNORE	(Unexpected content type : False positives. Unable to reproduce issue locally.)
