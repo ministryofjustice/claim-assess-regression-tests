@@ -205,7 +205,7 @@ runs:
           docker compose -f docker-compose.yml -f docker-compose.ci.yml logs --no-color --tail=300 "$name" || true
           exit 1
         }
-        waitFor "laa-claim-for-payment" 8080
+        waitFor "laa-claim-for-payment" 8079
         waitFor "stub-civil-claims-api" 8090
         waitFor "stub-oidc-server" 8091
 

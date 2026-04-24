@@ -2,6 +2,7 @@ services:
   laa-claim-for-payment:
     ports:
       - "8080:8080"
+      - "8079:8079"
     environment:
       SECURITY_ENABLED: true
       CIVILCLAIMS_API_BASE_URL: http://stub-civil-claims-api:8090
@@ -10,7 +11,6 @@ services:
     depends_on:
       stub-oidc-server:
         condition: service_healthy
-
 
   stub-civil-claims-api:
     ports:
@@ -31,8 +31,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 10s  
-          
+      start_period: 10s
 
   laa-claim-for-payment-frontend:
     ports:
