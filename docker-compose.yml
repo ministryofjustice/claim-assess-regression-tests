@@ -36,6 +36,7 @@ services:
   laa-claim-for-payment-frontend:
     ports:
       - "3000:3000"
+      - "2999:2999"
     environment:
       BASE_URL: http://localhost:3000
       API_URL: http://laa-claim-for-payment:8080
@@ -60,6 +61,7 @@ services:
   laa-assess-a-claim-frontend:
     ports:
       - "3001:3001"
+      - "2998:2998"
     environment:
       BASE_URL: http://localhost:3001
       API_URL: http://laa-claim-for-payment:8080
