@@ -69,13 +69,16 @@ jobs:
           mkdir -p .zap
           chmod -R 777 .zap
 
+      - name: List open ports
+        run: sudo lsof -i -P -n | grep LISTEN
+
       - name: ZAP scan
         uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
         env:
           TARGET: ${{ inputs.target }}
         with:
           plan: '.zap/plan.yml'
-          cmd_options: '-port 9999'
+          cmd_options: '-port 8888'
           docker_env_vars: |
             TARGET
 
