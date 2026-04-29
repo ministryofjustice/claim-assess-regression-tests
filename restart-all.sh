@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+./stop-all.sh
+
 ./ensure-hosts.sh
 
 echo "Building laa-claim-for-payment-stubs"
-(cd ../laa-claim-for-payment-stubs && ./gradlew clean build)
+(cd ../laa-claim-for-payment-stubs && ./gradlew clean build -x test)
 
 echo "Building laa-claim-for-payment"
-(cd ../laa-claim-for-payment && ./gradlew clean build)
+(cd ../laa-claim-for-payment && ./gradlew clean build -x test)
 
 echo "Building laa-claim-for-payment-frontend"
 (cd ../laa-claim-for-payment-frontend && yarn install && yarn build)
