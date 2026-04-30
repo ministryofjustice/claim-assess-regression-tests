@@ -1,8 +1,6 @@
 name: QA ECR Playwright
 
 on:
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       laa-assess-a-claim-frontend-branch:
