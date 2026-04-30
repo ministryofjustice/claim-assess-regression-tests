@@ -14,7 +14,7 @@ Feature: Assess - Login and Claims Home Page
 #       | Import claim          |
 #       | Sign out              |
     When I click on "LAA-012" link
-    Then I should see the heading "LAA-012"
+    Then I should see the heading "Fixed fee: Special Children Act (Care)"
     When I click on "Return to claims" link
     Then I should see the heading "Your Assessments"
     When I click sign out button
