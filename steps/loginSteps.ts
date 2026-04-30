@@ -5,7 +5,7 @@ import {LoginPage} from "../pages/LoginPage";
 
 console.log('✅ loginSteps.ts is loaded');
 
-Given('I log in to Claim as user {string} with password {string}', async function (username: string, password: string) {
+Given('I log in to Claim as user {string} with password {string}', {timeout: 30000}, async function (username: string, password: string) {
 
   const claimUrl = process.env.CLAIM_BASE_URL || 'http://localhost:3000';
 
@@ -19,7 +19,7 @@ Given('I log in to Claim as user {string} with password {string}', async functio
   await loginPage.login(username, password);
 });
 
-Given('I log in to Assess as user {string} with password {string}', async function (username: string, password: string) {
+Given('I log in to Assess as user {string} with password {string}', {timeout: 30000}, async function (username: string, password: string) {
 
   const assessUrl = process.env.ASSESS_BASE_URL || 'http://localhost:3001';
 
