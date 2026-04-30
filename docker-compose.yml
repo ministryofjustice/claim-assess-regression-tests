@@ -16,16 +16,17 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./stub.yml:/opt/stub-civil-claims-api/src/main/resources/db/data/claims.yaml:ro
+      - ./config/claims.yml:/opt/stub-civil-claims-api/config/claims.yml:ro
     environment:
-      SECURITY_ENABLED: true  
+      SECURITY_ENABLED: true
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://stub-oidc-server:8091
+      CLAIMS_SEED_FILE: /opt/stub-civil-claims-api/config/claims.yml
 
   stub-oidc-server:
     ports:
       - "8091:8091"
     volumes:
-      - ./stub.yml:/opt/stub-oidc-server/config/external.yml:ro
+      - ./config/users.yml:/opt/stub-oidc-server/config/external.yml:ro
     environment:
       SPRING_PROFILES_ACTIVE: docker
     healthcheck:
