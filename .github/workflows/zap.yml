@@ -79,12 +79,6 @@ jobs:
           docker_env_vars: |
             TARGET
 
-      - name: Show URL count
-        if: always()
-        run: |
-          echo "Discovered URLs:"
-          jq '.site[].urls | length' report.json
-
       - name: Copy report
         if: always()
         run: |
