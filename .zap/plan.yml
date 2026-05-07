@@ -80,31 +80,40 @@ jobs:
       action: "add"
       type: "standalone"
       engine: "ECMAScript : Graal.js"
-      name: "count-usable-nodes"
+      name: "traverse-site-tree"
       inline: |
         // https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
-        var nodes = org.parosproxy.paros.model.Model
+        
+        var usable = 0;
+
+        function walk(node) {
+          for (var i = 0; i < node.getChildCount(); i++) {
+            var child = node.getChildAt(i);
+            var ref = child.getHistoryReference();
+            if (ref != null) {
+              var msg = ref.getHttpMessage();
+              if (msg != null) {
+                usable++;
+              }
+            }
+            walk(child);
+          }
+        }
+
+        var root = org.parosproxy.paros.model.Model
           .getSingleton()
           .getSession()
           .getSiteTree()
-          .getNodesInScope();
-        
-        var usable = 0;
-        
-        for (var i = 0; i < nodes.size(); i++) {
-          var ref = nodes.get(i).getHistoryReference();
-          if (ref != null && ref.getHttpMessage() != null) {
-            usable++;
-          }
-        }
-      
-        print("USABLE NODES: " + usable);
+          .getRoot();
 
+        walk(root);
+
+        print("USABLE NODES: " + usable);
   - type: script
     parameters:
       action: "run"
       type: "standalone"
-      name: "count-usable-nodes"
+      name: "traverse-site-tree"
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
