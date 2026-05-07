@@ -78,24 +78,23 @@ jobs:
           TARGET: ${{ inputs.target }}
         with:
           plan: '.zap/plan.yml'
-          cmd_options: '-loglevel DEBUG -port 8888'
+          docker_name: 'ghcr.io/zaproxy/zaproxy:2.15.0' #https://www.zaproxy.org/docs/desktop/releases/
+          cmd_options: '-port 8888'
           docker_env_vars: |
             TARGET
 
-      - name: Copy report and logs
+      - name: Copy report
         if: always()
         run: |
-          ls -lah .zap || true
           mkdir -p zap-report
-          cp .zap/*.html zap-report/ || true
-          cp .zap/*.log zap-report/ || true
+          cp .zap/*.html zap-report/
 
-      - name: Upload report and logs
+      - name: Upload report
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: zap_report_${{ env.APPLICATION }}
-          path: zap-report/*
+          path: zap-report/*.html
           retention-days: 7
 
       - name: Capture ${{ env.APPLICATION }} logs
