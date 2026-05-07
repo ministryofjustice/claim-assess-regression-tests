@@ -82,18 +82,20 @@ jobs:
           docker_env_vars: |
             TARGET
 
-      - name: Copy report
+      - name: Copy report and logs
         if: always()
         run: |
+          ls -lah .zap || true
           mkdir -p zap-report
-          cp .zap/*.html zap-report/
+          cp .zap/*.html zap-report/ || true
+          cp .zap/*.log zap-report/ || true
 
-      - name: Upload report
+      - name: Upload report and logs
         if: always()
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: zap_report_${{ env.APPLICATION }}
-          path: zap-report/*.html
+          path: zap-report/*
           retention-days: 7
 
       - name: Capture ${{ env.APPLICATION }} logs
