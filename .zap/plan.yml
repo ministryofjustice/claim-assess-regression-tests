@@ -64,6 +64,11 @@ env:
             username: bob
   parameters: {}
 jobs:
+  - type: alertFilter
+    alertFilters:
+      - ruleId: 10116
+        ruleName: ZAP is Out of Date (10116)
+        newRisk: Info
   - type: passiveScan-config
     parameters: {}
   - type: spiderClient
@@ -126,10 +131,6 @@ jobs:
     policyDefinition:
       defaultStrength: medium
       defaultThreshold: medium
-      rules:
-        - name: ZAP is Out of Date
-          id: 10116
-          threshold: medium # The risk level is set based on how out of date our ZAP version is (see docker_name)
   - type: report
     parameters:
       template: traditional-html
