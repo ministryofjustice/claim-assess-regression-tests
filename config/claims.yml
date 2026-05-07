@@ -8,6 +8,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "100323/098"
     client: "Amoto"
@@ -18,6 +19,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/678"
     client: "DeMello"
@@ -28,6 +30,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/678"
     client: "Omar"
@@ -38,6 +41,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/678"
     client: "Abdelazim"
@@ -48,6 +52,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/765"
     client: "Simpson"
@@ -58,6 +63,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/678"
     client: "Gruffalo"
@@ -68,6 +74,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "121120/678"
     client: "O'Connor"
@@ -78,6 +85,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "100323/567"
     client: "Tony"
@@ -88,6 +96,7 @@ claims:
     submissionId: "550e8400-e29b-41d4-a716-446655440000"
     providerUserId: "123e4567-e89b-12d3-a456-426614174000"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "100323/234"
     client: "Bianchi"
@@ -118,6 +127,7 @@ claims:
     submissionId: "6c5c142d-cb45-4ef6-865f-d4ecce40811c"
     providerUserId: "d9c4b277-941c-451c-81c4-6b46b7f7ab59"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "240301/102"
     client: "Anderson"
@@ -138,6 +148,7 @@ claims:
     submissionId: "a173ef60-58c0-4d7f-9400-1d97f1adf287"
     providerUserId: "d9c4b277-941c-451c-81c4-6b46b7f7ab59"
     escaped: false
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "240301/104"
     client: "Harrison"
@@ -148,6 +159,7 @@ claims:
     submissionId: "f92c91f4-66e0-4cb2-8eae-0b8a0b4b5d73"
     providerUserId: "d9c4b277-941c-451c-81c4-6b46b7f7ab59"
     escaped: true
+    counselPayment: "Paid and Reconciled"
 
   - ufn: "240301/105"
     client: "Mitchell"
@@ -158,3 +170,4 @@ claims:
     submissionId: "2c9b3892-9de7-4e76-b7c6-6d96fa36a6b3"
     providerUserId: "d9c4b277-941c-451c-81c4-6b46b7f7ab59"
     escaped: false
+    counselPayment: "Paid and Reconciled"
