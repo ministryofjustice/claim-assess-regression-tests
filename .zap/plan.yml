@@ -77,7 +77,11 @@ jobs:
       pageLoadTime: 2
   - type: script
     parameters:
-      script: |
+      action: "add"
+      type: "standalone"
+      engine: "ECMAScript : Graal.js"
+      name: "traverse-site-tree"
+      inline: |
         // https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
         function listChildren(node, level) {
           for (var j = 0; j < node.getChildCount(); j++) {
@@ -85,16 +89,20 @@ jobs:
             listChildren(node.getChildAt(j), level + 1);
           }
         }
-
+        
         var root = org.parosproxy.paros.model.Model
-          .getSingleton()
-          .getSession()
-          .getSiteTree()
-          .getRoot();
-
+        .getSingleton()
+        .getSession()
+        .getSiteTree()
+        .getRoot();
+        
         print("=== ZAP SITE TREE ===");
         listChildren(root, 0);
-
+  - type: script
+    parameters:
+      action: "run"
+      type: "standalone"
+      name: "traverse-site-tree"
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
