@@ -85,8 +85,13 @@ jobs:
         // https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
         function listChildren(node, level) {
           for (var j = 0; j < node.getChildCount(); j++) {
-            print(Array(level + 1).join("    ") + node.getChildAt(j).getNodeName());
-            listChildren(node.getChildAt(j), level + 1);
+            var child = node.getChildAt(j);
+            print(
+              Array(level + 1).join("    ") +
+              child.getNodeName() +
+              " (In scope: " + child.isIncludedInScope() + ")"
+            );
+            listChildren(child, level + 1);
           }
         }
         
