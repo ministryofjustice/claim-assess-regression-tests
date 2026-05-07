@@ -88,6 +88,11 @@ jobs:
       defaultThreshold: medium
   - type: report
     parameters:
+      template: traditional-json
+      reportDir: /zap/wrk/
+      reportFile: report.json
+  - type: report
+    parameters:
       template: traditional-html
       theme: null
       reportTitle: ZAP by Checkmarx Scanning Report
