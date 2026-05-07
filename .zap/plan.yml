@@ -64,6 +64,11 @@ env:
             username: bob
   parameters: {}
 jobs:
+  - type: alertFilter
+    alertFilters:
+      - ruleId: 10116
+        ruleName: ZAP is Out of Date (10116)
+        newRisk: Info
   - type: passiveScan-config
     parameters: {}
   - type: spiderClient
@@ -80,20 +85,21 @@ jobs:
       action: "add"
       type: "standalone"
       engine: "ECMAScript : Graal.js"
-      name: "traverse-site-tree"
+      name: "count-usable-nodes"
       inline: |
-        // https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
-        
+        // Based on https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
         var usable = 0;
 
         function walk(node) {
           for (var i = 0; i < node.getChildCount(); i++) {
             var child = node.getChildAt(i);
-            var ref = child.getHistoryReference();
-            if (ref != null) {
-              var msg = ref.getHttpMessage();
-              if (msg != null) {
-                usable++;
+            if (child.isIncludedInScope()) {
+              var ref = child.getHistoryReference();
+              if (ref != null) {
+                var msg = ref.getHttpMessage();
+                if (msg != null) {
+                  usable++;
+                }
               }
             }
             walk(child);
@@ -113,7 +119,7 @@ jobs:
     parameters:
       action: "run"
       type: "standalone"
-      name: "traverse-site-tree"
+      name: "count-usable-nodes"
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
