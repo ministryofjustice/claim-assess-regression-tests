@@ -145,12 +145,6 @@ jobs:
       - medium
       - high
       - confirmed
-    sections:
-      - insights
-      - instancecount
-      - sequencedetails
-      - alertdetails
-      - alertcount
   - type: exitStatus
     parameters:
       errorLevel: Medium
