@@ -78,7 +78,7 @@ jobs:
           TARGET: ${{ inputs.target }}
         with:
           plan: '.zap/plan.yml'
-          cmd_options: '-port 8888'
+          cmd_options: '-d -port 8888'
           docker_env_vars: |
             TARGET
 
