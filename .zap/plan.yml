@@ -127,8 +127,9 @@ jobs:
       defaultStrength: medium
       defaultThreshold: medium
       rules:
-        - id: 10116
-          threshold: medium
+        - name: ZAP is Out of Date
+          id: 10116
+          threshold: medium # The risk level is set based on how out of date our ZAP version is (see docker_name)
   - type: report
     parameters:
       template: traditional-html
