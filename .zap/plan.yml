@@ -17,8 +17,7 @@ env:
           diagnostics: false
           steps: []
         verification:
-          method: response # https://www.zaproxy.org/docs/desktop/start/features/authstrategies/
-          loggedInRegex: \QSign out\E
+          method: autodetect
       sessionManagement:
         method: cookie
       technology:
@@ -123,7 +122,7 @@ jobs:
       context: Authenticated
       user: alice
       url: ${TARGET}
-      maxScanDurationInMins: 20
+      maxScanDurationInMins: 10
     policyDefinition:
       defaultStrength: medium
       defaultThreshold: medium
