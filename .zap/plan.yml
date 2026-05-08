@@ -132,6 +132,7 @@ jobs:
       defaultStrength: medium
       defaultThreshold: medium
   - type: report
+    alwaysRun: true
     parameters:
       template: traditional-html
       theme: null
