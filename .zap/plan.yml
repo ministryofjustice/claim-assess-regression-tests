@@ -16,8 +16,6 @@ env:
           stepDelay: 0
           diagnostics: false
           steps: []
-        verification:
-          method: autodetect
       sessionManagement:
         method: cookie
       technology:
