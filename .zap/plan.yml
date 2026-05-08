@@ -17,12 +17,8 @@ env:
           diagnostics: false
           steps: []
         verification:
-          method: poll
+          method: response # https://www.zaproxy.org/docs/desktop/start/features/authstrategies/
           loggedInRegex: \QSign out\E
-          pollFrequency: 5
-          pollUnits: requests
-          pollUrl: ${TARGET}
-          pollPostData: ""
       sessionManagement:
         method: cookie
       technology:
