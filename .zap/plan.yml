@@ -19,7 +19,7 @@ env:
         verification:
           method: poll
           loggedInRegex: \QSign out\E
-          pollFrequency: 60
+          pollFrequency: 5
           pollUnits: requests
           pollUrl: ${TARGET}
           pollPostData: ""
