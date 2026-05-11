@@ -83,13 +83,13 @@ jobs:
 
       - name: ZAP scan
         uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
+        env:
+          ZAP_DOCKER_EXTRA_ARGS: >
+            --add-host=zap:127.0.0.1
+            --add-host=host.docker.internal:host-gateway
         with:
           plan: '.zap/plan.yml'
           cmd_options: '-port 8888 -host 0.0.0.0'
-
-      - name: Debug proxy environment
-        if: always()
-        run: env | grep -i proxy || true
 
       - name: Copy report
         if: always()
