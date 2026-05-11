@@ -88,6 +88,7 @@ jobs:
           cmd_options: '-port 8888 -host 0.0.0.0'
 
       - name: Debug proxy environment
+        if: always()
         run: env | grep -i proxy || true
 
       - name: Copy report
