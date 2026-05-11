@@ -91,16 +91,15 @@ jobs:
 
           echo "ZAP container: $CONTAINER_ID"
 
-          mkdir zap-debug
+          mkdir -p zap-debug
 
-          echo "=== Copy filesystem areas ==="
-
-          docker cp $CONTAINER_ID:/home zap-debug/home || true
-          docker cp $CONTAINER_ID:/zap zap-debug/zap || true
-          docker cp $CONTAINER_ID:/tmp zap-debug/tmp || true
+          docker cp $CONTAINER_ID:/home/zap zap-debug/home-zap || true
 
           echo "=== Find zap.log ==="
           find zap-debug -name "zap.log"
+
+          echo "=== Show ZAP directories ==="
+          find zap-debug/home-zap -maxdepth 3 -type d
 
       - name: Copy report
         if: always()
