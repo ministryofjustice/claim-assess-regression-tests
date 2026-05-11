@@ -85,7 +85,7 @@ jobs:
         uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
         with:
           plan: '.zap/plan.yml'
-          cmd_options: '-port 8888'
+          cmd_options: '-port 8888 -host 0.0.0.0'
 
       - name: Copy report
         if: always()
