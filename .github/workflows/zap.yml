@@ -87,6 +87,9 @@ jobs:
           plan: '.zap/plan.yml'
           cmd_options: '-port 8888 -host 0.0.0.0'
 
+      - name: Debug proxy environment
+        run: env | grep -i proxy || true
+
       - name: Copy report
         if: always()
         run: |
