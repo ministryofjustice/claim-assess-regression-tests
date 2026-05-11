@@ -84,42 +84,29 @@ jobs:
           docker_env_vars: |
             TARGET
 
-      - name: Debug ZAP container
+      - name: Find zap.log
         if: always()
         run: |
-          echo "=== Running containers ==="
-          docker ps -a
+          CONTAINER_ID=$(docker ps -aq --filter "ancestor=ghcr.io/zaproxy/zaproxy:stable" | head -n 1)
 
-          echo "=== Find ZAP container ==="
-          CONTAINER_ID=$(docker ps -q | head -n 1)
-          echo "Container ID: $CONTAINER_ID"
+          echo "ZAP container: $CONTAINER_ID"
 
-          echo "=== Container env ==="
-          docker exec $CONTAINER_ID env || true
+          mkdir zap-debug
 
-          echo "=== Search for zap.log ==="
-          docker exec $CONTAINER_ID find / -name "zap.log" 2>/dev/null || true
+          echo "=== Copy filesystem areas ==="
 
-          echo "=== List ZAP directories ==="
-          docker exec $CONTAINER_ID ls -lah /home/zap || true
-          docker exec $CONTAINER_ID ls -lah /home/zap/.ZAP || true
-          docker exec $CONTAINER_ID ls -lah /home/zap/.ZAP_D || true
+          docker cp $CONTAINER_ID:/home zap-debug/home || true
+          docker cp $CONTAINER_ID:/zap zap-debug/zap || true
+          docker cp $CONTAINER_ID:/tmp zap-debug/tmp || true
+
+          echo "=== Find zap.log ==="
+          find zap-debug -name "zap.log"
 
       - name: Copy report
         if: always()
         run: |
           mkdir -p zap-report
           cp .zap/*.html zap-report/
-
-      - name: Find zap.log
-        if: always()
-        run: |
-          CONTAINER_ID=$(docker ps -aq --filter "ancestor=ghcr.io/zaproxy/zaproxy:stable" | head -n 1)
-          
-          echo "ZAP container: $CONTAINER_ID"
-          
-          docker run --rm --volumes-from $CONTAINER_ID alpine \
-            find / -name "zap.log" 2>/dev/null
 
 #      - name: Notify Slack on failure
 #        if: failure()
