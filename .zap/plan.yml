@@ -64,11 +64,6 @@ env:
             username: bob
   parameters: {}
 jobs:
-  - type: alertFilter
-    alertFilters:
-      - ruleId: 10116
-        ruleName: ZAP is Out of Date (10116)
-        newRisk: Info
   - type: passiveScan-config
     parameters: {}
   - type: spiderClient
@@ -80,46 +75,6 @@ jobs:
       maxChildren: 0
       initialLoadTime: 10
       pageLoadTime: 2
-  - type: script
-    parameters:
-      action: "add"
-      type: "standalone"
-      engine: "ECMAScript : Graal.js"
-      name: "count-usable-nodes"
-      inline: |
-        // Based on https://github.com/zaproxy/community-scripts/blob/main/standalone/Traverse%20sites%20tree.js
-        var usable = 0;
-
-        function walk(node) {
-          for (var i = 0; i < node.getChildCount(); i++) {
-            var child = node.getChildAt(i);
-            if (child.isIncludedInScope()) {
-              var ref = child.getHistoryReference();
-              if (ref != null) {
-                var msg = ref.getHttpMessage();
-                if (msg != null) {
-                  usable++;
-                }
-              }
-            }
-            walk(child);
-          }
-        }
-
-        var root = org.parosproxy.paros.model.Model
-          .getSingleton()
-          .getSession()
-          .getSiteTree()
-          .getRoot();
-
-        walk(root);
-
-        print("USABLE NODES: " + usable);
-  - type: script
-    parameters:
-      action: "run"
-      type: "standalone"
-      name: "count-usable-nodes"
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
@@ -132,7 +87,6 @@ jobs:
       defaultStrength: medium
       defaultThreshold: medium
   - type: report
-    alwaysRun: true
     parameters:
       template: traditional-html
       theme: null
@@ -146,6 +100,12 @@ jobs:
       - medium
       - high
       - confirmed
+    sections:
+      - insights
+      - instancecount
+      - sequencedetails
+      - alertdetails
+      - alertcount
   - type: exitStatus
     parameters:
       errorLevel: Medium
