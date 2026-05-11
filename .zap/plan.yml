@@ -11,10 +11,10 @@ env:
         method: browser
         parameters:
           loginPageUrl: ${TARGET}
-          loginPageWait: 10
+          loginPageWait: 20
           browserId: firefox-headless
           stepDelay: 0
-          diagnostics: false
+          diagnostics: true
           steps: []
         verification:
           method: poll
