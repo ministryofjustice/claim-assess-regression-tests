@@ -24,7 +24,7 @@ env:
           pollUrl: ${TARGET}/
           pollPostData: ""
       sessionManagement:
-        method: headers
+        method: cookie
       technology:
         exclude:
           - C

@@ -103,14 +103,14 @@ jobs:
         run: |
           docker logs claim-assess-regression-tests-${APPLICATION}-1
 
-      - name: Notify Slack on failure
-        if: failure()
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: >
-              :x: ZAP job failed for ${{ env.APPLICATION }}!
-              Download the report:
-              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#      - name: Notify Slack on failure
+#        if: failure()
+#        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 #v3.0.1
+#        with:
+#          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+#          webhook-type: incoming-webhook
+#          payload: |
+#            text: >
+#              :x: ZAP job failed for ${{ env.APPLICATION }}!
+#              Download the report:
+#              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
