@@ -89,7 +89,7 @@ jobs:
             -port 8888
             -host 0.0.0.0
             -config network.localServers.localhost=true
-            -config selenium.firefox.preferences.network.proxy.type=0
+            -loglevel DEBUG
 
       - name: Copy report
         if: always()

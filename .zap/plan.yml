@@ -73,8 +73,8 @@ jobs:
       url: ${TARGET}
       maxDuration: 0
       maxChildren: 0
-      initialLoadTime: 10
-      pageLoadTime: 2
+      initialLoadTime: 20
+      pageLoadTime: 10
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
