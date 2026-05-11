@@ -104,3 +104,117 @@ When('I click on {string} link', async function (linkName: string) {
     .getByRole('link', { name: new RegExp(`^${linkName}`) })
     .click();
 });
+
+
+Then('I should see the following Elements on Claim Summary page',async function (dataTable) {
+    const page = this.page;
+
+    const elements = dataTable.hashes();
+
+    for (const row of elements) {
+      const elementName = row['Elements'];
+
+      switch (elementName) {
+        case 'In progress':
+          await expect(page.getByText('In progress')).toBeVisible();
+          break;
+
+        case 'Total claim amount':
+          await expect(page.getByText('Total claim amount:')).toBeVisible();
+          break;
+
+        case 'Date received':
+          await expect(page.getByText('Date received')).toBeVisible();
+          break;
+
+        case 'Case reference number':
+          await expect(page.getByText('Case reference number')).toBeVisible();
+          break;
+
+        case 'LAA reference number':
+          await expect(page.getByText('LAA reference number')).toBeVisible();
+          break;
+
+        case 'Assigned to':
+          await expect(page.getByText('Assigned to')).toBeVisible();
+          break;
+
+        case 'Provider risk':
+          await expect(page.getByText('Provider risk:')).toBeVisible();
+          break;
+
+        case 'Action button':
+          await expect(page.getByRole('button', { name: /action/i })).toBeVisible();
+          break;
+          
+        case 'Claim time standard':
+          await expect(page.getByText('Claim time standard:')).toBeVisible();
+          break;
+
+          case 'Remove from your list':
+          await expect(page.getByRole('button', { name: 'Remove from your list' })).toBeVisible();
+          break;
+
+        default:
+          throw new Error(`Unknown element: ${elementName}`);
+      }
+    }
+  }
+);
+
+Then('I should see the following Elements on Claim summary tabbed box',async function (dataTable) {
+    const page = this.page;
+
+    const elements = dataTable.hashes();
+
+    for (const row of elements) {
+      const elementName = row['Elements'];
+
+      switch (elementName) {
+        case 'Claim summary':
+          await expect(page.getByText('Claim summary')).toBeVisible();
+          break;
+
+        case 'Review and assess':
+          await expect(page.getByLabel('Sub navigation').getByRole('link', { name: 'Review and assess' })).toBeVisible();
+          break;
+
+        case 'Claim History':
+          await expect(page.getByLabel('Sub navigation').getByRole('link', { name: 'Claim history' })).toBeVisible();
+          break;
+
+        case 'All evidence':
+          await expect(page.getByLabel('Sub navigation').getByRole('link', { name: 'All evidence' })).toBeVisible();
+          break;
+
+          case 'Case':
+          await expect(page.getByRole('heading', { name: 'Case' })).toBeVisible();
+          break;
+
+          case 'Certificate scope':
+          await expect(page.getByRole('heading', { name: 'Certificate scope' })).toBeVisible();
+          break;
+
+          case 'Proceedings':
+          await expect(page.getByRole('heading', { name: 'Proceedings' })).toBeVisible();
+          break;
+
+          case 'Outcome':
+          await expect(page.getByText('Outcome')).toBeVisible();
+          break;
+
+          case 'Level of service':
+          await expect(page.getByText('Level of service')).toBeVisible();
+          break;
+
+          case 'Supervision order':
+          await expect(page.getByText('Supervision order')).toBeVisible();
+          break;
+
+
+        default:
+          throw new Error(`Unknown element: ${elementName}`);
+      }
+    }
+  }
+);
