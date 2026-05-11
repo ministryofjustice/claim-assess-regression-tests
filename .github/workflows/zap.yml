@@ -84,6 +84,27 @@ jobs:
           docker_env_vars: |
             TARGET
 
+      - name: Debug ZAP container
+        if: always()
+        run: |
+          echo "=== Running containers ==="
+          docker ps -a
+
+          echo "=== Find ZAP container ==="
+          CONTAINER_ID=$(docker ps -q | head -n 1)
+          echo "Container ID: $CONTAINER_ID"
+
+          echo "=== Container env ==="
+          docker exec $CONTAINER_ID env || true
+
+          echo "=== Search for zap.log ==="
+          docker exec $CONTAINER_ID find / -name "zap.log" 2>/dev/null || true
+
+          echo "=== List ZAP directories ==="
+          docker exec $CONTAINER_ID ls -lah /home/zap || true
+          docker exec $CONTAINER_ID ls -lah /home/zap/.ZAP || true
+          docker exec $CONTAINER_ID ls -lah /home/zap/.ZAP_D || true
+
       - name: Copy report
         if: always()
         run: |
