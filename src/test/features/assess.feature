@@ -5,7 +5,6 @@ Feature: Assess - Login and Claims Home Page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
     Then I should see the heading "Your Assessments"
-#     Then I should see the page heading "Start your claim for payment"
 #     Then I should see the following Elements
 #       | Elements              |
 #       | Submitted In progress |
@@ -15,6 +14,64 @@ Feature: Assess - Login and Claims Home Page
 #       | Sign out              |
     When I click on "LAA-012" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
+    When I click on "Back" link
+    Then I should see the heading "Your Assessments"
+    When I click sign out button
+
+  @smoke @assess
+  Scenario: The caseworker logs in and verifies Claim Summary page
+    Given I log in to Assess as user "alice" with password "password"
+    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the heading "Your Assessments"
+    When I click on "LAA-012" link
+    Then I should see the heading "Fixed fee: Special Children Act (Care)"
+    Then I should see the following Elements on Claim Summary page
+      | Elements              |
+      | In progress           |
+      | Total claim amount    |
+      | Date received         |
+      | Case reference number |
+      | LAA reference number  |
+      | Assigned to           |
+      | Provider risk         |
+      | Claim time standard   |
+      | Remove from your list |
+    When I click on "Back" link
+    Then I should see the heading "Your Assessments"
+    When I click sign out button
+
+  @smoke @assess
+  Scenario: The caseworker logs in and verifies Claim summary tabbed box
+    Given I log in to Assess as user "alice" with password "password"
+    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the heading "Your Assessments"
+    When I click on "LAA-012" link
+    Then I should see the heading "Fixed fee: Special Children Act (Care)"
+    Then I should see the following Elements on Claim summary tabbed box
+      | Elements          |
+      | Claim summary     |
+      | Review and assess |
+      | Claim History     |
+      | All evidence      |
+    When I click on "Back" link
+    Then I should see the heading "Your Assessments"
+    When I click sign out button
+
+  @smoke @assess
+  Scenario: The caseworker logs in and verifies case related information
+    Given I log in to Assess as user "alice" with password "password"
+    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the heading "Your Assessments"
+    When I click on "LAA-012" link
+    Then I should see the heading "Fixed fee: Special Children Act (Care)"
+    Then I should see the following Elements on Claim summary tabbed box
+      | Elements          |
+      | Case              |
+      | Certificate scope |
+      | Proceedings       |
+      | Outcome           |
+      | Level of service  |
+      | Supervision order |
     When I click on "Back" link
     Then I should see the heading "Your Assessments"
     When I click sign out button
