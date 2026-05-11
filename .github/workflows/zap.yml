@@ -111,18 +111,15 @@ jobs:
           mkdir -p zap-report
           cp .zap/*.html zap-report/
 
-      - name: Upload report
-        if: always()
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
-        with:
-          name: zap_report_${{ env.APPLICATION }}
-          path: zap-report/*.html
-          retention-days: 7
-
-      - name: Capture ${{ env.APPLICATION }} logs
+      - name: Find zap.log
         if: always()
         run: |
-          docker logs claim-assess-regression-tests-${APPLICATION}-1
+          CONTAINER_ID=$(docker ps -aq --filter "ancestor=ghcr.io/zaproxy/zaproxy:stable" | head -n 1)
+          
+          echo "ZAP container: $CONTAINER_ID"
+          
+          docker run --rm --volumes-from $CONTAINER_ID alpine \
+            find / -name "zap.log" 2>/dev/null
 
 #      - name: Notify Slack on failure
 #        if: failure()
