@@ -15,13 +15,13 @@ env:
           browserId: firefox-headless
           stepDelay: 0
           diagnostics: true
-        verification:
-          method: poll
-          loggedInRegex: \QSign out\E
-          pollFrequency: 5
-          pollUnits: requests
-          pollUrl: ${TARGET}/
-          pollPostData: ""
+#        verification:
+#          method: poll
+#          loggedInRegex: \QSign out\E
+#          pollFrequency: 60
+#          pollUnits: requests
+#          pollUrl: ${TARGET}/
+#          pollPostData: ""
       sessionManagement:
         method: cookie
       technology:
