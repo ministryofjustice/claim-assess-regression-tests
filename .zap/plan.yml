@@ -26,7 +26,9 @@ env:
           pollUrl: ${TARGET}/
           pollPostData: ""
       sessionManagement:
-        method: autodetect
+        method: cookie
+        parameters:
+          cookieName: sessionId
       technology:
         exclude:
           - C
