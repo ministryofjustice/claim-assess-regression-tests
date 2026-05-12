@@ -3,12 +3,10 @@ env:
     - name: Authenticated
       urls:
         - ${TARGET}
-        - http://stub-oidc-server:8091
       includePaths:
         - ${TARGET}.*
       excludePaths:
         - ${TARGET}/logout
-        - http://stub-oidc-server:8091.*
       authentication:
         method: browser
         parameters:
@@ -19,8 +17,8 @@ env:
           diagnostics: true
         verification:
           method: poll
-          loggedInRegex: \Q 200 OK\E
-          loggedOutRegex: \Q 302 Found\E
+          loggedInRegex: \QSign out\E
+          loggedOutRegex: \QSign in\E
           pollFrequency: 60
           pollUnits: requests
           pollUrl: ${TARGET}/
