@@ -18,8 +18,8 @@ env:
           steps: []
         verification:
           method: poll
-          loggedInRegex: \Q 200 OK\E
-          pollFrequency: 60
+          loggedInRegex: \QSign out\E
+          pollFrequency: 5
           pollUnits: requests
           pollUrl: ${TARGET}/
           pollPostData: ""
