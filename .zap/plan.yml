@@ -7,6 +7,8 @@ env:
         - ${TARGET}.*
       excludePaths:
         - ${TARGET}/logout
+        - ${TARGET}/login
+        - ${TARGET}/callback.*
       authentication:
         method: browser
         parameters:
@@ -14,17 +16,19 @@ env:
           loginPageWait: 10
           browserId: firefox-headless
           stepDelay: 0
-          diagnostics: false
-          steps: []
+          diagnostics: true
         verification:
           method: poll
           loggedInRegex: \QSign out\E
+          loggedOutRegex: \QSign in\E
           pollFrequency: 60
           pollUnits: requests
-          pollUrl: ${TARGET}
+          pollUrl: ${TARGET}/
           pollPostData: ""
       sessionManagement:
         method: cookie
+        parameters:
+          cookieName: sessionId
       technology:
         exclude:
           - C
