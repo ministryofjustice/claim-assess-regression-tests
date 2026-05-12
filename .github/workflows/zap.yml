@@ -82,7 +82,7 @@ jobs:
           sed -i 's|\${TARGET}|'$TARGET'|g' .zap/plan.yml
 
       - name: ZAP scan
-        uses: zaproxy/action-af@4dd5346bd6603523068d5ecbf3a366f57cdc1890 #v0.2.0
+        uses: zaproxy/action-af@d186d5d9536d0f1380e5eaa58168432fefc8ed6d #v0.3.0
         with:
           plan: '.zap/plan.yml'
           cmd_options: >
