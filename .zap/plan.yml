@@ -8,6 +8,7 @@ env:
         - ${TARGET}.*
       excludePaths:
         - ${TARGET}/logout
+        - http://stub-oidc-server:8091.*
       authentication:
         method: browser
         parameters:
