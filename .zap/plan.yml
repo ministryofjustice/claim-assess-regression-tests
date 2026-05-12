@@ -12,7 +12,7 @@ env:
         method: browser
         parameters:
           loginPageUrl: ${TARGET}
-          loginPageWait: 20
+          loginPageWait: 10
           browserId: firefox-headless
           stepDelay: 0
           diagnostics: true
@@ -74,8 +74,8 @@ jobs:
       url: ${TARGET}
       maxDuration: 0
       maxChildren: 0
-      initialLoadTime: 20
-      pageLoadTime: 10
+      initialLoadTime: 10
+      pageLoadTime: 2
   - type: passiveScan-wait
     parameters: {}
   - type: activeScan
