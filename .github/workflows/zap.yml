@@ -89,7 +89,7 @@ jobs:
             -port 8888
             -host 0.0.0.0
             -config network.localServers.localhost=true
-            -loglevel DEBUG
+            -loglevel ALL
 
       - name: Copy report
         if: always()
