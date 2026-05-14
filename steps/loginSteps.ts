@@ -105,6 +105,11 @@ When('I click on {string} link', async function (linkName: string) {
     .click();
 });
 
+When('I click on {string} button', async function (buttonName: string) {
+  await this.page
+    .getByRole('button', { name: buttonName })
+    .click();
+});
 
 Then('I should see the following Elements on Claim Summary page',async function (dataTable) {
     const page = this.page;
@@ -211,6 +216,13 @@ Then('I should see the following Elements on Claim summary tabbed box',async fun
           await expect(page.getByText('Supervision order')).toBeVisible();
           break;
 
+          case 'Request update from provider':
+          await expect(page.getByText('Request update from provider')).toBeVisible();
+          break;
+
+          case 'Make a decision':
+          await expect(page.getByText('Make a decision')).toBeVisible();
+          break;
 
         default:
           throw new Error(`Unknown element: ${elementName}`);
