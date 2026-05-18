@@ -2,7 +2,7 @@ Feature: Assess - Login and Claims Home Page
   @smoke @assess
   Scenario: The caseworker logs in and land on Assess home page
     Given I log in to Assess as user "alice" with password "password"
-    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     # Then I should see the following Elements
     #   | Elements              |
@@ -19,7 +19,7 @@ Feature: Assess - Login and Claims Home Page
   @smoke @assess
   Scenario: The caseworker logs in and verifies Claim Summary page
     Given I log in to Assess as user "alice" with password "password"
-    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-012" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
@@ -40,7 +40,7 @@ Feature: Assess - Login and Claims Home Page
   @smoke @assess
   Scenario: The caseworker logs in and verifies Claim summary tabbed box
     Given I log in to Assess as user "alice" with password "password"
-    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-012" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
@@ -57,7 +57,7 @@ Feature: Assess - Login and Claims Home Page
   @smoke @assess
   Scenario: The caseworker logs in and verifies case related information
     Given I log in to Assess as user "alice" with password "password"
-    Then I should see the page title "Assess Claim for Civil Work – GOV.UK"
+    Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-012" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
