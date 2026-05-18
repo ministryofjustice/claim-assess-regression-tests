@@ -82,7 +82,6 @@ services:
       OIDC_CALLBACK_PATH: /callback
       OIDC_LOGOUT_PATH: /logout
       CLIENT_ID: afe-client
-      SERVICE_NAME: Assess Claim for Civil Work
       MANAGEMENT_PORT: 2998
     depends_on:
       - laa-claim-for-payment
