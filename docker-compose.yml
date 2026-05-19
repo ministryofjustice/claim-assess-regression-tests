@@ -57,7 +57,6 @@ services:
       OIDC_CALLBACK_PATH: /callback
       OIDC_LOGOUT_PATH: /logout
       CLIENT_ID: caa-client
-      SERVICE_NAME: Claim for Controlled Work
       MANAGEMENT_PORT: 2999
     depends_on:
       - laa-claim-for-payment

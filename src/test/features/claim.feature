@@ -3,7 +3,7 @@ Feature: Claim for Payment - Login and happy path journey
   @smoke @claim
   Scenario: The provider/User logs in and land on Claims home page
     Given I log in to Claim as user "bob" with password "password"
-    Then I should see the page title "Claim for Controlled Work – GOV.UK"
+    Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
 #     Then I should see the page heading "Start your claim for payment"
     Then I should see the following Elements
@@ -22,7 +22,7 @@ Feature: Claim for Payment - Login and happy path journey
     @smoke @claim
   Scenario: The provider/User logs in and can land on upload evidence page
     Given I log in to Claim as user "bob" with password "password"
-    Then I should see the page title "Claim for Controlled Work – GOV.UK"
+    Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
 #     Then I should see the page heading "Start your claim for payment"
     Then I should see the following Elements
