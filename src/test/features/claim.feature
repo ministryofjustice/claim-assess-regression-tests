@@ -53,8 +53,7 @@ Scenario: The provider/User logs in and choses how to upload evidence page
       | Sign out              |
     When I click on "Create a new claim" button
     Then I should see the heading on the page "How do you want to upload your evidence screen?"
-    # When I click on "All at once" button
-    When I click on "Associated to specific line" button
+    When I click on "Associated to specific line" radio button
     When I click on "Save and continue" button
     When I click on "Interim hearing on 20 December" link
     When I upload a file "testDocument.pdf"

@@ -112,28 +112,9 @@ When('I click on {string} link', async function (linkName: string) {
     .click();
 });
 
-When('I click on {string} button', async function (buttonName: string) {
-  
-  switch (buttonName) {
-        case 'Create a new claim':
-          await this.page.getByRole('button', { name: buttonName }).click();
-          break;
-
-        case 'All at once':
-          await this.page.getByText('All at once', { exact: true }).click();
-          break;
-
-        case 'Associated to specific line':  
-          await this.page.getByRole('radio', { name: 'Associated to specific line' }).check();
-          break;
-
-          case 'Save and continue':  
-          await this.page.getByRole('button', { name: 'Save and continue' }).click();
-          break;
-
-          default:
-          throw new Error(`Unknown element: ${buttonName}`);
-}});
+When('I click on {string} button', async function (button: string) {
+    await this.page.getByRole('button', { name: button }).click();
+});
 
 Then('I should see the following Elements on Claim Summary page',async function (dataTable) {
     const page = this.page;
@@ -261,5 +242,9 @@ When('I upload a file {string}', async function (fileName: string) {
   const filePath = path.resolve('test-data', fileName);
 
   await this.page.locator('input[type="file"]').setInputFiles(filePath);
+});
+
+When('I click on {string} radio button', async function (radioButton: string) {
+    await this.page.getByRole('radio', { name: radioButton }).check();
 });
 
