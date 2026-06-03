@@ -37,3 +37,26 @@ Feature: Claim for Payment - Login and happy path journey
     # When I click on "Return to claims" link
     # Then I should see the heading "Your Claims"
     When I click sign out button
+
+    @smoke @claim
+Scenario: The provider/User logs in and choses how to upload evidence page
+    Given I log in to Claim as user "bob" with password "password"
+    Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
+    Then I should see the heading "Your Claims"
+#     Then I should see the page heading "Start your claim for payment"
+    Then I should see the following Elements
+      | Elements              |
+      | Submitted In progress |
+      | Your claims           |
+      | Your submissions      |
+      | Import claim          |
+      | Sign out              |
+    When I click on "Create a new claim" button
+    Then I should see the heading on the page "How do you want to upload your evidence screen?"
+    # When I click on "All at once" button
+    When I click on "Associated to specific line" button
+    When I click on "Save and continue" button
+    When I click on "Interim hearing on 20 December" link
+    When I upload a file "testDocument.pdf"
+    # When I click on "Save and continue" button
+    When I click sign out button

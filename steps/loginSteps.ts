@@ -2,6 +2,7 @@ import { Given, Then, When } from '@cucumber/cucumber';
 import { HomePage } from '../pages/HomePage';
 import { expect } from '@playwright/test';
 import {LoginPage} from "../pages/LoginPage";
+import path from 'path';
 
 console.log('✅ loginSteps.ts is loaded');
 
@@ -36,6 +37,12 @@ Then('I should see the heading {string}', async function (expected: string) {
   const heading = await this.page.locator('h1').textContent();
   console.log('Page heading is:', heading);
   expect(heading).toBe(expected);
+});
+
+
+Then('I should see the heading on the page {string}', async function (expected: string) {
+  await expect(this.page.getByRole('heading', { level: 1 })).toHaveText(new RegExp(expected, 'i'));
+
 });
 
 Then('I should see the page title {string}', async function (expected: string) {
@@ -106,10 +113,27 @@ When('I click on {string} link', async function (linkName: string) {
 });
 
 When('I click on {string} button', async function (buttonName: string) {
-  await this.page
-    .getByRole('button', { name: buttonName })
-    .click();
-});
+  
+  switch (buttonName) {
+        case 'Create a new claim':
+          await this.page.getByRole('button', { name: buttonName }).click();
+          break;
+
+        case 'All at once':
+          await this.page.getByText('All at once', { exact: true }).click();
+          break;
+
+        case 'Associated to specific line':  
+          await this.page.getByRole('radio', { name: 'Associated to specific line' }).check();
+          break;
+
+          case 'Save and continue':  
+          await this.page.getByRole('button', { name: 'Save and continue' }).click();
+          break;
+
+          default:
+          throw new Error(`Unknown element: ${buttonName}`);
+}});
 
 Then('I should see the following Elements on Claim Summary page',async function (dataTable) {
     const page = this.page;
@@ -230,3 +254,12 @@ Then('I should see the following Elements on Claim summary tabbed box',async fun
     }
   }
 );
+
+
+When('I upload a file {string}', async function (fileName: string) {
+  
+  const filePath = path.resolve('test-data', fileName);
+
+  await this.page.locator('input[type="file"]').setInputFiles(filePath);
+});
+
