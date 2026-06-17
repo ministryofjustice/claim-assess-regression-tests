@@ -179,7 +179,7 @@ claim_evidence:
     client: "Amoto"
     fileIdString: "amoto-invoice-001.pdf"
     fileSize: 5000000
-    dateAdded: "2026-06-17T10:15:30Z"
+    submittedOn: "2026-06-17T10:15:30Z"
 
 line_items:
   - claimUfn: "100323/098"
