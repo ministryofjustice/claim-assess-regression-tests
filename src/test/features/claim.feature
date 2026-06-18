@@ -19,7 +19,7 @@ Feature: Claim for Payment - Login and happy path journey
     Then I should see the heading "Your Claims"
     When I click sign out button
 
-    @smoke @claim
+  @smoke @claim
   Scenario: The provider/User logs in and can land on upload evidence page
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
@@ -38,8 +38,8 @@ Feature: Claim for Payment - Login and happy path journey
     # Then I should see the heading "Your Claims"
     When I click sign out button
 
-    @smoke @claim
-Scenario: The provider/User logs in and choses how to upload evidence page
+  @smoke @claim
+  Scenario: The provider/User logs in and chooses how to upload evidence page
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
@@ -55,7 +55,12 @@ Scenario: The provider/User logs in and choses how to upload evidence page
     Then I should see the heading on the page "How do you want to upload your evidence screen?"
     When I click on "Associated to specific line" radio button
     When I click on "Save and continue" button
-    When I click on "Interim hearing on 20 December" link
+    When I click on "Interim hearing on 20 December 2023" link
     When I upload a file "testDocument.pdf"
-    # When I click on "Save and continue" button
+    When I click on "Save and continue" link
+    Then I should see a "Uploaded" tag next to "Interim hearing on 20 December 2023"
+    When I click on "Interim hearing on 4 January 2024" link
+    When I reuse a file "testDocument.pdf"
+    And I click on "Save and continue" button
+    Then I should see a "Uploaded" tag next to "Interim hearing on 4 January 2024"
     When I click sign out button
