@@ -248,3 +248,20 @@ When('I click on {string} radio button', async function (radioButton: string) {
     await this.page.getByRole('radio', { name: radioButton }).check();
 });
 
+Then('I should see a {string} tag next to {string}', async function (tag: string, text: string) {
+
+  const item = this.page.locator('.govuk-task-list__item', {
+    hasText: text
+  });
+
+  await expect(item.locator('.govuk-task-list__status')).toHaveText(tag);
+});
+
+When('I reuse a file {string}', async function (fileName: string) {
+
+  const row = this.page.getByRole('row', {
+    name: `Select ${fileName}`
+  }).locator('label');
+
+  await row.click();
+});

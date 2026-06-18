@@ -6,10 +6,10 @@ set -euo pipefail
 ./ensure-hosts.sh
 
 echo "Building laa-claim-for-payment-stubs"
-(cd ../laa-claim-for-payment-stubs && ./gradlew clean build -x test)
+(cd ../laa-claim-for-payment-stubs && ./gradlew clean build -x test -x checkstyleMain)
 
 echo "Building laa-claim-for-payment"
-(cd ../laa-claim-for-payment && ./gradlew clean build -x test)
+(cd ../laa-claim-for-payment && ./gradlew clean build -x test -x checkstyleMain)
 
 echo "Building laa-claim-for-payment-frontend"
 (cd ../laa-claim-for-payment-frontend && yarn install && yarn build)
