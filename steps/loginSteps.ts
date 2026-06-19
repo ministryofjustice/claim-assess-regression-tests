@@ -238,10 +238,15 @@ Then('I should see the following Elements on Claim summary tabbed box',async fun
 
 
 When('I upload a file {string}', async function (fileName: string) {
-  
+  const uploadedTags = this.page.locator('.govuk-tag', { hasText: 'Uploaded' });
+  const before = await uploadedTags.count();
+
   const filePath = path.resolve('test-data', fileName);
 
   await this.page.locator('input[type="file"]').setInputFiles(filePath);
+
+  await expect(uploadedTags).toHaveCount(before + 1);
+
 });
 
 When('I click on {string} radio button', async function (radioButton: string) {
