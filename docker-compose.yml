@@ -37,6 +37,16 @@ services:
       retries: 3
       start_period: 10s
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   laa-claim-for-payment-frontend:
     ports:
       - "3000:3000"
@@ -46,8 +56,9 @@ services:
       API_URL: http://laa-claim-for-payment:8080
       AUTH_ENABLED: true
       ISSUER_BASE_URL: http://stub-oidc-server:8091
-      REDIS_DISABLED: true
-      REDIS_URL: redis://localhost:6379
+      REDIS_DISABLED: false
+      REDIS_URL: redis://redis:6379
+      SESSION_COOKIE_SECURE: false
       SESSION_SECRET: s3Cur3
       SESSION_NAME: sessionId
       OIDC_SCOPE: openid profile email
@@ -59,7 +70,10 @@ services:
       CLIENT_ID: caa-client
       MANAGEMENT_PORT: 2999
     depends_on:
-      - laa-claim-for-payment
+      laa-claim-for-payment:
+        condition: service_started
+      redis:
+        condition: service_healthy
 
   laa-assess-a-claim-frontend:
     ports:
