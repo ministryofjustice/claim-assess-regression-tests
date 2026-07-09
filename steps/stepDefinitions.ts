@@ -4,8 +4,6 @@ import { expect } from '@playwright/test';
 import {LoginPage} from "../pages/LoginPage";
 import path from 'path';
 
-console.log('✅ loginSteps.ts is loaded');
-
 Given('I log in to Claim as user {string} with password {string}', {timeout: 30000}, async function (username: string, password: string) {
 
   const claimUrl = process.env.CLAIM_BASE_URL || 'http://localhost:3000';
@@ -270,3 +268,66 @@ When('I reuse a file {string}', async function (fileName: string) {
 
   await row.click();
 });
+
+When('I open the {string} page for claim {string}',
+  async function (pageName: string, claimId: string) {
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
+    const routes: Record<string, string> = {
+      'poa profit cost details': `/claims/${claimId}/poa/profit-cost-details`,
+      'claim summary': `/claims/${claimId}`,
+      'upload evidence': `/claims/${claimId}/choose-upload`,
+    };
+
+    await this.page.goto(`${baseUrl}${routes[pageName]}`);
+  }
+);
+
+
+Then(
+  'I should see the following radio options for {string}',
+  async function (question: string, dataTable) {
+    const options = dataTable.raw().flat();
+
+    // Verify question is visible
+    await expect(
+      this.page.getByText(question, { exact: false })
+    ).toBeVisible();
+
+    // Verify radio options are visible
+    for (const option of options) {
+      await expect(
+        this.page.getByRole('radio', { name: option })
+      ).toBeVisible();
+    }
+  }
+);
+
+When('I select {string} radio button for {string}',
+  async function (option: string, question: string) {
+    const group = this.page.getByRole('group', {
+      name: new RegExp(question, 'i'),
+    });
+
+    await expect(group).toBeVisible();
+
+    const radio = group.getByLabel(option);
+
+    await radio.check();
+    await expect(radio).toBeChecked();
+  }
+);
+
+
+When(
+  'I check {string} radio button for {string}',
+  async function (radioButton: string, question: string) {
+    const radio = this.page
+      .getByRole('group', { name: new RegExp(question, 'i') })
+      .getByLabel(radioButton);
+
+    await expect(radio).toBeVisible();
+    await radio.check();
+  }
+);
+
