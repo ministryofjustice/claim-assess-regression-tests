@@ -294,8 +294,7 @@ When("I reuse a file {string}", async function (fileName: string) {
   await row.click();
 });
 
-When(
-  "I open the {string} page for claim {string}",
+When("I open the {string} page for claim {string}",
   async function (pageName: string, claimId: string) {
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 
@@ -309,8 +308,7 @@ When(
   },
 );
 
-Then(
-  "I should see the following radio options for {string}",
+Then("I should see the following radio options for {string}",
   async function (question: string, dataTable) {
     const options = dataTable.raw().flat();
 
@@ -326,8 +324,7 @@ Then(
   },
 );
 
-When(
-  "I select {string} radio button for {string}",
+When("I select {string} radio button for {string}",
   async function (option: string, question: string) {
     const group = this.page.getByRole("group", {
       name: new RegExp(question, "i"),
@@ -354,8 +351,7 @@ When(
   },
 );
 
-When(
-  "I enter {string} in the {string} field",
+When("I enter {string} in the {string} field",
   async function (value: string, fieldName: string) {
     await this.page.getByRole("textbox", { name: fieldName }).fill(value);
   },
@@ -379,8 +375,7 @@ Then(
   },
 );
 
-Then(
-  "I should see the following details on the {string} page",
+Then("I should see the following details on the {string} page",
   async function (pageName: string, dataTable) {
     await expect(
       this.page.getByRole("heading", { name: pageName }),

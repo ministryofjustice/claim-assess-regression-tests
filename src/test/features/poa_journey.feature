@@ -1,7 +1,7 @@
 Feature: POA E2E journey
 
   @smoke @claim
-  Scenario: The provider/User logs in and goes through POA journey
+  Scenario: The provider/User logs in and goes through E2E POA journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
