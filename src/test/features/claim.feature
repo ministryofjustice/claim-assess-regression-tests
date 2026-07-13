@@ -5,7 +5,6 @@ Feature: Claim for Payment - Login and happy path journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
-#     Then I should see the page heading "Start your claim for payment"
     Then I should see the following Elements
       | Elements              |
       | Submitted In progress |
@@ -24,7 +23,6 @@ Feature: Claim for Payment - Login and happy path journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
-#     Then I should see the page heading "Start your claim for payment"
     Then I should see the following Elements
       | Elements              |
       | Submitted In progress |
@@ -33,9 +31,6 @@ Feature: Claim for Payment - Login and happy path journey
       | Import claim          |
       | Sign out              |
     When I click on "Create a new claim" button
-    # Then I should see the heading "LAA-001"
-    # When I click on "Return to claims" link
-    # Then I should see the heading "Your Claims"
     When I click sign out button
 
   @smoke @claim
@@ -43,7 +38,6 @@ Feature: Claim for Payment - Login and happy path journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
-#     Then I should see the page heading "Start your claim for payment"
     Then I should see the following Elements
       | Elements              |
       | Submitted In progress |
