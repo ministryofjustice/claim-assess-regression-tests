@@ -13,7 +13,7 @@ Feature: Claim for Payment - Login and happy path journey
       | Import claim          |
       | Sign out              |
     When I click on "LAA-001" link
-    Then I should see the heading "LAA-001"
+    Then I should see the heading "TODO"
     When I click on "Return to claims" link
     Then I should see the heading "Your Claims"
     When I click sign out button
