@@ -5,7 +5,7 @@ Feature: Assess - Login and Claims Home Page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
-    When I click on "LAA-012" link
+    When I click on "LAA-001" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
     When I click on "Back" link
     Then I should see the heading "Your Assessments"
@@ -16,7 +16,7 @@ Feature: Assess - Login and Claims Home Page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
-    When I click on "LAA-012" link
+    When I click on "LAA-001" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
     Then I should see the following Elements on Claim Summary page
       | Elements              |
@@ -38,7 +38,7 @@ Feature: Assess - Login and Claims Home Page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
-    When I click on "LAA-012" link
+    When I click on "LAA-001" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
     Then I should see the following Elements on Claim summary tabbed box
       | Elements          |
@@ -55,7 +55,7 @@ Feature: Assess - Login and Claims Home Page
     Given I log in to Assess as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
-    When I click on "LAA-012" link
+    When I click on "LAA-001" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
     Then I should see the following Elements on Claim summary tabbed box
       | Elements                     |

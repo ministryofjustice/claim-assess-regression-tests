@@ -5,7 +5,7 @@ Feature: POA E2E journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
-    When I open the "poa profit cost details" page for claim "1"
+    When I open the "poa profit cost details" page for claim "019f5c43-7d3b-7a50-8f2e-442533c936d0"
     Then I should see the heading "Profit cost details"
     Then I should see the following Elements
       | Elements                     |
