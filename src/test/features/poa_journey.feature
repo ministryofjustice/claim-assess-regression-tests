@@ -73,3 +73,33 @@ Feature: POA E2E journey
     Then I should see another page with the heading "Civil processing dates"
     Then I should see a link "Return to claim summary page"
     When I click sign out button
+
+    @smoke @claim
+  Scenario: POA profit cost details error messages
+    Given I log in to Claim as user "bob" with password "password"
+    When I open the "poa profit cost details" page for claim "1"
+    Then I should see the heading "Profit cost details"
+    Then I should see the following Elements
+      | Elements                     |
+      | Profit cost details          |
+      | Court or judge type          |
+      | What is your client’s party  |
+      | Are you the first solicitor  |
+      | Has there been a transfer of |
+    Then I should see the following radio options for "Court or judge type"
+      | County court      |
+      | High court        |
+      | Magistrates court |
+      | Other judge       |
+    Then I should see the following radio options for "What is your client’s party status?"
+      | Child        |
+      | Joined party |
+      | Parent       |
+    When I click on "Save and continue" button
+    Then I should see the following error messages
+  | Error message                                                      |
+  | Select court or judge type                                         |
+  | Select your client’s party status                                  |
+  | Select yes if you are the first solicitor firm acting on this case |
+  | Select yes if there has been a transfer of solicitor on this case  |
+  Then I click sign out button
