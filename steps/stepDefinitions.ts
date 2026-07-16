@@ -10,9 +10,6 @@ Given(
   async function (username: string, password: string) {
     const claimUrl = process.env.CLAIM_BASE_URL || "http://localhost:3000";
 
-    console.log("TEST_ENV =", process.env.TEST_ENV);
-    console.log("CLAIM_BASE_URL =", claimUrl);
-
     this.homePage = new HomePage(this.page);
     await this.homePage.goto(claimUrl);
 
@@ -26,8 +23,6 @@ Given(
   { timeout: 30000 },
   async function (username: string, password: string) {
     const assessUrl = process.env.ASSESS_BASE_URL || "http://localhost:3001";
-
-    console.log("ASSESS_BASE_URL =", assessUrl);
 
     this.homePage = new HomePage(this.page);
     await this.homePage.goto(assessUrl);
@@ -294,18 +289,27 @@ When("I reuse a file {string}", async function (fileName: string) {
   await row.click();
 });
 
-When("I open the {string} page for claim {string}",
+When(
+  'I open the {string} page for claim {string}',
   async function (pageName: string, claimId: string) {
-    const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
-    const routes: Record<string, string> = {
-      "poa profit cost details": `/claims/${claimId}/poa/profit-cost-details`,
-      "claim summary": `/claims/${claimId}`,
-      "upload evidence": `/claims/${claimId}/choose-upload`,
-    };
+  const routes: Record<string, string> = {
+  'poa profit cost details': `/claims/${claimId}/poa/profit-cost-details`,
+  'expert cost details': `/claims/${claimId}/poa/expert-cost-details/1`,
+  'poa expert cost details': `/claims/${claimId}/poa/expert-cost-details/1`,
+  'claim summary': `/claims/${claimId}`,
+  'upload evidence': `/claims/${claimId}/choose-upload`,
+};
 
-    await this.page.goto(`${baseUrl}${routes[pageName]}`);
-  },
+    const route = routes[pageName.toLowerCase()];
+
+    if (!route) {
+      throw new Error(`Unknown page: ${pageName}`);
+    }
+
+    await this.page.goto(`${baseUrl}${route}`);
+  }
 );
 
 Then("I should see the following radio options for {string}",
@@ -462,5 +466,22 @@ async function (expectedHeading: string) {
 Then('I should see a link {string}',
   async function (linkText: string) {
     await expect(this.page.getByRole('link', { name: linkText })).toBeVisible();
+  }
+);
+
+Then(
+  'I should see the following error messages',
+  async function (dataTable) {
+    const errorSummary = this.page.locator('.govuk-error-summary');
+
+    await expect(errorSummary).toBeVisible();
+
+    const errors = dataTable.hashes();
+
+    for (const row of errors) {
+      await expect(errorSummary).toContainText(
+        row['Error message']
+      );
+    }
   }
 );
