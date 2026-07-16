@@ -74,7 +74,7 @@ Feature: POA E2E journey
     Then I should see a link "Return to claim summary page"
     When I click sign out button
 
-    @smoke @claim
+  @smoke @claim
   Scenario: POA - Expert cost journey E2E
     Given I log in to Claim as user "bob" with password "password"
     When I open the "poa expert cost details" page for claim "1"
@@ -106,4 +106,4 @@ Feature: POA E2E journey
     When I click the guidance on processing timescales link
     Then I should see another page with the heading "Civil processing dates"
     Then I should see a link "Return to claim summary page"
-  Then I click sign out button
+    Then I click sign out button
