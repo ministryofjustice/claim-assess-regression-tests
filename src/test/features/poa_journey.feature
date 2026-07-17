@@ -77,7 +77,7 @@ Feature: POA E2E journey
   @smoke @claim
   Scenario: POA - Expert cost journey E2E
     Given I log in to Claim as user "bob" with password "password"
-    When I open the "poa expert cost details" page for claim "1"
+    When I open the "poa expert cost details" page for claim "019f5c43-7d3b-7a50-8f2e-442533c936d0"
     Then I should see the heading "Expert cost"
     When I enter "24" in the "Day" field
     And I enter "12" in the "Month" field
