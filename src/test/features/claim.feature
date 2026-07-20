@@ -46,7 +46,7 @@ Feature: Claim for Payment - Login and happy path journey
       | Import claim          |
       | Sign out              |
     When I click on "Create a new claim" button
-    Then I should see the heading on the page "How do you want to upload your evidence screen?"
+    Then I should see the heading on the page "How do you want to upload your evidence?"
     When I click on "Associated to specific line" radio button
     When I click on "Save and continue" button
     When I click on "Interim hearing on 20 December 2023" link
