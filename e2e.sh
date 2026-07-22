@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TEST_ENV=local
+export HEADLESS=false
+export TEST_ENV=local
+
+trap './stop-all.sh' EXIT
 
 ./start-all.sh
 
@@ -10,5 +13,3 @@ if [[ $# -eq 0 ]]; then
 else
   npx cucumber-js --config cucumber.json --tags "$*"
 fi
-
-./stop-all.sh
