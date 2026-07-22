@@ -14,7 +14,7 @@ class CustomWorld {
   baseUrl!: string;
 
   async init() {
-    const headless = process.env.CI === "true";
+    const headless = process.env.HEADLESS === "true";
     const slowMo = headless ? 0 : 100;
 
     this.browser = await chromium.launch({ headless, slowMo });
