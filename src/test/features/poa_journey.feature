@@ -5,7 +5,13 @@ Feature: POA E2E journey
     Given I log in to Claim as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
-    When I open the "poa profit cost details" page for claim "019f5c43-7d3b-7a50-8f2e-442533c936d0"
+    When I click on "Payment on account" button
+    Then I should see the following radio options for "What type of POA are you claiming?"
+      | Profit cost             |
+      | Expert cost             |
+      | Non expert disbursement |
+    When I select "Profit cost" radio button for "What type of POA are you claiming?"
+    When I click on "Save and continue" button
     Then I should see the heading "Profit cost details"
     Then I should see the following Elements
       | Elements                     |
@@ -29,9 +35,9 @@ Feature: POA E2E journey
     When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     Then I should see the following radio options for "How many clients did you have at the start of the case?"
-      | 0 |
-      | 1 |
-      | 2 |
+      | 0  |
+      | 1  |
+      | 2+ |
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button
     Then I should see the following radio options for "Have you attended at least one hearing where you have represented more than one client?"
@@ -77,7 +83,9 @@ Feature: POA E2E journey
   @smoke @claim
   Scenario: POA - Expert cost journey E2E
     Given I log in to Claim as user "bob" with password "password"
-    When I open the "poa expert cost details" page for claim "019f5c43-7d3b-7a50-8f2e-442533c936d0"
+    When I click on "Payment on account" button
+    When I select "Expert cost" radio button for "What type of POA are you claiming?"
+    When I click on "Save and continue" button
     Then I should see the heading "Expert cost"
     When I enter "24" in the "Day" field
     And I enter "12" in the "Month" field
