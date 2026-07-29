@@ -328,10 +328,11 @@ Then("I should see the following radio options for {string}",
   },
 );
 
-When("I select {string} radio button for {string}",
+When(
+  'I select {string} radio button for {string}',
   async function (option: string, question: string) {
-    const group = this.page.getByRole("group", {
-      name: new RegExp(question, "i"),
+    const group = this.page.getByRole('group', {
+      name: new RegExp(question, 'i'),
     });
 
     await expect(group).toBeVisible();
@@ -340,19 +341,27 @@ When("I select {string} radio button for {string}",
 
     await radio.check();
     await expect(radio).toBeChecked();
-  },
+
+    // Store answer for later validation
+    this.selectedAnswers ??= {};
+    this.selectedAnswers[question] = option;
+  }
 );
 
 When(
-  "I check {string} radio button for {string}",
+  'I check {string} radio button for {string}',
   async function (radioButton: string, question: string) {
     const radio = this.page
-      .getByRole("group", { name: new RegExp(question, "i") })
+      .getByRole('group', { name: new RegExp(question, 'i') })
       .getByLabel(radioButton);
 
     await expect(radio).toBeVisible();
     await radio.check();
-  },
+
+    // Store answer for later validation
+    this.selectedAnswers ??= {};
+    this.selectedAnswers[question] = radioButton;
+  }
 );
 
 When("I enter {string} in the {string} field",
@@ -483,5 +492,18 @@ Then(
         row['Error message']
       );
     }
+  }
+);
+
+Then(
+  'I should see {string} selected for {string}',
+  async function (answer: string, question: string) {
+    const group = this.page.getByRole('group', {
+      name: new RegExp(question, 'i'),
+    });
+
+    await expect(
+      group.getByLabel(answer)
+    ).toBeChecked();
   }
 );
