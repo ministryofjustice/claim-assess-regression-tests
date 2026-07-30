@@ -484,3 +484,19 @@ Then(
     ).toBeChecked();
   }
 );
+
+When('I navigate back to the previous page', async function () {
+  await Promise.all([
+    this.page.waitForLoadState('networkidle'),
+    this.page.goBack(),
+  ]);
+});
+
+Then(
+  'I should see {string} in the {string} field',
+  async function (expectedValue: string, fieldName: string) {
+    await expect(
+      this.page.getByLabel(fieldName)
+    ).toHaveValue(expectedValue);
+  }
+);
