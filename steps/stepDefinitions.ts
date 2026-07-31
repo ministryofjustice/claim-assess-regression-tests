@@ -371,57 +371,12 @@ Then("I should see the following details on the {string} page",
       this.page.getByRole("heading", { name: pageName }),
     ).toBeVisible();
 
-    const elements = dataTable.raw().flat().slice(1);
+    const locators = dataTable.raw().flat().slice(1);
 
-    for (const element of elements) {
-      switch (element) {
-        case "Assessment summary":
-          await expect(
-            this.page.getByRole("table", {
-              name: "Assessment summary",
-            }),
-          ).toBeVisible();
-          break;
-
-        case "Check your answers":
-          await expect(this.page.getByText("Check your answers")).toBeVisible();
-          break;
-
-        case "POA CPGFS profit cost bill":
-          await expect(
-            this.page.getByRole("heading", {
-              name: /POA CPGFS profit cost bill/i})).toBeVisible();
-          break;
-
-        case "Date 20 December 2023":
-          await expect(
-            this.page.locator("#profit-cost-bill-line"),
-          ).toContainText("Date");
-          break;
-
-        case "Evidence":
-          await expect(this.page.getByText(element, { exact: false }).first()).toBeVisible();
-          break;
-
-        case "Expert cost bill line":
-          await expect(
-            this.page.getByText("Expert cost bill line").first(),
-          ).toBeVisible();
-
-          await expect(
-            this.page.getByText("Expert cost bill line").nth(1),
-          ).toBeVisible();
-          break;
-
-        case "Submit":
-          await expect(
-            this.page.getByRole("button", { name: "Submit" }),
-          ).toBeVisible();
-          break;
-
-        default:
-          throw new Error(`Unknown element: ${element}`);
-      }
+    for (const locator of locators) {
+      await expect(
+        this.page.locator(locator),
+      ).toBeVisible();
     }
   },
 );
