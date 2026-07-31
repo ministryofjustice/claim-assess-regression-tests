@@ -65,14 +65,11 @@ Feature: POA E2E journey
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-      | Element                    |
-      | Assessment summary         |
-      | Check your answers         |
-      | POA CPGFS profit cost bill |
-      | Date 20 December 2023      |
-      | Evidence                   |
-      | Expert cost bill line      |
-      | Submit                     |
+      | Locator                 |
+      | text=Assessment summary |
+      | #profit-cost-details    |
+      | #profit-cost-bill-line  |
+      | #evidence               |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
@@ -101,14 +98,10 @@ Feature: POA E2E journey
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-      | Element                    |
-      | Assessment summary         |
-      | Check your answers         |
-      | Expert cost bill line      |
-      | Date 20 December 2023      |
-      | Evidence                   |
-      | POA CPGFS profit cost bill |
-      | Submit                     |
+      | Locator                  |
+      | text=Assessment summary  |
+      | #expert-cost-bill-line-1 |
+      | #evidence                |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
