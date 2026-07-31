@@ -2,7 +2,7 @@ Feature: POA E2E journey
 
   @smoke @claim
   Scenario: The provider/User logs in and goes through E2E POA journey
-    Given I log in to Claim as user "bob" with password "password"
+    Given I log in as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
     When I click on "Payment on account" button
@@ -79,7 +79,7 @@ Feature: POA E2E journey
 
   @smoke @claim
   Scenario: POA - Expert cost journey E2E
-    Given I log in to Claim as user "bob" with password "password"
+    Given I log in as user "bob" with password "password"
     When I click on "Payment on account" button
     When I select "Expert cost" radio button for "What type of POA are you claiming?"
     When I click on "Save and continue" button
