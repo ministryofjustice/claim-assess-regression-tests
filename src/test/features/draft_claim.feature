@@ -2,7 +2,7 @@ Feature: Draft Claim - The provider/User sees their answers on the draft claim p
 
   @smoke @claim
   Scenario: The provider/User sees their draft claim
-    Given I log in to Claim as user "bob" with password "password"
+    Given I log in as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
     Then I should see the heading "Your Claims"
     When I click on "Payment on account" button
