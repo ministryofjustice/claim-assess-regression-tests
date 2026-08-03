@@ -5,27 +5,10 @@ import { LoginPage } from "../pages/LoginPage";
 import path from "path";
 
 Given(
-  "I log in to Claim as user {string} with password {string}",
+  "I log in as user {string} with password {string}",
   { timeout: 30000 },
   async function (username: string, password: string) {
-    const claimUrl = process.env.CLAIM_BASE_URL || "http://localhost:3000";
-
-    this.homePage = new HomePage(this.page);
-    await this.homePage.goto(claimUrl);
-
-    const loginPage = new LoginPage(this.page);
-    await loginPage.login(username, password);
-  },
-);
-
-Given(
-  "I log in to Assess as user {string} with password {string}",
-  { timeout: 30000 },
-  async function (username: string, password: string) {
-    const assessUrl = process.env.ASSESS_BASE_URL || "http://localhost:3001";
-
-    this.homePage = new HomePage(this.page);
-    await this.homePage.goto(assessUrl);
+    await this.page.goto(this.baseUrl);
 
     const loginPage = new LoginPage(this.page);
     await loginPage.login(username, password);

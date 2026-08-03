@@ -2,7 +2,7 @@ Feature: Assess - Login and Claims Home Page
 
   @smoke @assess
   Scenario: The caseworker logs in and land on Assess home page
-    Given I log in to Assess as user "alice" with password "password"
+    Given I log in as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-001" link
@@ -13,7 +13,7 @@ Feature: Assess - Login and Claims Home Page
 
   @smoke @assess
   Scenario: The caseworker logs in and verifies Claim Summary page
-    Given I log in to Assess as user "alice" with password "password"
+    Given I log in as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-001" link
@@ -35,7 +35,7 @@ Feature: Assess - Login and Claims Home Page
 
   @smoke @assess
   Scenario: The caseworker logs in and verifies Claim summary tabbed box
-    Given I log in to Assess as user "alice" with password "password"
+    Given I log in as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-001" link
@@ -52,7 +52,7 @@ Feature: Assess - Login and Claims Home Page
 
   @smoke @assess
   Scenario: The caseworker logs in and verifies case related information
-    Given I log in to Assess as user "alice" with password "password"
+    Given I log in as user "alice" with password "password"
     Then I should see the page title "Your Assessments – Assess claim for civil work – GOV.UK"
     Then I should see the heading "Your Assessments"
     When I click on "LAA-001" link
