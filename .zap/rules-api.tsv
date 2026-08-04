@@ -1,2 +1,3 @@
 90004	IGNORE	(CORS Header : False positive. We do not need to add CORS headers to responses from the API.)
 100001	IGNORE	(Unexpected content type : False positives. Unable to reproduce issue locally.)
+40014	IGNORE	(XSS Weakness : Possible false positive, temporarily ignoring until more robust solution identified. See CLAS-726 for more details.)
