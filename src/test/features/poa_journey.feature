@@ -77,7 +77,7 @@ Feature: POA E2E journey
     Then I should see a link "Return to claim summary page"
     When I click sign out button
 
-  @smoke @claim
+  @smoke @claim @wip
   Scenario: POA - Expert cost journey E2E
     Given I log in as user "bob" with password "password"
     When I click on "Payment on account" button
@@ -92,6 +92,21 @@ Feature: POA E2E journey
     And I enter "Test" in the "Fee earner name" field
     And I enter "Test description" in the "Description" field
     When I click on "Save and continue" button
+    Then I should see the heading "You have added an expert cost"
+    When I select "Yes" radio button for "Do you need to add another expert cost?"
+    When I click on "Save and continue" button
+    Then I should see the heading "Expert cost"
+    When I enter "24" in the "Day" field
+    And I enter "12" in the "Month" field
+    And I enter "2025" in the "Year" field
+    And I enter "1000" in the "Actual net value" field
+    When I select "Yes" radio button for "Does VAT apply?"
+    And I enter "Test" in the "Fee earner name" field
+    And I enter "Test description" in the "Description" field
+    When I click on "Save and continue" button
+    Then I should see the heading "You have added 2 expert costs"
+    When I select "No" radio button for "Do you need to add another expert cost?"
+    When I click on "Save and continue" button
     Then I should see the heading "Upload POA evidence"
     When I upload a file "testDocument2.pdf"
     Then I should see the uploaded file details for "testDocument2.pdf"
@@ -101,6 +116,7 @@ Feature: POA E2E journey
       | Locator                  |
       | text=Assessment summary  |
       | #expert-cost-bill-line-1 |
+      | #expert-cost-bill-line-2 |
       | #evidence                |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
