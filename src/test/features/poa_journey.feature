@@ -77,7 +77,7 @@ Feature: POA E2E journey
     Then I should see a link "Return to claim summary page"
     When I click sign out button
 
-  @smoke @claim @wip
+  @smoke @claim
   Scenario: POA - Expert cost journey E2E
     Given I log in as user "bob" with password "password"
     When I click on "Payment on account" button
