@@ -438,3 +438,12 @@ Then(
     ).toHaveValue(expectedValue);
   }
 );
+
+When(
+  'I click on the {string} link for the expert cost dated {string}',
+  async function (linkText: string, date: string) {
+    const row = this.page.locator('#expert-cost-rows > div').filter({ hasText: date });
+
+    await row.getByRole('link', { name: new RegExp(`^${linkText}`, 'i') }).click();
+  }
+);
