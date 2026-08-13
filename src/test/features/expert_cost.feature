@@ -102,9 +102,9 @@ Feature: POA Expert cost scenarios
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-      | Locator                  |
-      | #profit-cost-details     |
-      | #profit-cost-bill-line  |
+      | Locator                |
+      | #profit-cost-details   |
+      | #profit-cost-bill-line |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button

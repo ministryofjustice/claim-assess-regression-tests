@@ -46,7 +46,6 @@ Feature: Draft Claim - The provider/User sees their answers on the draft claim p
     When I select "Yes" radio button for "Does VAT apply?"
     And I enter "Test" in the "Fee earner name" field
     When I click on "Save and continue" button
-    # When I click on "Back" link
     When I navigate back to the previous page
     Then I should see "24" in the "Day" field
     And I should see "12" in the "Month" field
