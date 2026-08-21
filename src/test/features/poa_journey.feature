@@ -113,11 +113,11 @@ Feature: POA E2E journey
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-      | Locator                  |
-      | text=Assessment summary  |
-      | #expert-cost-bill-line-1 |
-      | #expert-cost-bill-line-2 |
-      | #evidence                |
+      | Locator                   |
+      | text=Assessment summary   |
+      | #disbursement-bill-line-1 |
+      | #disbursement-bill-line-2 |
+      | #evidence                 |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link

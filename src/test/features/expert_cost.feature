@@ -28,7 +28,7 @@ Feature: POA Expert cost add/remove scenarios
     And I enter "Test description" in the "Description" field
     When I click on "Save and continue" button
     Then I should see the heading "You have added 2 expert costs"
-    When I click on the "Remove" link for the expert cost dated "26 March"
+    When I click on the "Remove" link for the disbursement dated "26 March"
     Then I should see the heading "Are you sure you want to remove this expert cost?"
     Then I select "Yes" radio button for "Are you sure you want to remove this expert cost?"
     When I click on "Save and continue" button
