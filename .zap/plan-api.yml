@@ -1,0 +1,71 @@
+env:
+  contexts:
+    - name: Claims API
+      urls:
+        - http://localhost:8080
+
+jobs:
+
+  - type: alertFilter
+    alertFilters:
+
+      # CLM-103
+      # Draft claims persist user-entered text and return it in JSON.
+      # UI output encoding verified. No executable XSS observed.
+      - ruleId: 40014
+        urlRegex: true
+        url: ".*/api/v1/claims.*status=DRAFT.*"
+        newRisk: "Info"
+
+      # API does not require CORS headers.
+      - ruleId: 90004
+        newRisk: "Info"
+
+      # Unable to reproduce locally.
+      - ruleId: 100001
+        newRisk: "Info"
+
+  - type: openapi
+    parameters:
+      apiFile: /zap/wrk/openapi.json
+      targetUrl: http://localhost:8080
+
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+
+  - type: activeScan
+    parameters:
+      context: Claims API
+      policy: Default Policy
+      maxScanDurationInMins: 20
+    policyDefinition:
+      defaultStrength: medium
+      defaultThreshold: medium
+
+  - type: report
+    alwaysRun: true
+    parameters:
+      template: traditional-html
+      theme: null
+      reportTitle: ZAP by Checkmarx Scanning Report
+    risks:
+      - low
+      - medium
+      - high
+    confidences:
+      - low
+      - medium
+      - high
+      - confirmed
+    sections:
+      - insights
+      - instancecount
+      - sequencedetails
+      - alertdetails
+      - alertcount
+
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium
+      warnLevel: Low
