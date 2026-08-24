@@ -1,4 +1,5 @@
 Feature: POA E2E journey
+
   @smoke @claim
   Scenario: The provider/User logs in and goes through E2E POA journey
     Given I log in as user "bob" with password "password"
@@ -34,8 +35,8 @@ Feature: POA E2E journey
     When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     Then I should see the following radio options for "How many clients did you have at the start of the case?"
-      | 0  |
-      | 1  |
+      |  0 |
+      |  1 |
       | 2+ |
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button
@@ -112,11 +113,11 @@ Feature: POA E2E journey
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-  | Locator                  |
-  | text=Assessment summary  |
-  | #expert-cost-bill-line-1 |
-  | #expert-cost-bill-line-2 |
-  | #evidence                |
+      | Locator                   |
+      | text=Assessment summary   |
+      | #disbursement-bill-line-1 |
+      | #disbursement-bill-line-2 |
+      | #evidence                 |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
@@ -183,8 +184,8 @@ Feature: POA E2E journey
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
     Then I should see the following details on the "Check your details" page
-  | Locator                  |
-  | #expert-cost-bill-line-1 |
+      | Locator                   |
+      | #disbursement-bill-line-1 |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button
