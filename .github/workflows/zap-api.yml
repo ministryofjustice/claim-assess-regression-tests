@@ -119,15 +119,41 @@ jobs:
         run: |
           curl -v ${{ inputs.TARGET }}/v3/api-docs -o openapi.json
 
+      - name: Prepare ZAP workspace
+        run: |
+          mkdir -p .zap
+          chmod -R 777 .zap
+          mkdir -p zap-report
+
       - name: ZAP Scan
-        uses: zaproxy/action-api-scan@5158fe4d9d8fcc75ea204db81317cce7f9e5453d #v0.10.0
+        uses: zaproxy/action-af@d186d5d9536d0f1380e5eaa58168432fefc8ed6d #v0.3.0
         with:
-          token: ${{ env.GITHUB_TOKEN }}
-          rules_file_name: '.zap/rules-api.tsv'
-          format: openapi
-          target: openapi.json
-          allow_issue_writing: false
-          fail_action: true
+          plan: '.zap/plan-api.yml'
+          cmd_options: >
+            -port 8888
+            -host 0.0.0.0
+            -config network.localServers.localhost=true
+            -loglevel ALL
+
+      - name: Copy report
+        if: always()
+        run: |
+          cp .zap/*.html zap-report/
+
+      - name: Copy ZAP log
+        if: always()
+        run: |
+          CONTAINER_ID=$(docker ps -aq --filter "ancestor=ghcr.io/zaproxy/zaproxy:stable" | head -n 1)
+          echo "ZAP container: $CONTAINER_ID"
+          docker cp $CONTAINER_ID:/home/zap/.ZAP/zap.log zap-report/zap.log
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
+        with:
+          name: zap_report_${{ env.APPLICATION }}
+          path: zap-report/
+          retention-days: 7
 
       - name: Capture ${{ env.APPLICATION }} logs
         if: always()
