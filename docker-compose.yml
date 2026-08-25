@@ -69,6 +69,8 @@ services:
       OIDC_LOGOUT_PATH: /logout
       CLIENT_ID: caa-client
       MANAGEMENT_PORT: 2999
+      LINE_ITEM_UPLOAD_ENABLED: true
+      POA_PROFIT_COST_ENABLED: true
     depends_on:
       laa-claim-for-payment:
         condition: service_started
