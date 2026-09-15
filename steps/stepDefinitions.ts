@@ -411,6 +411,15 @@ Then(
 );
 
 Then(
+  'I should not see an error summary',
+  async function () {
+    const errorSummary = this.page.locator('.govuk-error-summary');
+
+    await expect(errorSummary).not.toBeVisible();
+  }
+);
+
+Then(
   'I should see {string} selected for {string}',
   async function (answer: string, question: string) {
     const group = this.page.getByRole('group', {
@@ -420,6 +429,19 @@ Then(
     await expect(
       group.getByLabel(answer)
     ).toBeChecked();
+  }
+);
+
+Then(
+  'I should see {string} not selected for {string}',
+  async function (answer: string, question: string) {
+    const group = this.page.getByRole('group', {
+      name: new RegExp(question, 'i'),
+    });
+
+    await expect(
+      group.getByLabel(answer)
+    ).not.toBeChecked();
   }
 );
 
