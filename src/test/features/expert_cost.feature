@@ -108,3 +108,33 @@ Feature: POA Expert cost scenarios
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button
+
+  @claim
+  Scenario: Expert cost details form should be empty upon clicking back
+    Given I log in as user "bob" with password "password"
+    When I click on "Payment on account" button
+    When I select "Expert cost" radio button for "What type of POA are you claiming?"
+    When I click on "Save and continue" button
+    Then I should see the heading "Expert cost"
+    When I enter "26" in the "Day" field
+    And I enter "03" in the "Month" field
+    And I enter "2026" in the "Year" field
+    And I enter "19" in the "Actual net value" field
+    When I select "Yes" radio button for "Does VAT apply?"
+    And I enter "Test" in the "Fee earner name" field
+    When I click on "Save and continue" button
+    Then I should see the following error messages
+      | Enter a description of the expert cost |
+    When I enter "Test description" in the "Description" field
+    And I click on "Save and continue" button
+    Then I should see the heading "You have added an expert cost"
+    When I click on "Back" link
+    Then I should not see an error summary
+    And I should see "" in the "Day" field
+    And I should see "" in the "Month" field
+    And I should see "" in the "Year" field
+    And I should see "" in the "Actual net value" field
+    And I should see "Yes" not selected for "Does VAT apply?"
+    And I should see "No" not selected for "Does VAT apply?"
+    And I should see "" in the "Fee earner name" field
+    And I should see "" in the "Description" field

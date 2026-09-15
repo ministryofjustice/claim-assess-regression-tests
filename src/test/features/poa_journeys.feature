@@ -189,3 +189,27 @@ Feature: POA E2E journey
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button
+
+  @claim
+  Scenario: Profit cost forms should be populated upon clicking back
+    Given I log in as user "bob" with password "password"
+    Then I should see the heading "Your Claims"
+    When I click on "Payment on account" button
+    When I select "Profit cost" radio button for "What type of POA are you claiming?"
+    When I click on "Save and continue" button
+    Then I should see the heading "Profit cost details"
+    When I select "High court" radio button for "Court or judge type"
+    And I select "Child" radio button for "What is your client’s party status?"
+    And I select "Yes" radio button for "Are you the first solicitor firm acting on this case?"
+    And I click on "Save and continue" button
+    Then I should see the following error messages
+      | Select yes if there has been a transfer of solicitor on this case |
+    When I check "Yes" radio button for "Has there been a transfer of solicitor on this case?"
+    And I click on "Save and continue" button
+    Then I should see the heading "How many clients are retained?"
+    When I click on "Back" link
+    Then I should not see an error summary
+    And I should see "High court" selected for "Court or judge type"
+    And I should see "Child" selected for "What is your client’s party status?"
+    And I should see "Yes" selected for "Are you the first solicitor firm acting on this case?"
+    And I should see "Yes" selected for "Has there been a transfer of solicitor on this case?"
