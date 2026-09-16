@@ -213,3 +213,4 @@ Feature: POA E2E journey
     And I should see "Child" selected for "What is your client’s party status?"
     And I should see "Yes" selected for "Are you the first solicitor firm acting on this case?"
     And I should see "Yes" selected for "Has there been a transfer of solicitor on this case?"
+    And I click sign out button

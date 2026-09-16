@@ -51,8 +51,8 @@ Feature: Draft Claim - The provider/User sees their answers on the draft claim p
     Then I should see "24" in the "Day" field
     And I should see "12" in the "Month" field
     And I should see "2025" in the "Year" field
-    Then I should see "1000" in the "Actual net profit cost" field
-    Then I should see "1000" in the "Actual net advocacy costs" field
+    Then I should see "1000.00" in the "Actual net profit cost" field
+    Then I should see "1000.00" in the "Actual net advocacy costs" field
     Then I should see "Yes" selected for "Does VAT apply?"
     Then I should see "Test" in the "Fee earner name" field
     When I click sign out button
