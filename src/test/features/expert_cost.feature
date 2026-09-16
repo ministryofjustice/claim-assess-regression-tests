@@ -56,7 +56,7 @@ Feature: POA Expert cost scenarios
     When I enter "26" in the "Day" field
     And I enter "03" in the "Month" field
     And I enter "2026" in the "Year" field
-    And I enter "19" in the "Actual net value" field
+    And I enter "20" in the "Actual net value" field
     When I select "Yes" radio button for "Does VAT apply?"
     And I enter "Test" in the "Fee earner name" field
     And I enter "Test description" in the "Description" field
