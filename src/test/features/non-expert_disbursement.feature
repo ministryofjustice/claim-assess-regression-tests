@@ -128,3 +128,4 @@ Feature: POA Non expert disbursement cost journey E2E
     And I should see "No" not selected for "Does VAT apply?"
     And I should see "" in the "Fee earner name" field
     And I should see "" in the "Description" field
+    And I click sign out button
