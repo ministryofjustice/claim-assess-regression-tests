@@ -35,7 +35,6 @@ Feature: POA E2E journey
     When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     Then I should see the following radio options for "How many clients did you have at the start of the case?"
-      |  0 |
       |  1 |
       | 2+ |
     When I select "1" radio button for "How many clients did you have at the start of the case"
