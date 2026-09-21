@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js --require-module ts-node/register --require CLAIMS/support/World.ts --require steps/**/*.ts features/**/*.feature",
+    "test": "cucumber-js --require-module ts-node/register --require CLAIMS/support/World.ts --require src/test/steps/**/*.ts features/**/*.feature",
     "test:local": "TEST_ENV=local cucumber-js --config cucumber.json",
     "test:dev": "TEST_ENV=dev cucumber-js --config cucumber.json",
     "test:uat": "TEST_ENV=uat cucumber-js --config cucumber.json",

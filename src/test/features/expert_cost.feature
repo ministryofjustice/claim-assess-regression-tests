@@ -79,7 +79,7 @@ Feature: POA Expert cost scenarios
     When I select "High court" radio button for "Court or judge type"
     When I select "Child" radio button for "What is your client’s party status?"
     When I select "Yes" radio button for "Are you the first solicitor firm acting on this case?"
-    When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
+    When I select "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button

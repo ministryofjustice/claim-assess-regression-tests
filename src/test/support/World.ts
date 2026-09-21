@@ -1,6 +1,6 @@
-import {Before, After, setWorldConstructor, BeforeAll, AfterAll} from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from 'playwright';
-import { setDefaultTimeout } from '@cucumber/cucumber';
+import {After, AfterAll, Before, BeforeAll, setDefaultTimeout, setWorldConstructor} from '@cucumber/cucumber';
+import {Browser, BrowserContext, chromium, Page} from 'playwright';
+import {SignOutLink} from "../components/SignOutLink";
 
 setDefaultTimeout(10 * 1000); // 10 seconds
 
@@ -13,9 +13,14 @@ class CustomWorld {
 
   async init() {
     this.page = await context.newPage();
+    await this.page.goto(this.baseUrl);
   }
 
   async teardown() {
+    const signOutLink = new SignOutLink(this.page);
+    if (await signOutLink.isVisible()) {
+      await signOutLink.click();
+    }
     await this.page?.close().catch(() => {});
   }
 }

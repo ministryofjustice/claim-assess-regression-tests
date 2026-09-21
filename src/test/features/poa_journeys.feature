@@ -13,13 +13,6 @@ Feature: POA E2E journey
     When I select "Profit cost" radio button for "What type of POA are you claiming?"
     When I click on "Save and continue" button
     Then I should see the heading "Profit cost details"
-    Then I should see the following Elements
-      | Elements                     |
-      | Profit cost details          |
-      | Court or judge type          |
-      | What is your client’s party  |
-      | Are you the first solicitor  |
-      | Has there been a transfer of |
     Then I should see the following radio options for "Court or judge type"
       | County court      |
       | High court        |
@@ -32,7 +25,7 @@ Feature: POA E2E journey
     When I select "High court" radio button for "Court or judge type"
     When I select "Child" radio button for "What is your client’s party status?"
     When I select "Yes" radio button for "Are you the first solicitor firm acting on this case?"
-    When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
+    When I select "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     Then I should see the following radio options for "How many clients did you have at the start of the case?"
       |  1 |
@@ -135,7 +128,7 @@ Feature: POA E2E journey
     When I select "High court" radio button for "Court or judge type"
     When I select "Child" radio button for "What is your client’s party status?"
     When I select "Yes" radio button for "Are you the first solicitor firm acting on this case?"
-    When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
+    When I select "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button
@@ -203,7 +196,7 @@ Feature: POA E2E journey
     And I click on "Save and continue" button
     Then I should see the following error messages
       | Select yes if there has been a transfer of solicitor on this case |
-    When I check "Yes" radio button for "Has there been a transfer of solicitor on this case?"
+    When I select "Yes" radio button for "Has there been a transfer of solicitor on this case?"
     And I click on "Save and continue" button
     Then I should see the heading "How many clients are retained?"
     When I click on "Back" link
