@@ -32,15 +32,31 @@ Feature: POA Non expert disbursement cost journey E2E
     When I click on "Save and continue" button
     Then I should see the heading "Upload POA evidence"
     When I upload a file "testDocument2.pdf"
-    # Then I should see the uploaded file details for "testDocument2.pdf"
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
-    Then I should see the following details on the "Check your details" page
-      | Locator                   |
-      | text=Assessment summary   |
-      | #disbursement-bill-line-1 |
-      | #disbursement-bill-line-2 |
-      | #evidence                 |
+    And I should see the following "Assessment summary" table
+      | Item                | Cost |
+      | Total net claim     | £0   |
+      | Total VAT claim     | £0   |
+      | POA total net claim | £0   |
+      | Total claim         | £0   |
+    And I should see the following rows in the "1st" "Non-expert disbursement bill line" summary card
+      | Key              | Value            |
+      | Date             | 24 December 2025 |
+      | Actual net value | £1,000.00        |
+      | Does VAT apply?  | Yes              |
+      | Fee earner name  | Test             |
+      | Description      | Test description |
+    And I should see the following rows in the "2nd" "Non-expert disbursement bill line" summary card
+      | Key              | Value            |
+      | Date             | 24 December 2025 |
+      | Actual net value | £1,000.00        |
+      | Does VAT apply?  | Yes              |
+      | Fee earner name  | Test             |
+      | Description      | Test description |
+    And I should see the following rows in the "Evidence" summary card
+      | Key               | Value                |
+      | testDocument2.pdf | 9KB22 September 2026 |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
@@ -76,7 +92,7 @@ Feature: POA Non expert disbursement cost journey E2E
     And I enter "Test description" in the "Description" field
     When I click on "Save and continue" button
     Then I should see the heading "You have added 2 non-expert disbursements"
-    When I click on the "Remove" link for the disbursement dated "24 December"
+    When I click on the "Remove" link for "24 December 2025"
     Then I should see the heading "Are you sure you want to remove this non-expert disbursement?"
     Then I select "Yes" radio button for "Are you sure you want to remove this non-expert disbursement?"
     When I click on "Save and continue" button
@@ -87,11 +103,22 @@ Feature: POA Non expert disbursement cost journey E2E
     When I upload a file "testDocument.pdf"
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
-    Then I should see the following details on the "Check your details" page
-      | Locator                   |
-      | text=Assessment summary   |
-      | #disbursement-bill-line-1 |
-      | #evidence                 |
+    And I should see the following "Assessment summary" table
+      | Item                | Cost |
+      | Total net claim     | £0   |
+      | Total VAT claim     | £0   |
+      | POA total net claim | £0   |
+      | Total claim         | £0   |
+    And I should see the following rows in the "Non-expert disbursement bill line" summary card
+      | Key              | Value            |
+      | Date             | 29 October 2021  |
+      | Actual net value | £3,000.00        |
+      | Does VAT apply?  | Yes              |
+      | Fee earner name  | Test             |
+      | Description      | Test description |
+    And I should see the following rows in the "Evidence" summary card
+      | Key               | Value                |
+      | testDocument.pdf  | 9KB22 September 2026 |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link

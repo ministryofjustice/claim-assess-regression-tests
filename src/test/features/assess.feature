@@ -18,7 +18,7 @@ Feature: Assess - Login and Claims Home Page
     Then I should see the heading "Your Assessments"
     When I click on "LAA-001" link
     Then I should see the heading "Fixed fee: Special Children Act (Care)"
-    Then I should see the following summary on the Claim summary page
+    Then I should see the following "summary" list
       | Key                   | Value                 |
       | Total claim amount    | £3,480                |
       | Date received         | 27 February 2026      |
@@ -33,34 +33,44 @@ Feature: Assess - Login and Claims Home Page
       | Review and assess |
       | Claim history     |
       | All evidence      |
-    And I should see the following summary cards on the Claim summary page
-      | Card                  | Key                         | Value                                                               |
-      | Costs and allocations | Claim type                  | Solicitor final bill                                                |
-      | Costs and allocations | Total claim amount          | £3,480                                                              |
-      | Costs and allocations | Assessment basis            | Fixed fee applies                                                   |
-      | Costs and allocations | Counsel cost and allocation | £900                                                                |
-      | Costs and allocations | Available cost limit        | £24,100 (of £25,000)                                                |
-      | Providers             | Solicitor name              | Smith & Co Solicitors                                               |
-      | Providers             | Solicitor region            | North West                                                          |
-      | Providers             | Number of solicitors        | 1                                                                   |
-      | Providers             | Counsel involved            | Yes                                                                 |
-      | Providers             | Counsel payment             | Paid and Reconciled                                                 |
-      | Client                | Name                        | Liam Oldfield                                                       |
-      | Client                | Date of birth               | 27 March 1996                                                       |
-      | Client                | Location                    | Manchester                                                          |
-      | Client                | Status                      | Parent                                                              |
-      | Case                  | Matter type                 | Special Children Act                                                |
-      | Case                  | Lead proceeding             | Care order                                                          |
-      | Case                  | Linked cases                | 1 linked case                                                       |
-      | Case                  | Outcome                     | Final hearing completed                                             |
-      | Certificate scope     | Type                        | Substantive Certificate                                             |
-      | Certificate scope     | Description                 | To be represented on an application for Care Order                  |
-      | Certificate scope     | Limitation                  | All steps up to and including final hearing, limited to family help |
-      | Certificate scope     | Issue date                  | 27 February 2026                                                    |
-      | Certificate scope     | Status                      | Discharged 28 February 2026                                         |
-      | Certificate scope     | Level of service            | Full representation                                                 |
-      | Proceedings           | Care order                  | Start date 25 February 2026 Final hearing completed (PB0057)        |
-      | Proceedings           | Supervision order           | 12 November 2025 Withdrawn (PB0142)                                 |
+    And I should see the following rows in the "Costs and allocations" summary card
+      | Key                         | Value                |
+      | Claim type                  | Solicitor final bill |
+      | Total claim amount          | £3,480               |
+      | Assessment basis            | Fixed fee applies    |
+      | Counsel cost and allocation | £900                 |
+      | Available cost limit        | £24,100 (of £25,000) |
+    And I should see the following rows in the "Providers" summary card
+      | Key                         | Value                 |
+      | Solicitor name              | Smith & Co Solicitors |
+      | Solicitor region            | North West            |
+      | Number of solicitors        | 1                     |
+      | Counsel involved            | Yes                   |
+      | Counsel payment             | Paid and Reconciled   |
+    And I should see the following rows in the "Client" summary card
+      | Key                         | Value         |
+      | Name                        | Liam Oldfield |
+      | Date of birth               | 27 March 1996 |
+      | Location                    | Manchester    |
+      | Status                      | Parent        |
+    And I should see the following rows in the "Case" summary card
+      | Key                         | Value                   |
+      | Matter type                 | Special Children Act    |
+      | Lead proceeding             | Care order              |
+      | Linked cases                | 1 linked case           |
+      | Outcome                     | Final hearing completed |
+    And I should see the following rows in the "Certificate scope" summary card
+      | Key                         | Value                                                               |
+      | Type                        | Substantive Certificate                                             |
+      | Description                 | To be represented on an application for Care Order                  |
+      | Limitation                  | All steps up to and including final hearing, limited to family help |
+      | Issue date                  | 27 February 2026                                                    |
+      | Status                      | Discharged 28 February 2026                                         |
+      | Level of service            | Full representation                                                 |
+    And I should see the following rows in the "Proceedings" summary card
+      | Key                         | Value                                                        |
+      | Care order                  | Start date 25 February 2026 Final hearing completed (PB0057) |
+      | Supervision order           | 12 November 2025 Withdrawn (PB0142)                          |
     When I click on "Back" link
     Then I should see the heading "Your Assessments"
     When I click sign out button

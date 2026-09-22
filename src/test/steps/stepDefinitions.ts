@@ -1,4 +1,4 @@
-import {Given, Then, When} from "@cucumber/cucumber";
+import {DataTable, Given, Then, When} from "@cucumber/cucumber";
 import {expect} from "@playwright/test";
 import path from "path";
 import {RadioInput} from "../components/RadioInput";
@@ -16,6 +16,7 @@ import {MultiSelect} from "../components/MultiSelect";
 import {MultiFileUploadList} from "../components/MultiFileUploadList";
 import {FileUpload} from "../components/FileUpload";
 import {List} from "../components/List";
+import {Table} from "../components/Table";
 
 Given(
   "I log in as user {string} with password {string}",
@@ -58,9 +59,9 @@ When("I click on {string} button", async function (buttonName: string) {
   await button.click();
 });
 
-Then("I should see the following summary on the Claim summary page",
-  async function (dataTable) {
-    const summary = new List(this.page, "summary");
+Then("I should see the following {string} list",
+  async function (id: string, dataTable: DataTable) {
+    const summary = new List(this.page, id);
     await summary.isVisible();
     for (const {Key: key, Value: value} of dataTable.hashes()) {
       const listItem = summary.listItem(key);
@@ -69,8 +70,18 @@ Then("I should see the following summary on the Claim summary page",
   }
 );
 
+Then("I should see the following {string} table",
+  async function (tableName: string, dataTable: DataTable) {
+    const table = new Table(this.page, tableName);
+    await table.shouldBeVisible();
+    for (const row of dataTable.hashes()) {
+      await table.checkTableRow(row);
+    }
+  }
+);
+
 Then("I should see the following sub-navigation",
-  async function (dataTable) {
+  async function (dataTable: DataTable) {
     const subNavigation = new SubNavigation(this.page);
     await subNavigation.shouldBeVisible();
     for (const {Tab: name} of dataTable.hashes()) {
@@ -81,7 +92,7 @@ Then("I should see the following sub-navigation",
 );
 
 Then("I should see the following navigation",
-  async function (dataTable) {
+  async function (dataTable: DataTable) {
     const navigation = new Navigation(this.page);
     await navigation.shouldBeVisible();
     for (const {Tab: name} of dataTable.hashes()) {
@@ -91,10 +102,21 @@ Then("I should see the following navigation",
   }
 );
 
-Then("I should see the following summary cards on the Claim summary page",
-  async function (dataTable) {
-    for (const {Card: card, Key: key, Value: value} of dataTable.hashes()) {
-      const summaryCard = new SummaryCard(this.page, card);
+Then("I should see the following rows in the {string} summary card",
+  async function (summaryCardName: string, dataTable: DataTable) {
+    const summaryCard = new SummaryCard(this.page, summaryCardName);
+    for (const {Key: key, Value: value} of dataTable.hashes()) {
+      await summaryCard.shouldBeVisible();
+      await summaryCard.checkSummaryListRow(key, value);
+    }
+  }
+);
+
+Then("I should see the following rows in the {string} {string} summary card",
+  async function (nth: string, summaryCardName: string, dataTable: DataTable) {
+    const index = Number(nth.replace(/\D+$/, ""));
+    const summaryCard = new SummaryCard(this.page, summaryCardName, index);
+    for (const {Key: key, Value: value} of dataTable.hashes()) {
       await summaryCard.shouldBeVisible();
       await summaryCard.checkSummaryListRow(key, value);
     }
@@ -126,7 +148,7 @@ When("I reuse a file {string}", async function (fileName: string) {
 });
 
 Then("I should see the following radio options for {string}",
-  async function (question: string, dataTable) {
+  async function (question: string, dataTable: DataTable) {
     const radio = new RadioInput(this.page, question);
     await radio.shouldBeVisible();
 
@@ -175,21 +197,6 @@ Then(
   },
 );
 
-Then("I should see the following details on the {string} page",
-  async function (pageName: string, dataTable) {
-    const heading = new Heading(this.page);
-    await heading.shouldBe(pageName);
-
-    const locators = dataTable.raw().flat().slice(1);
-
-    for (const locator of locators) {
-      await expect(
-        this.page.locator(locator),
-      ).toBeVisible();
-    }
-  },
-);
-
 When('I click the guidance on processing timescales link', async function () {
   const link = new Link(this.page, "guidance on processing timescales");
 
@@ -215,7 +222,7 @@ Then('I should see a link {string}',
 
 Then(
   'I should see the following error messages',
-  async function (dataTable) {
+  async function (dataTable: DataTable) {
     const errorSummary = new ErrorSummary(this.page);
 
     await errorSummary.shouldBeVisible();
@@ -261,9 +268,9 @@ When('I navigate back to the previous page', async function () {
 });
 
 When(
-  'I click on the {string} link for the disbursement dated {string}',
+  'I click on the {string} link for {string}',
   async function (linkText: string, date: string) {
-    const summaryList = new SummaryList(this.page, "disbursement-rows");
+    const summaryList = new SummaryList(this.page);
     const summaryListRow = summaryList.summaryListRow(date);
     await summaryListRow.isVisible();
     const link = new Link(summaryListRow, new RegExp(`^${linkText}`, 'i'));

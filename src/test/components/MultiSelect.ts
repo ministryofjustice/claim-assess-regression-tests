@@ -9,7 +9,7 @@ export class MultiSelect extends Component {
   row(name: string) {
     return this.locator.getByRole("row", {
       name: `Select ${name}`,
-    })
+    });
   }
 
   async select(name: string) {
