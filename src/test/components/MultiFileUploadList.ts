@@ -6,4 +6,8 @@ export class MultiFileUploadList extends SummaryListComponent {
     const locator = page.locator(".govuk-summary-list.moj-multi-file-upload__list");
     super(page, locator);
   }
+
+  get summaryListRowsWithUploadedTags() {
+    return this.summaryListRows.locator(".govuk-tag", { hasText: "Uploaded" });
+  }
 }
