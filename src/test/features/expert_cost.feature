@@ -28,7 +28,7 @@ Feature: POA Expert cost scenarios
     And I enter "Test description" in the "Description" field
     When I click on "Save and continue" button
     Then I should see the heading "You have added 2 expert costs"
-    When I click on the "Remove" link for the disbursement dated "26 March"
+    When I click on the "Remove" link for "26 March 2026"
     Then I should see the heading "Are you sure you want to remove this expert cost?"
     Then I select "Yes" radio button for "Are you sure you want to remove this expert cost?"
     When I click on "Save and continue" button
@@ -41,7 +41,7 @@ Feature: POA Expert cost scenarios
     Then I should see the heading "Check your details"
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
-    When I click the guidance on processing timescales link
+    When I click the "guidance on processing timescales" link which opens in a new tab
     Then I should see another page with the heading "Civil processing dates"
     Then I should see a link "Return to claim summary page"
     Then I click sign out button
@@ -79,7 +79,7 @@ Feature: POA Expert cost scenarios
     When I select "High court" radio button for "Court or judge type"
     When I select "Child" radio button for "What is your client’s party status?"
     When I select "Yes" radio button for "Are you the first solicitor firm acting on this case?"
-    When I check "No" radio button for "Has there been a transfer of solicitor on this case?"
+    When I select "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button
@@ -92,7 +92,7 @@ Feature: POA Expert cost scenarios
     And I enter "12" in the "Month" field
     And I enter "2025" in the "Year" field
     And I enter "1000" in the "Actual net profit cost" field
-    And I enter "1000" in the "Actual net advocacy costs" field
+    And I enter "2000" in the "Actual net advocacy costs" field
     When I select "Yes" radio button for "Does VAT apply?"
     And I enter "Test" in the "Fee earner name" field
     When I click on "Save and continue" button
@@ -101,10 +101,31 @@ Feature: POA Expert cost scenarios
     Then I should see the uploaded file details for "testDocument2.pdf"
     When I click on "Save and continue" button
     Then I should see the heading "Check your details"
-    Then I should see the following details on the "Check your details" page
-      | Locator                  |
-      | #profit-cost-details     |
-      | #profit-cost-bill-line  |
+    And I should see the following "Assessment summary" table
+      | Item                | Cost |
+      | Total net claim     | £0   |
+      | Total VAT claim     | £0   |
+      | POA total net claim | £0   |
+      | Total claim         | £0   |
+    And I should see the following rows in the "Profit cost details" summary card
+      | Key                         | Value      |
+      | Court type                  | High court |
+      | Client party status         | Child      |
+      | First solicitor?            | Yes        |
+      | Transfer of solicitor       | No         |
+      | Clients at start of case    | 1          |
+      | Attended hearings?          | Yes        |
+      | Escaped standard fixed fee? | Yes        |
+    And I should see the following rows in the "POA CPGFS profit cost bill line" summary card
+      | Key                                       | Value            |
+      | Date                                      | 24 December 2025 |
+      | Actual net profit cost excluding advocacy | £1,000.00        |
+      | Actual net advocacy costs                 | £2,000.00        |
+      | Does VAT apply?                           | Yes              |
+      | Fee earner name                           | Test             |
+    And I should see the following rows in the "Evidence" summary card
+      | Key               | Value |
+      | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button

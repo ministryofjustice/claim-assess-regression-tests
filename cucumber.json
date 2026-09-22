@@ -13,7 +13,7 @@
         "publishQuiet": true,
         "dryRun": false,
         "require": [
-            "steps/**/*.ts", "support/World.ts", "support/env.ts"
+            "src/test/steps/**/*.ts", "src/test/support/World.ts", "src/test/support/env.ts"
         ],
         "requireModule": [
             "ts-node/register"

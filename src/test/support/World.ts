@@ -1,22 +1,36 @@
-import {Before, After, setWorldConstructor, BeforeAll, AfterAll} from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from 'playwright';
-import { setDefaultTimeout } from '@cucumber/cucumber';
+import {After, AfterAll, Before, BeforeAll, setDefaultTimeout, setWorldConstructor} from '@cucumber/cucumber';
+import {Browser, BrowserContext, chromium, Page} from 'playwright';
+import {SignOutLink} from "../components/Link";
 
-setDefaultTimeout(10 * 1000); // 10 seconds
+setDefaultTimeout(30 * 1000); // 30 seconds
 
 let browser!: Browser;
 let context!: BrowserContext;
 
 class CustomWorld {
   page!: Page;
-  baseUrl!: string;
 
-  async init() {
+  async init(baseUrl: string) {
     this.page = await context.newPage();
+    await this.page.goto(baseUrl);
+  }
+
+  async close(page: Page) {
+    await page.close().catch(() => {});
   }
 
   async teardown() {
-    await this.page?.close().catch(() => {});
+    if (!this.page) {
+      return;
+    }
+
+    const signOutLink = new SignOutLink(this.page);
+
+    if (await signOutLink.isVisible()) {
+      await signOutLink.click();
+    }
+
+    await this.close(this.page);
   }
 }
 
@@ -24,7 +38,6 @@ setWorldConstructor(CustomWorld);
 
 BeforeAll(async () => {
   console.log("🌍 Launching browser...");
-
   const headless = process.env.HEADLESS === "true";
   const slowMo = headless ? 0 : 100;
   browser = await chromium.launch({ headless, slowMo });
@@ -41,15 +54,15 @@ AfterAll(async () => {
 Before({ tags: "@claim" }, async function () {
   console.log("🌍 Initializing browser for CLAIM app...");
 
-  this.baseUrl = process.env.CLAIM_BASE_URL || "http://localhost:3000";
-  await this.init();
+  const baseUrl = process.env.CLAIM_BASE_URL || "http://localhost:3000";
+  await this.init(baseUrl);
 });
 
 Before({ tags: "@assess" }, async function () {
   console.log("🌍 Initializing browser for ASSESS app...");
 
-  this.baseUrl = process.env.ASSESS_BASE_URL || "http://localhost:3001";
-  await this.init();
+  const baseUrl = process.env.ASSESS_BASE_URL || "http://localhost:3001";
+  await this.init(baseUrl);
 });
 
 After(async function () {
