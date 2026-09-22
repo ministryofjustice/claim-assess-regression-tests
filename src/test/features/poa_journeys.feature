@@ -28,7 +28,7 @@ Feature: POA E2E journey
     When I select "No" radio button for "Has there been a transfer of solicitor on this case?"
     When I click on "Save and continue" button
     Then I should see the following radio options for "How many clients did you have at the start of the case?"
-      |  1 |
+      | 1  |
       | 2+ |
     When I select "1" radio button for "How many clients did you have at the start of the case"
     When I click on "Save and continue" button
@@ -79,8 +79,8 @@ Feature: POA E2E journey
       | Does VAT apply?                           | Yes              |
       | Fee earner name                           | Test             |
     And I should see the following rows in the "Evidence" summary card
-      | Key               | Value                |
-      | testDocument2.pdf | 9KB22 September 2026 |
+      | Key               | Value |
+      | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
@@ -143,8 +143,8 @@ Feature: POA E2E journey
       | Fee earner name  | Test             |
       | Description      | Test description |
     And I should see the following rows in the "Evidence" summary card
-      | Key               | Value                |
-      | testDocument2.pdf | 9KB22 September 2026 |
+      | Key               | Value |
+      | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     When I click the guidance on processing timescales link
@@ -224,8 +224,8 @@ Feature: POA E2E journey
       | Fee earner name  | Test             |
       | Description      | Test description |
     And I should see the following rows in the "Evidence" summary card
-      | Key               | Value                |
-      | testDocument2.pdf | 9KB22 September 2026 |
+      | Key               | Value |
+      | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button

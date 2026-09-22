@@ -17,6 +17,7 @@ import {MultiFileUploadList} from "../components/MultiFileUploadList";
 import {FileUpload} from "../components/FileUpload";
 import {List} from "../components/List";
 import {Table} from "../components/Table";
+import {Alert} from "../components/Alert";
 
 Given(
   "I log in as user {string} with password {string}",
@@ -275,5 +276,13 @@ When(
     await summaryListRow.isVisible();
     const link = new Link(summaryListRow, new RegExp(`^${linkText}`, 'i'));
     await link.click();
+  }
+);
+
+Then(
+  'I should see an alert message {string}',
+  async function (expectedMessage: string) {
+    const alert = new Alert(this.page, expectedMessage);
+    await alert.shouldBeVisible();
   }
 );

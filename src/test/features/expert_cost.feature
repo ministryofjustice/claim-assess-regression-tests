@@ -124,8 +124,8 @@ Feature: POA Expert cost scenarios
       | Does VAT apply?                           | Yes              |
       | Fee earner name                           | Test             |
     And I should see the following rows in the "Evidence" summary card
-      | Key               | Value                |
-      | testDocument2.pdf | 9KB22 September 2026 |
+      | Key               | Value |
+      | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
     Then I click sign out button
