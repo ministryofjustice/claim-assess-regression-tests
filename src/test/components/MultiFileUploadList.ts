@@ -7,7 +7,7 @@ export class MultiFileUploadList extends SummaryListComponent {
     super(page, locator);
   }
 
-  summaryListRowsWithUploadedTags() {
-    return this.summaryListRows().locator(".govuk-tag", { hasText: "Uploaded" });
+  get summaryListRowsWithUploadedTags() {
+    return this.summaryListRows.locator(".govuk-tag", { hasText: "Uploaded" });
   }
 }

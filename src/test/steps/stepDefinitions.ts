@@ -125,7 +125,7 @@ Then("I should see the following rows in the {string} {string} summary card",
 
 When("I upload a file {string}", async function (fileName: string) {
   const summaryList = new MultiFileUploadList(this.page);
-  const summaryListRows = summaryList.summaryListRowsWithUploadedTags();
+  const summaryListRows = summaryList.summaryListRowsWithUploadedTags;
   const before = await summaryListRows.count();
 
   const filePath = path.resolve("test-data", fileName);
