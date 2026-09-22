@@ -41,7 +41,6 @@ Then("I should see the heading {string}", async function (expected: string) {
 Then("I should see the page title {string}", async function (expected: string) {
   await this.page.waitForLoadState("domcontentloaded");
   const actual = await this.page.title();
-  console.log("Page title is:", actual);
   expect(actual).toBe(expected);
 });
 

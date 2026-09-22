@@ -15,8 +15,6 @@ export class Heading extends Component {
       throw new Error("No h1 found");
     }
 
-    console.log("Page heading is:", actual);
-
     expect(actual.trim()).toBe(value);
   }
 }
