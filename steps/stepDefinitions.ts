@@ -469,3 +469,15 @@ When(
     await row.getByRole('link', { name: new RegExp(`^${linkText}`, 'i') }).click();
   }
 );
+
+Then(
+  'I should see an alert message {string}',
+  async function (expectedMessage: string) {
+    await expect(
+      this.page.getByRole('heading', {
+        name: expectedMessage
+      })
+    ).toBeVisible();
+  }
+);
+
