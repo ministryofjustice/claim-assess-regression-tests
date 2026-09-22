@@ -5,7 +5,7 @@ import {RadioInput} from "../components/RadioInput";
 import {TextInput} from "../components/TextInput";
 import {ErrorSummary} from "../components/ErrorSummary";
 import {Heading} from "../components/Heading";
-import {Link} from "../components/Link";
+import {Link, SignOutLink} from "../components/Link";
 import {Button} from "../components/Button";
 import {SubNavigation} from "../components/SubNavigation";
 import {Navigation} from "../components/Navigation";
@@ -46,7 +46,7 @@ Then("I should see the page title {string}", async function (expected: string) {
 });
 
 When("I click sign out button", async function () {
-  const link = new Link(this.page, "Sign out");
+  const link = new SignOutLink(this.page);
   await link.click();
 });
 
@@ -62,10 +62,10 @@ When("I click on {string} button", async function (buttonName: string) {
 
 Then("I should see the following {string} list",
   async function (id: string, dataTable: DataTable) {
-    const summary = new List(this.page, id);
-    await summary.isVisible();
+    const list = new List(this.page, id);
+    await list.isVisible();
     for (const {Key: key, Value: value} of dataTable.hashes()) {
-      const listItem = summary.listItem(key);
+      const listItem = list.listItem(key);
       await listItem.containsText(value);
     }
   }
@@ -198,8 +198,8 @@ Then(
   },
 );
 
-When('I click the guidance on processing timescales link', async function () {
-  const link = new Link(this.page, "guidance on processing timescales");
+When('I click the {string} link which opens in a new tab', async function (name: string) {
+  const link = new Link(this.page, name);
 
   const [newPage] = await Promise.all([
     this.page.context().waitForEvent('page'),

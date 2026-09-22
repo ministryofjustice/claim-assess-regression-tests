@@ -59,7 +59,7 @@ Feature: POA Non expert disbursement cost journey E2E
       | testDocument2.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
-    When I click the guidance on processing timescales link
+    When I click the "guidance on processing timescales" link which opens in a new tab
     Then I should see another page with the heading "Civil processing dates"
     Then I should see a link "Return to claim summary page"
     Then I click sign out button
@@ -121,7 +121,7 @@ Feature: POA Non expert disbursement cost journey E2E
       | testDocument.pdf | 9KB   |
     Then I click on "Submit" button
     Then I should see the heading "Payment on account submitted"
-    When I click the guidance on processing timescales link
+    When I click the "guidance on processing timescales" link which opens in a new tab
     Then I should see another page with the heading "Civil processing dates"
     Then I should see a link "Return to claim summary page"
     Then I click sign out button

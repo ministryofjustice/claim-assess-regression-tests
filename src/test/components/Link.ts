@@ -11,3 +11,9 @@ export class Link extends Component {
     await this.locator.click();
   }
 }
+
+export class SignOutLink extends Link {
+  constructor(page: PageOrLocator) {
+    super(page, "Sign out");
+  }
+}

@@ -1,6 +1,6 @@
 import {After, AfterAll, Before, BeforeAll, setDefaultTimeout, setWorldConstructor} from '@cucumber/cucumber';
 import {Browser, BrowserContext, chromium, Page} from 'playwright';
-import {SignOutLink} from "../components/SignOutLink";
+import {SignOutLink} from "../components/Link";
 
 setDefaultTimeout(30 * 1000); // 30 seconds
 
