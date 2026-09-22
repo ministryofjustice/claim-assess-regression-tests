@@ -212,6 +212,7 @@ When('I click the {string} link which opens in a new tab', async function (name:
 Then('I should see another page with the heading {string}', async function (expectedHeading: string) {
   const heading = new Heading(this.newPage);
   await heading.shouldBe(expectedHeading);
+  await this.close(this.newPage);
 });
 
 Then('I should see a link {string}',

@@ -15,6 +15,10 @@ class CustomWorld {
     await this.page.goto(baseUrl);
   }
 
+  async close(page: Page) {
+    await page.close().catch(() => {});
+  }
+
   async teardown() {
     if (!this.page) {
       return;
@@ -26,7 +30,7 @@ class CustomWorld {
       await signOutLink.click();
     }
 
-    await this.page.close().catch(() => {});
+    await this.close(this.page);
   }
 }
 
