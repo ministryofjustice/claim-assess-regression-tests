@@ -20,7 +20,7 @@ Feature: Claim for Payment - Login and happy path journey
     Then I should see the heading "Your Claims"
     When I click sign out button
 
-  @smoke @claim @wip
+  @smoke @claim
   Scenario: The provider/User logs in and chooses how to upload evidence page
     Given I log in as user "bob" with password "password"
     Then I should see the page title "Your Claims – Claim for controlled work – GOV.UK"
